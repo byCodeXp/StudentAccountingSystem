@@ -1,79 +1,39 @@
 import React from 'react';
+import { Routes, Route, Link } from 'react-router-dom';
 import './App.css';
 import 'antd/dist/antd.min.css';
-import AppHeader from './Header';
-import { Layout, Form, Input, Checkbox, Button } from 'antd';
-const { Content, Footer } = Layout;
+import { Button, Layout } from 'antd';
+import HomePage from './components/Home';
+import LoginPage from './components/Login';
+import RegisterPage from './components/Register';
+
+const { Header, Content, Footer } = Layout;
 
 function App() {
-  const onFinish = (values: any) => {
-    console.log('Success:', values);
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
   return (
     <Layout>
-      <AppHeader />
-      <Content
-        style={{
-          padding: '25px 50px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <Form
-          name="basic"
-          labelCol={{ span: 8 }}
-          wrapperCol={{ span: 16 }}
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          style={{ width: '480px' }}
-        >
-          <Form.Item
-            label="Username"
-            name="username"
-            rules={[{ required: true, message: 'Please input your username!' }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: true, message: 'Please input your password!' }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
-          <Form.Item
-            name="remember"
-            valuePropName="checked"
-            wrapperCol={{ offset: 8, span: 16 }}
-          >
-            <Checkbox>Remember me</Checkbox>
-          </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-              <Button
-                type="link"
-                href={'https://google.com'}
-                style={{ padding: '0' }}
-              >
-                Create new account
-              </Button>
-            </div>
-          </Form.Item>
-        </Form>
+      <Header style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Link to="">
+          <span style={{ color: 'white' }}>BrandName</span>
+        </Link>
+        <div>
+          <Link to="login">
+            <Button type="link">Login</Button>
+          </Link>
+          <span style={{ color: 'white' }}>|</span>
+          <Link to="register">
+            <Button type="link">Register</Button>
+          </Link>
+        </div>
+      </Header>
+      <Content style={{ padding: '25px 50px' }}>
+        <Routes>
+          <Route path="" element={<HomePage />} />
+          <Route path="login" element={<LoginPage />} />
+          <Route path="register" element={<RegisterPage />} />
+        </Routes>
       </Content>
-      <Footer>Footer</Footer>
+      <Footer />
     </Layout>
   );
 }
