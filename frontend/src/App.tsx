@@ -16,15 +16,7 @@ function App() {
         <Link to="">
           <span style={{ color: 'white' }}>BrandName</span>
         </Link>
-        <div>
-          <Link to="login">
-            <Button type="link">Login</Button>
-          </Link>
-          <span style={{ color: 'white' }}>|</span>
-          <Link to="register">
-            <Button type="link">Register</Button>
-          </Link>
-        </div>
+        <Link to="login">Sign In</Link>
       </Header>
       <Content style={{ padding: '25px 50px' }}>
         <Routes>
@@ -33,7 +25,7 @@ function App() {
           <Route path="register" element={<RegisterPage />} />
         </Routes>
       </Content>
-      <Footer />
+      <Footer>Footer</Footer>
     </Layout>
   );
 }
