@@ -53,7 +53,8 @@ namespace Data_Access_Layer.Migrations
                 name: "Courses",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinishDate = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -173,7 +174,7 @@ namespace Data_Access_Layer.Migrations
                 name: "CourseUser",
                 columns: table => new
                 {
-                    CoursesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CoursesId = table.Column<int>(type: "int", nullable: false),
                     UsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>

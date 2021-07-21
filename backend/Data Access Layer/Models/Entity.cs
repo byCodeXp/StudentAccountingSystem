@@ -1,9 +1,7 @@
-﻿using System;
-
-namespace Data_Access_Layer.Models
+﻿namespace Data_Access_Layer.Models
 {
     public abstract class Entity
     {
-        public Guid Id { get; set; } 
+        public int Id { get; set; } 
     }
 }

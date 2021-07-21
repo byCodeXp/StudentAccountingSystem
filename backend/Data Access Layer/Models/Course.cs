@@ -18,7 +18,7 @@ namespace Data_Access_Layer.Models
     {
         public void Configure(EntityTypeBuilder<Course> builder)
         {
-            builder.HasKey(m => m.Id);
+            // builder.HasKey(m => m.Id);
             builder.Property(m => m.Name).IsRequired().HasMaxLength(256);
             builder.Property(m => m.StartDate).IsRequired();
             builder.Property(m => m.FinishDate).IsRequired();

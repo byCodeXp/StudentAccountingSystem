@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210721191045_Initial")]
+    [Migration("20210721204559_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,8 +23,8 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("CourseUser", b =>
                 {
-                    b.Property<Guid>("CoursesId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CoursesId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UsersId")
                         .HasColumnType("nvarchar(450)");
@@ -38,9 +38,10 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Data_Access_Layer.Models.Course", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("FinishDate")
                         .HasColumnType("datetime2");

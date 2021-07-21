@@ -5,4 +5,9 @@
         <RootNamespace>Business_Logic</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Data Access Layer\Data Access Layer.csproj" />
+      <ProjectReference Include="..\Data Transfer Objects\Data Transfer Objects.csproj" />
+    </ItemGroup>
+
 </Project>

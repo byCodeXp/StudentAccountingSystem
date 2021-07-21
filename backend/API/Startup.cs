@@ -1,3 +1,4 @@
+using Business_Logic;
 using Data_Access_Layer;
 using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Builder;
@@ -28,6 +29,8 @@ namespace API
             });
             
             services.AddIdentity<User, IdentityRole>().AddDefaultTokenProviders().AddEntityFrameworkStores<DataContext>();
+            
+            services.AddScoped<CourseService>();
             
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"}); });
