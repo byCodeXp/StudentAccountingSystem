@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "API\API.csproj", "{D674DED3-BFB8-4CC8-9F21-D5B2889919B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Access Layer", "Data Access Layer\Data Access Layer.csproj", "{5526A894-F273-4FAD-BA50-9E76614E5CC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business Logic", "Business Logic\Business Logic.csproj", "{9372BEA4-E4CA-49C1-ADDA-BDC4FEEE8785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Transfer Objects", "Data Transfer Objects\Data Transfer Objects.csproj", "{7BC255AC-E8C4-41CD-A03E-F96991980E7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,17 @@ Global
 		{D674DED3-BFB8-4CC8-9F21-D5B2889919B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D674DED3-BFB8-4CC8-9F21-D5B2889919B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D674DED3-BFB8-4CC8-9F21-D5B2889919B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5526A894-F273-4FAD-BA50-9E76614E5CC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5526A894-F273-4FAD-BA50-9E76614E5CC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5526A894-F273-4FAD-BA50-9E76614E5CC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5526A894-F273-4FAD-BA50-9E76614E5CC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9372BEA4-E4CA-49C1-ADDA-BDC4FEEE8785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9372BEA4-E4CA-49C1-ADDA-BDC4FEEE8785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9372BEA4-E4CA-49C1-ADDA-BDC4FEEE8785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9372BEA4-E4CA-49C1-ADDA-BDC4FEEE8785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BC255AC-E8C4-41CD-A03E-F96991980E7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BC255AC-E8C4-41CD-A03E-F96991980E7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BC255AC-E8C4-41CD-A03E-F96991980E7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BC255AC-E8C4-41CD-A03E-F96991980E7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
