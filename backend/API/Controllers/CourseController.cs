@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using API.ViewModels;
 using Business_Logic;
 using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +19,20 @@ namespace API.Controllers
         }
         
         [HttpGet]
-        public IEnumerable<CourseDTO> GetCourses(int page, int perPage)
+        [Route("All")]
+        public async Task<CourseVM> GetCourses(int page, int perPage)
         {
             int offset = page <= 1 ? 0 : page * perPage - perPage;
-            return courseService.GetCourses().Skip(offset).Take(perPage);
+            
+            return new CourseVM()
+            {
+                TotalCount = await courseService.CountAsync(),
+                Courses = courseService.GetCourses().Skip(offset).Take(perPage)
+            };
         }
 
-        [HttpPost]
+        [HttpGet]
+        [Route("One")]
         public async Task<CourseDTO> GetCourse(int id)
         {
             return await courseService.GetCourseAsync(id);

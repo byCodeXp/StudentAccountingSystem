@@ -1,3 +1,4 @@
+using AutoMapper;
 using Business_Logic;
 using Data_Access_Layer;
 using Data_Access_Layer.Models;
@@ -32,6 +33,8 @@ namespace API
             
             services.AddScoped<CourseService>();
             
+            services.AddSingleton(new MapperConfiguration(p => p.AddProfile(new MappingProfile())).CreateMapper()); 
+
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "API", Version = "v1"}); });
         }

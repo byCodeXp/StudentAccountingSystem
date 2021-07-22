@@ -11,4 +11,8 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.8" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Data Transfer Objects\Data Transfer Objects.csproj" />
+    </ItemGroup>
+
 </Project>

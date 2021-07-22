@@ -10,7 +10,6 @@ namespace Data_Access_Layer.Models
         public string Name { get; set; }
         public DateTime StartDate { get; set; } 
         public DateTime FinishDate { get; set; }
-        
         public ICollection<User> Users { get; set; }
     }
     

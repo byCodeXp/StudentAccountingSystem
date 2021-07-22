@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using Data_Access_Layer;
 using Data_Access_Layer.Commands;
 using Data_Access_Layer.Models;
@@ -13,28 +14,24 @@ namespace Business_Logic
         private readonly DataContext context;
         private readonly CourseCommand courseCommand;
         private readonly CourseQuery courseQuery;
+        private readonly IMapper mapper;
 
-        public CourseService(DataContext context)
+        public CourseService(DataContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
             courseCommand = new CourseCommand(this.context);
             courseQuery = new CourseQuery(this.context);
         }
 
         public async Task CreateCourseAsync(CourseDTO course)
         {
-            await courseCommand.AddAsync(new ()
-            {
-                Name = course.Name, StartDate = course.StartDate, FinishDate = course.FinishDate
-            });
+            await courseCommand.AddAsync(mapper.Map<Course>(course));
         }
 
         public async Task EditCourseAsync(int id, CourseDTO course)
         {
-            await courseCommand.UpdateAsync(id, new ()
-            {
-                Name = course.Name, StartDate = course.StartDate, FinishDate = course.FinishDate
-            });
+            await courseCommand.UpdateAsync(id, mapper.Map<Course>(course));
         }
 
         public async Task RemoveCourseAsync(int id)
@@ -44,22 +41,12 @@ namespace Business_Logic
 
         public IEnumerable<CourseDTO> GetCourses()
         {
-            foreach (Course course in courseQuery.GetAll())
-            {
-                yield return new()
-                {
-                    Name = course.Name, StartDate = course.StartDate, FinishDate = course.FinishDate
-                };
-            }
+            return mapper.Map<IEnumerable<CourseDTO>>(courseQuery.GetAll());
         }
 
         public async Task<CourseDTO> GetCourseAsync(int id)
         {
-            Course course = await courseQuery.GetAsync(id);
-            return new()
-            {
-                Name = course.Name, StartDate = course.StartDate, FinishDate = course.FinishDate
-            };
+            return mapper.Map<CourseDTO>(await courseQuery.GetAsync(id));
         }
 
         public async Task<int> CountAsync()
