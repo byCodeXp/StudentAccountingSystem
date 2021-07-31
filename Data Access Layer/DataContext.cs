@@ -15,6 +15,8 @@ namespace Data_Access_Layer
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new UserConfiguration());
+            builder.ApplyConfiguration(new CourseConfiguration());
+            builder.ApplyConfiguration(new BadgeConfiguration());
 
             base.OnModelCreating(builder);
         }
