@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Data_Transfer_Objects;
 
-namespace API.ViewModels
+namespace Business_Logic.ViewModels
 {
     public class CourseVM
     {

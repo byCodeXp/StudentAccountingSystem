@@ -1,14 +1,13 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using API.ViewModels;
+﻿using System.Threading.Tasks;
 using Business_Logic;
+using Business_Logic.ViewModels;
 using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("[controller]")]
     public class CourseController : ControllerBase
     {
         private readonly CourseService courseService;
@@ -17,23 +16,15 @@ namespace API.Controllers
         {
             this.courseService = courseService;
         }
-        
-        [HttpGet]
-        [Route("All")]
-        public async Task<CourseVM> GetCourses(int page, int perPage)
+
+        [HttpGet("Page/{page}")]
+        public async Task<CourseVM> GetAll(int page)
         {
-            int offset = page <= 1 ? 0 : page * perPage - perPage;
-            
-            return new CourseVM()
-            {
-                TotalCount = await courseService.CountAsync(),
-                Courses = courseService.GetCourses().Skip(offset).Take(perPage)
-            };
+            return await courseService.GetCoursesAsync(page, 12);
         }
 
-        [HttpGet]
-        [Route("One")]
-        public async Task<CourseDTO> GetCourse(int id)
+        [HttpGet("{id}")]
+        public async Task<CourseDTO> Get(int id)
         {
             return await courseService.GetCourseAsync(id);
         }
