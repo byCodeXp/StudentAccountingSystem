@@ -25,7 +25,6 @@ namespace Data_Access_Layer.Models
             builder.Property(m => m.Email).IsRequired().HasMaxLength(128);
             builder.Property(m => m.FirstName).HasMaxLength(128);
             builder.Property(m => m.LastName).HasMaxLength(128);
-            builder.Property(m => m.Age).IsRequired();
             builder.Property(m => m.CreatedTimeStamp).IsRequired();
             builder.Property(m => m.UpdatedTimeStamp).IsRequired();
         }
