@@ -63,13 +63,9 @@ namespace Business_Logic.Services
                 throw new HttpResponseException("Invalid credentials");
             }
 
-            return _jwtService.WriteToken(user);
-        }
+            // TODO: Add refresh token
 
-        public string GetUser(string token)
-        {
-            var userId = _jwtService.Verify(token).Id;
-            return userId;
+            return _jwtService.WriteToken(user);
         }
 
         private async Task RolesEnsureCreate(params string[] roles)

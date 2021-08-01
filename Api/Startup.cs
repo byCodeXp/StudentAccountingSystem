@@ -56,6 +56,9 @@ namespace Api
             });
 
             services.AddScoped<IdentityService>();
+
+            services.AddScoped<CourseService>();
+
             services.AddScoped<JwtService>();
 
             services.AddControllers();
