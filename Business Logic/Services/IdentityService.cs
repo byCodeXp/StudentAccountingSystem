@@ -12,12 +12,14 @@ namespace Business_Logic.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly JwtService _jwtService;
 
-        public IdentityService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager)
+        public IdentityService(UserManager<User> userManager, SignInManager<User> signInManager, RoleManager<IdentityRole> roleManager, JwtService jwtService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _jwtService = jwtService;
         }
 
         public async Task<HttpStatusCode> RegisterAsync(RegisterRequest request)
@@ -29,6 +31,7 @@ namespace Business_Logic.Services
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Email = request.Email,
+                UserName = request.Email,
                 Age = request.Age
             };
 
@@ -60,9 +63,13 @@ namespace Business_Logic.Services
                 throw new HttpResponseException("Invalid credentials");
             }
 
-            // TODO: Make jwt authentication
+            return _jwtService.WriteToken(user);
+        }
 
-            return "";
+        public string GetUser(string token)
+        {
+            var userId = _jwtService.Verify(token).Id;
+            return userId;
         }
 
         private async Task RolesEnsureCreate(params string[] roles)
