@@ -5,6 +5,7 @@ using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
 
 namespace Api
@@ -29,7 +31,13 @@ namespace Api
         {
             services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
-            services.AddIdentity<User, IdentityRole>().AddDefaultTokenProviders().AddEntityFrameworkStores<DataContext>();
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
+            .AddEntityFrameworkStores<DataContext>()
+            .AddDefaultTokenProviders()
+            .AddSignInManager<SignInManager<User>>();
 
             services.AddCors();
 
@@ -55,11 +63,14 @@ namespace Api
                 };
             });
 
+            
             services.AddScoped<IdentityService>();
-
+            
             services.AddScoped<CourseService>();
-
+            
             services.AddScoped<JwtService>();
+            
+            services.AddScoped<EmailService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" }));
@@ -78,16 +89,21 @@ namespace Api
             app.UseRouting();
 
             app.UseCors(options => options
-                .WithOrigins(new[] { "http://localhost:3000" })
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials()
+               .WithOrigins(new[] { "http://localhost:3000" })
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials()
             );
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
 
             app.UseMiddleware<ErrorHandler>();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthentication()
+               .UseAuthorization();
 
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }

@@ -16,13 +16,13 @@ namespace Data_Access_Layer.Models
 
     // TODO: Use fluent validation
     // TODO: Add relationship with courses
-    // TODO: Make email unique
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.Property(m => m.Email).IsRequired().HasMaxLength(128);
+            builder.HasIndex(m => m.Email).IsUnique();
             builder.Property(m => m.FirstName).HasMaxLength(128);
             builder.Property(m => m.LastName).HasMaxLength(128);
             builder.Property(m => m.CreatedTimeStamp).IsRequired();

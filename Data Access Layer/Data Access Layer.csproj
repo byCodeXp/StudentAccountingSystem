@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Data_Access_Layer</RootNamespace>
+    <UserSecretsId>1b5588e2-4a20-4fe6-a2e9-c80924bf6d1c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
