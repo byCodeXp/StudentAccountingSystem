@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Access Layer", "Data A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{DBA62685-413C-4B0B-AE74-CBCD7C6286F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business Logic", "Business Logic\Business Logic.csproj", "{FED374A3-3219-4BCB-B7FA-7144077C8E1F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business Logic", "Business Logic\Business Logic.csproj", "{FED374A3-3219-4BCB-B7FA-7144077C8E1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Transfer Objects", "Data Transfer Objects\Data Transfer Objects.csproj", "{DB27CBA0-EEEF-4C94-BB3F-84AA313EFC9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Transfer Objects", "Data Transfer Objects\Data Transfer Objects.csproj", "{DB27CBA0-EEEF-4C94-BB3F-84AA313EFC9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

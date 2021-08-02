@@ -21,19 +21,19 @@ namespace Business_Logic.Services
         private readonly EmailService _emailService;
 
         public IdentityService(
+            ILogger<IdentityService> logger,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleManager,
             JwtService jwtService,
-            EmailService emailService,
-            ILogger<IdentityService> logger)
+            EmailService emailService)
         {
+            _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _jwtService = jwtService;
             _emailService = emailService;
-            _logger = logger;
         }
 
         public async Task<HttpStatusCode> RegisterAsync(RegisterRequest request)
@@ -49,21 +49,32 @@ namespace Business_Logic.Services
                 Age = request.Age
             };
 
-            var result = await _userManager.CreateAsync(user, request.Password);
+            var dentityResult = await _userManager.CreateAsync(user, request.Password);
+
+            if (!dentityResult.Succeeded)
+            {
+                throw new HttpResponseException("Invalid credentials", dentityResult.Errors);
+            }
+
+            _logger.LogInformation($"User created with id: {user.Id}");
+            
+            var result = await _userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
 
             if (!result.Succeeded)
             {
-                throw new HttpResponseException("Invalid credentials", result.Errors);
+                throw new HttpResponseException("Server error", dentityResult.Errors);
             }
-            
-            await _userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
+
+            _logger.LogInformation($"Role added to user");
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token)); 
 
-            var link = $"https://localhost:5001/api/Identity/ConfirmEmail?email=" + user.Email + "&token=" + token;
+            var link = $"https://localhost:5001/api/Identity/ConfirmEmail?email={user.Email}&token={token}";
 
             await _emailService.SendMailAsync("Succesfuly registration", new EmailAddress(user.Email), $"Your activation link: {link}");
+
+            _logger.LogInformation($"Confirmation link was sended on email address: {user.Email}");
 
             return HttpStatusCode.Created;
         }
@@ -84,6 +95,8 @@ namespace Business_Logic.Services
                 throw new HttpResponseException("Invalid credentials");
             }
 
+            _logger.LogInformation($"Seccessfuly user authentication with id: {user.Id}");
+
             // TODO: Add refresh token
 
             return _jwtService.WriteToken(user);
@@ -103,10 +116,10 @@ namespace Business_Logic.Services
 
             var result = await _userManager.ConfirmEmailAsync(user, codeDecoded);
 
-            _logger.LogInformation($"Result: {result}\n");
-
             if (result.Succeeded)
             {
+                _logger.LogInformation($"Seccessfuly user email confirmation with id: {user.Id}");
+
                 return HttpStatusCode.OK;
             }
 

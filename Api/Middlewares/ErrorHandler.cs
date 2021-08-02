@@ -1,5 +1,6 @@
 ﻿using Data_Transfer_Objects.Errors;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -11,10 +12,12 @@ namespace Api.Middlewares
     public class ErrorHandler
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorHandler> _logger;
 
-        public ErrorHandler(RequestDelegate next)
+        public ErrorHandler(RequestDelegate next, ILogger<ErrorHandler> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -32,12 +35,15 @@ namespace Api.Middlewares
                 {
                     case HttpResponseException:
                         response.StatusCode = (int) HttpStatusCode.BadRequest;
+                        _logger.LogError(error, "Http response error");
                         break;
                     case KeyNotFoundException:
                         response.StatusCode = (int) HttpStatusCode.NotFound;
+                        _logger.LogError(error, "Not found error");
                         break;
                     default:
                         response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                        _logger.LogError(error, "Error");
                         break;
                 }
 

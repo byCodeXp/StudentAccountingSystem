@@ -13,7 +13,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
 using System.Text;
 
 namespace Api
@@ -63,13 +62,13 @@ namespace Api
                 };
             });
 
-            
+
             services.AddScoped<IdentityService>();
-            
+
             services.AddScoped<CourseService>();
-            
+
             services.AddScoped<JwtService>();
-            
+
             services.AddScoped<EmailService>();
 
             services.AddControllers();
@@ -85,7 +84,7 @@ namespace Api
             }
 
             app.UseHttpsRedirection();
-            
+
             app.UseRouting();
 
             app.UseCors(options => options
