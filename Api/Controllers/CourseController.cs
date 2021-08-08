@@ -37,6 +37,7 @@ namespace Api.Controllers
         [Authorize(AppEnv.Roles.Admin)]
         public async Task<CourseDTO> Create(CourseDTO course)
         {
+            // TODO: ModelState validation
             return await _courseService.CreateCourseAsync(course);
         }
 

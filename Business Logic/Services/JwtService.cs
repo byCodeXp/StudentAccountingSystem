@@ -10,13 +10,10 @@ namespace Business_Logic.Services
 {
     public class JwtService
     {
-        private readonly IConfiguration _configuration;
         private readonly SymmetricSecurityKey _symmetricSecurityKey;
 
         public JwtService(IConfiguration configuration)
         {
-            _configuration = configuration;
-
             var secret = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]);
             _symmetricSecurityKey = new SymmetricSecurityKey(secret);
         }
@@ -27,6 +24,7 @@ namespace Business_Logic.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Issuer = user.Id,
                 Subject = new ClaimsIdentity(new[] { new Claim("Id", user.Id) }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature)

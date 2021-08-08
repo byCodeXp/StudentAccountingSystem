@@ -62,6 +62,7 @@ namespace Api
                 };
             });
 
+            // TODO: Add facebook authentication
 
             services.AddScoped<IdentityService>();
 
