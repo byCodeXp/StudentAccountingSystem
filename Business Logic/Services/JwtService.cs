@@ -24,13 +24,18 @@ namespace Business_Logic.Services
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Issuer = user.Id,
-                Subject = new ClaimsIdentity(new[] { new Claim("Id", user.Id) }),
+                Issuer = user.Id, // TODO: send once
+                Subject = new ClaimsIdentity(new[] {
+                    new Claim("id", user.Id), // TODO: send once
+                    new Claim("email", user.Email),
+                    new Claim("firstName", user.FirstName),
+                    new Claim("lastName", user.LastName)
+                }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature)
             };
 
-            SecurityToken token = jwtTokenHandler.CreateToken(tokenDescriptor);
+            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
 
             return jwtTokenHandler.WriteToken(token);
         }

@@ -1,58 +1,44 @@
+import 'antd/dist/antd.min.css';
+import './app.css';
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from 'antd';
+import Header from './components/Header';
+import HomePage from './pages/Home';
+import LoginPage from './pages/Login';
+import ForgotPage from './pages/Forgot';
+import RegisterPage from './pages/Register';
+import CatalogPage from './pages/Catalog';
+import ConfirmPage from './pages/Confirm';
+import ProfilePage from './pages/Profile';
+import SettingsPage from './pages/Settings';
+import NotFoundPage from './pages/NotFound';
+import { useAppSelector } from './app/hooks';
+import { selectUser } from './features/user/userSlice';
+
+const { Content } = Layout;
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
-  );
+   const user = useAppSelector(selectUser);
+
+   return (
+      <Layout style={{ minHeight: '100vh' }}>
+         <Header user={user} />
+         <Content style={{ padding: '32px 64px' }}>
+            <Routes>
+               <Route path="" element={<HomePage />} />
+               <Route path="login" element={<LoginPage />} />
+               <Route path="forgot" element={<ForgotPage />} />
+               <Route path="register" element={<RegisterPage />} />
+               <Route path="confirm" element={<ConfirmPage />} />
+               <Route path="catalog" element={<CatalogPage />} />
+               <Route path="profile" element={<ProfilePage />} />
+               <Route path="settings" element={<SettingsPage />} />
+               <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+         </Content>
+      </Layout>
+   );
 }
 
 export default App;
