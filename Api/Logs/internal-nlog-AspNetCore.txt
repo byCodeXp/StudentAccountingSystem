@@ -801,3 +801,21 @@
 2021-08-19 19:49:22.0069 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
 2021-08-19 19:49:22.0126 Info Adding target ConsoleTarget(Name=lifetimeConsole)
 2021-08-19 19:49:22.0381 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-19 19:53:55.3707 Info AppDomain Shutting down. Logger closing...
+2021-08-19 19:53:55.4044 Info Logger has been shut down.
+2021-08-19 19:54:22.8623 Info Message Template Auto Format enabled
+2021-08-19 19:54:22.8727 Info Loading assembly: NLog.Web.AspNetCore
+2021-08-19 19:54:22.9199 Info Adding target FileTarget(Name=allfile)
+2021-08-19 19:54:22.9199 Info Adding target FileTarget(Name=ownFile-web)
+2021-08-19 19:54:22.9199 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-08-19 19:54:22.9199 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-08-19 19:54:22.9549 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-19 23:20:50.7768 Info AppDomain Shutting down. Logger closing...
+2021-08-19 23:20:50.8773 Info Logger has been shut down.
+2021-08-19 23:22:02.1071 Info Message Template Auto Format enabled
+2021-08-19 23:22:02.1225 Info Loading assembly: NLog.Web.AspNetCore
+2021-08-19 23:22:02.1854 Info Adding target FileTarget(Name=allfile)
+2021-08-19 23:22:02.1854 Info Adding target FileTarget(Name=ownFile-web)
+2021-08-19 23:22:02.1854 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-08-19 23:22:02.1854 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-08-19 23:22:02.2330 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config

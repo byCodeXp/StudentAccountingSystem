@@ -16,6 +16,7 @@ import NotFoundPage from './pages/NotFound';
 import { useAppSelector } from './app/hooks';
 import { selectUser } from './features/user/userSlice';
 import AdminPage from './pages/Admin';
+import CoursePage from './pages/Course';
 
 const { Content } = Layout;
 
@@ -33,6 +34,7 @@ function App() {
                <Route path="register" element={<RegisterPage />} />
                <Route path="confirm" element={<ConfirmPage />} />
                <Route path="catalog" element={<CatalogPage />} />
+               <Route path="course" element={<CoursePage />} />
                <Route path="profile" element={<ProfilePage />} />
                <Route path="settings" element={<SettingsPage />} />
                <Route path="admin" element={<AdminPage />} />

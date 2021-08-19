@@ -2,28 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc915539-92d7-44fb-ac20-321d65cb0ee7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../Api/Seed.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/Admin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Controllers/CourseController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Controllers/CourseController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/Course.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Business Logic/Services/CourseService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Business Logic/Services/CourseService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Business Logic/Services/IdentityService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Business Logic/Services/IdentityService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Commands/CourseCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Access Layer/Commands/CourseCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/DataContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Access Layer/DataContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Migrations/20210731043103_Initial.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Migrations/20210731043103_Initial.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Migrations/20210801154802_UniqueEmail.Designer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Migrations/20210801154802_UniqueEmail.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Migrations/DataContextModelSnapshot.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Models/Badge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Access Layer/Models/Category.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Models/Course.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Access Layer/Models/Course.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Models/Entity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Access Layer/Models/Entity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Models/User.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Access Layer/Models/User.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Access Layer/Queries/CourseQuery.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Access Layer/Queries/CourseQuery.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/CatalogCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CatalogCard.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +39,7 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="prettierjs.PrettierConfiguration.Package" value="D:\dev\StudentAccountingSystem\client\node_modules\prettier" />
-    <property name="settings.editor.selected.configurable" value="settings.javascript.prettier" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="ts.external.directory.path" value="D:\dev\StudentAccountingSystem\client\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
@@ -74,6 +58,13 @@
       <workItem from="1629305316145" duration="8511000" />
       <workItem from="1629389131922" duration="52000" />
       <workItem from="1629390415368" duration="13000" />
+      <workItem from="1629392095164" duration="2260000" />
+      <workItem from="1629395142744" duration="145000" />
+      <workItem from="1629395314928" duration="342000" />
+      <workItem from="1629395688620" duration="232000" />
+      <workItem from="1629395952984" duration="366000" />
+      <workItem from="1629396403194" duration="496000" />
+      <workItem from="1629396934229" duration="5906000" />
     </task>
     <servers />
   </component>
