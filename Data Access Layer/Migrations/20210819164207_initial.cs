@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data_Access_Layer.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -52,7 +52,7 @@ namespace Data_Access_Layer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Badges",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -62,7 +62,7 @@ namespace Data_Access_Layer.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Badges", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,6 +72,7 @@ namespace Data_Access_Layer.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Preview = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedTimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedTimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -187,24 +188,48 @@ namespace Data_Access_Layer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BadgeCourse",
+                name: "CategoryCourse",
                 columns: table => new
                 {
-                    BadgesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoriesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CoursesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BadgeCourse", x => new { x.BadgesId, x.CoursesId });
+                    table.PrimaryKey("PK_CategoryCourse", x => new { x.CategoriesId, x.CoursesId });
                     table.ForeignKey(
-                        name: "FK_BadgeCourse_Badges_BadgesId",
-                        column: x => x.BadgesId,
-                        principalTable: "Badges",
+                        name: "FK_CategoryCourse_Categories_CategoriesId",
+                        column: x => x.CategoriesId,
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BadgeCourse_Courses_CoursesId",
+                        name: "FK_CategoryCourse_Courses_CoursesId",
                         column: x => x.CoursesId,
+                        principalTable: "Courses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CourseUser",
+                columns: table => new
+                {
+                    SubscribedCoursesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SubscribedUsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseUser", x => new { x.SubscribedCoursesId, x.SubscribedUsersId });
+                    table.ForeignKey(
+                        name: "FK_CourseUser_AspNetUsers_SubscribedUsersId",
+                        column: x => x.SubscribedUsersId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseUser_Courses_SubscribedCoursesId",
+                        column: x => x.SubscribedCoursesId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -243,6 +268,12 @@ namespace Data_Access_Layer.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_Email",
+                table: "AspNetUsers",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -250,15 +281,20 @@ namespace Data_Access_Layer.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BadgeCourse_CoursesId",
-                table: "BadgeCourse",
+                name: "IX_Categories_Name",
+                table: "Categories",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CategoryCourse_CoursesId",
+                table: "CategoryCourse",
                 column: "CoursesId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Badges_Name",
-                table: "Badges",
-                column: "Name",
-                unique: true);
+                name: "IX_CourseUser_SubscribedUsersId",
+                table: "CourseUser",
+                column: "SubscribedUsersId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -279,16 +315,19 @@ namespace Data_Access_Layer.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BadgeCourse");
+                name: "CategoryCourse");
+
+            migrationBuilder.DropTable(
+                name: "CourseUser");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Badges");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Courses");

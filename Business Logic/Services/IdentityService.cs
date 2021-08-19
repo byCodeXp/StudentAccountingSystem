@@ -72,9 +72,9 @@ namespace Business_Logic.Services
 
             var link = $"https://localhost:5001/api/Identity/ConfirmEmail?email={user.Email}&token={token}";
 
-            await _emailService.SendMailAsync("Succesfuly registration", new EmailAddress(user.Email), $"Your activation link: {link}");
+            await _emailService.SendMailAsync("Successfully registration", new EmailAddress(user.Email), $"Your activation link: {link}");
 
-            _logger.LogInformation($"Confirmation link was sended on email address: {user.Email}");
+            _logger.LogInformation($"Confirmation link was send on email address: {user.Email}");
 
             return HttpStatusCode.Created;
         }
@@ -95,7 +95,7 @@ namespace Business_Logic.Services
                 throw new HttpResponseException("Invalid credentials");
             }
 
-            _logger.LogInformation($"Seccessfuly user authentication with id: {user.Id}");
+            _logger.LogInformation($"Successfully user authentication with id: {user.Id}");
 
             // TODO: Add refresh token
 
@@ -118,7 +118,7 @@ namespace Business_Logic.Services
 
             if (result.Succeeded)
             {
-                _logger.LogInformation($"Seccessfuly user email confirmation with id: {user.Id}");
+                _logger.LogInformation($"Successfully user email confirmation with id: {user.Id}");
 
                 return HttpStatusCode.OK;
             }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using NLog.Web;
 using System;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Api
 {
@@ -12,8 +13,17 @@ namespace Api
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
-                logger.Debug("init main");
-                CreateHostBuilder(args).Build().Run();
+                logger.Debug("Init main");
+
+                var host = CreateHostBuilder(args).Build();
+
+                using (var scope = host.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    new Seed(services).InvokeAsync().Wait();
+                }
+
+                host.Run();
             }
             catch (Exception exception)
             {

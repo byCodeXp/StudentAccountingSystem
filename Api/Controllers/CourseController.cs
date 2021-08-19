@@ -1,4 +1,5 @@
-﻿using Business_Logic.Services;
+﻿using System;
+using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,6 @@ namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class CourseController : ControllerBase
     {
         private readonly CourseService _courseService;
@@ -20,15 +20,15 @@ namespace Api.Controllers
             _courseService = courseService;
         }
 
-        [HttpPost("Page/{page}")]
+        [HttpGet("Page/{page}")]
         public IEnumerable<CourseDTO> Page(int? page)
         {
             int perPage = 12;
             return _courseService.GetCourses(page ?? 1, perPage);
         }
 
-        [HttpPost("Details/{id}")]
-        public async Task<CourseDTO> Course(string id)
+        [HttpGet("Details/{id}")]
+        public async Task<CourseDTO> Course(Guid id)
         {
             return await _courseService.FindCourseAsync(id);
         }
@@ -41,16 +41,16 @@ namespace Api.Controllers
             return await _courseService.CreateCourseAsync(course);
         }
 
-        [HttpPost("Delete")]
+        [HttpDelete("Delete")]
         [Authorize(AppEnv.Roles.Admin)]
-        public async Task<HttpStatusCode> Delete(string id)
+        public async Task<HttpStatusCode> Delete(Guid id)
         {
             return await _courseService.DeleteCourseAsync(id);
         }
 
-        [HttpPost("Edit")]
+        [HttpPut("Edit")]
         [Authorize(AppEnv.Roles.Admin)]
-        public async Task<CourseDTO> Edit(string id, CourseDTO course)
+        public async Task<CourseDTO> Edit(Guid id, CourseDTO course)
         {
             return await _courseService.EditCourseAsync(id, course);
         }

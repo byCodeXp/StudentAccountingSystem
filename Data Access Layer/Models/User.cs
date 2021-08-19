@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
+using System.Collections.Generic;
 
 namespace Data_Access_Layer.Models
 {
@@ -12,10 +13,9 @@ namespace Data_Access_Layer.Models
         public int Age { get; set; }
         public DateTime CreatedTimeStamp { get; set; }
         public DateTime UpdatedTimeStamp { get; set; }
-    }
 
-    // TODO: Use fluent validation
-    // TODO: Add relationship with courses
+        public ICollection<Course> SubscribedCourses { get; set; }
+    }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {
@@ -27,6 +27,8 @@ namespace Data_Access_Layer.Models
             builder.Property(m => m.LastName).HasMaxLength(128);
             builder.Property(m => m.CreatedTimeStamp).IsRequired();
             builder.Property(m => m.UpdatedTimeStamp).IsRequired();
+            builder.HasMany(m => m.SubscribedCourses).WithMany(m => m.SubscribedUsers);
+
         }
     }
 }

@@ -19,22 +19,37 @@ namespace Data_Access_Layer.Migrations
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("BadgeCourse", b =>
+            modelBuilder.Entity("CategoryCourse", b =>
                 {
-                    b.Property<Guid>("BadgesId")
+                    b.Property<Guid>("CategoriesId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("CoursesId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("BadgesId", "CoursesId");
+                    b.HasKey("CategoriesId", "CoursesId");
 
                     b.HasIndex("CoursesId");
 
-                    b.ToTable("BadgeCourse");
+                    b.ToTable("CategoryCourse");
                 });
 
-            modelBuilder.Entity("Data_Access_Layer.Models.Badge", b =>
+            modelBuilder.Entity("CourseUser", b =>
+                {
+                    b.Property<Guid>("SubscribedCoursesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SubscribedUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SubscribedCoursesId", "SubscribedUsersId");
+
+                    b.HasIndex("SubscribedUsersId");
+
+                    b.ToTable("CourseUser");
+                });
+
+            modelBuilder.Entity("Data_Access_Layer.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +70,7 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Badges");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Course", b =>
@@ -75,6 +90,9 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired()
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("Preview")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .HasColumnType("datetime2");
@@ -195,20 +213,6 @@ namespace Data_Access_Layer.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "47e454fa-225d-4d2a-a0a5-60ab11a35352",
-                            ConcurrencyStamp = "5ac332ae-283f-43ea-a7c8-b78c322e9b97",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = "3d29a744-c1cd-4381-ae28-9733bcc1f6bc",
-                            ConcurrencyStamp = "412ac393-c6e6-469e-a66d-9f3a2af1aed7",
-                            Name = "Customer"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -315,17 +319,32 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BadgeCourse", b =>
+            modelBuilder.Entity("CategoryCourse", b =>
                 {
-                    b.HasOne("Data_Access_Layer.Models.Badge", null)
+                    b.HasOne("Data_Access_Layer.Models.Category", null)
                         .WithMany()
-                        .HasForeignKey("BadgesId")
+                        .HasForeignKey("CategoriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Data_Access_Layer.Models.Course", null)
                         .WithMany()
                         .HasForeignKey("CoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CourseUser", b =>
+                {
+                    b.HasOne("Data_Access_Layer.Models.Course", null)
+                        .WithMany()
+                        .HasForeignKey("SubscribedCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Data_Access_Layer.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("SubscribedUsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
