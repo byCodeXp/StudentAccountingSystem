@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { Button, Checkbox, Form, Input, Row, message } from 'antd';
 import { KeyOutlined, MailOutlined } from '@ant-design/icons';
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectStatus, selectError, resetStatus, loginAsync } from '../features/user/userSlice';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { selectStatus, selectError, resetStatus, loginAsync } from '../../features/user/userSlice';
 
 const LoginPage = () => {
    const status = useAppSelector(selectStatus);

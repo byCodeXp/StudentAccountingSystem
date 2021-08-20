@@ -2,19 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc915539-92d7-44fb-ac20-321d65cb0ee7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/features/course/courseAPI.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/course/courseSlice.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/catalog/filter.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/pages/catalog/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/admin/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/profile/index.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/profile/settings.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/routes.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/styles/app.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.css" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Admin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Admin.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Catalog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Catalog.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Course.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Course.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/counter/Counter.module.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/counter/Counter.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/counter/counterAPI.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/counter/counterSlice.spec.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/features/counter/counterSlice.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Admin.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Confirm.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/auth/confirm.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Forgot.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/auth/forgot.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/auth/login.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Profile.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Register.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/auth/register.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Settings.tsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +59,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\dev\StudentAccountingSystem\client\src\pages\auth" />
       <recent name="D:\dev\StudentAccountingSystem\client\src\pages" />
     </key>
   </component>
@@ -71,7 +80,7 @@
       <workItem from="1629395688620" duration="232000" />
       <workItem from="1629395952984" duration="366000" />
       <workItem from="1629396403194" duration="496000" />
-      <workItem from="1629396934229" duration="15486000" />
+      <workItem from="1629396934229" duration="16606000" />
     </task>
     <servers />
   </component>

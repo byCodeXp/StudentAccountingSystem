@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { Button, Form, Input, Divider, message } from 'antd';
 import { UserOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
 import { Link, Navigate } from 'react-router-dom';
-import { useAppSelector, useAppDispatch } from '../app/hooks';
-import { selectStatus, selectError, resetStatus, registerAsync } from '../features/user/userSlice';
+import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import { selectStatus, selectError, resetStatus, registerAsync } from '../../features/user/userSlice';
 
 const Register = () => {
    const status = useAppSelector(selectStatus);
