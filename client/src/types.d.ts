@@ -23,3 +23,17 @@ interface IUserState {
    status: 'idle' | 'loading' | 'signed' | 'success' | 'error';
    error: string;
 }
+
+interface ICourse {
+   id: string;
+   title: string;
+   description: string;
+   preview: string;
+}
+
+interface ICourseState {
+   courses: ICourse[];
+   currentCourse: ICourse;
+   status: 'idle' | 'loading' | 'success' | 'error';
+   error: string;
+}

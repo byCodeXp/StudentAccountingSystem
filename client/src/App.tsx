@@ -3,12 +3,12 @@ import './app.css';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Layout } from 'antd';
-import Header from './components/Header';
+import { Header } from './components/Header';
 import HomePage from './pages/Home';
 import LoginPage from './pages/Login';
 import ForgotPage from './pages/Forgot';
 import RegisterPage from './pages/Register';
-import CatalogPage from './pages/Catalog';
+import CatalogPage from './pages/catalog/index';
 import ConfirmPage from './pages/Confirm';
 import ProfilePage from './pages/Profile';
 import SettingsPage from './pages/Settings';
@@ -34,7 +34,7 @@ function App() {
                <Route path="register" element={<RegisterPage />} />
                <Route path="confirm" element={<ConfirmPage />} />
                <Route path="catalog" element={<CatalogPage />} />
-               <Route path="course" element={<CoursePage />} />
+               <Route path="course/:id" element={<CoursePage />} />
                <Route path="profile" element={<ProfilePage />} />
                <Route path="settings" element={<SettingsPage />} />
                <Route path="admin" element={<AdminPage />} />

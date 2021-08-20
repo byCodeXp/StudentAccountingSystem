@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom';
 import { Button, Layout, Row, Space, Avatar, Typography, Menu, Dropdown } from 'antd';
 import { logout } from '../features/user/userSlice';
 import { useAppDispatch } from '../app/hooks';
-const { Header } = Layout;
 
-export default (props: { user: IUser }) => {
+export const Header = (props: { user: IUser }) => {
    const dispatch = useAppDispatch();
 
    const [name, setName] = useState('');
@@ -17,7 +16,7 @@ export default (props: { user: IUser }) => {
       } else {
          setName(`${firstName} ${lastName}`);
       }
-   });
+   }, [props.user]);
 
    const menu = (
       <Menu style={{ marginTop: 16 }}>
@@ -40,7 +39,7 @@ export default (props: { user: IUser }) => {
    );
 
    return (
-      <Header>
+      <Layout.Header>
          <Row justify="space-between" align="middle">
             <Link to="/">
                <Button type="link">StudentProgress</Button>
@@ -69,6 +68,6 @@ export default (props: { user: IUser }) => {
                </Space>
             )}
          </Row>
-      </Header>
+      </Layout.Header>
    );
 };

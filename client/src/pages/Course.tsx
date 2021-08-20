@@ -1,18 +1,27 @@
-import { useState, createElement } from 'react';
+import { useState, createElement, useEffect } from 'react';
 import { PageHeader, Tabs, Button, Row, Col, Tag, Form } from 'antd';
 import { Steps, Tooltip } from 'antd';
 import { Comment, Avatar, Input } from 'antd';
 import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, BellOutlined } from '@ant-design/icons';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { getCourseAsync, selectCourse, selectStatus } from '../features/course/courseSlice';
+import { useParams } from 'react-router-dom';
 
 const { TextArea } = Input;
-
 const { Step } = Steps;
-
 const { TabPane } = Tabs;
 
-const Editor = () => <></>;
-
 const Course = () => {
+   const dispatch = useAppDispatch();
+
+   const { description, preview, title } = useAppSelector(selectCourse);
+
+   const { id } = useParams();
+
+   useEffect(() => {
+      dispatch(getCourseAsync(id));
+   }, []);
+
    const [likes, setLikes] = useState(0);
    const [dislikes, setDislikes] = useState(0);
    const [action, setAction] = useState('');
@@ -49,7 +58,7 @@ const Course = () => {
       <PageHeader
          className="site-page-header-responsive"
          onBack={() => window.history.back()}
-         title="DevOps: Crash Course. SoftServe | IT Academy"
+         title={title}
          tags={[
             <Tag color="green">node.js</Tag>,
             <Tag color="purple">.net</Tag>,
@@ -64,17 +73,10 @@ const Course = () => {
       >
          <Row gutter={32}>
             <Col span={12}>
-               <img style={{ width: '100%' }} src="https://app.softserveinc.com/apply/add/img/devops-crash-course-2.png" />
+               <img style={{ width: '100%' }} src={preview} />
                <Tabs defaultActiveKey="1">
                   <TabPane style={{ padding: 8 }} tab="Description" key="1">
-                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus aliquid debitis doloremque ducimus,
-                     facilis illum impedit itaque labore magnam maiores neque praesentium, reiciendis sequi ullam voluptate.
-                     Amet, cupiditate eaque itaque laborum nam vitae! Dolores ducimus eaque placeat saepe. Accusamus accusantium
-                     architecto asperiores inventore nobis omnis quaerat quisquam quos reprehenderit voluptatum. A aliquid animi
-                     aspernatur atque corporis culpa cumque debitis dolor doloremque ea et eum hic illo ipsam iusto laudantium
-                     minima, molestiae nemo neque, odio officiis provident qui, reiciendis soluta temporibus voluptas voluptate.
-                     Accusamus assumenda blanditiis consequatur consequuntur et libero modi nulla provident quaerat tempore.
-                     Accusantium doloribus impedit nihil quasi vel.
+                     {description}
                      <Steps progressDot current={1} direction="vertical">
                         <Step title="Finished" description="Introduction" />
                         <Step title="Finished" description="Create a services site 2015-09-01." />

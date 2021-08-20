@@ -1,7 +1,6 @@
 import React from 'react';
-import { Menu, Row, Col } from 'antd';
-import { AppstoreOutlined, HddOutlined, UserOutlined, ProjectOutlined, DownOutlined } from '@ant-design/icons';
-import { Table, Badge, Dropdown, Space } from 'antd';
+import { Menu, Row, Col, Table } from 'antd';
+import { AppstoreOutlined, HddOutlined, UserOutlined, ProjectOutlined } from '@ant-design/icons';
 
 const { SubMenu } = Menu;
 

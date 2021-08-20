@@ -2,12 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc915539-92d7-44fb-ac20-321d65cb0ee7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/pages/Course.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/course/courseAPI.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/features/course/courseSlice.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/catalog/filter.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/catalog/index.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CatalogCard.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CatalogCard.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Admin.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Admin.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Catalog.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Catalog.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Course.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Course.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +71,7 @@
       <workItem from="1629395688620" duration="232000" />
       <workItem from="1629395952984" duration="366000" />
       <workItem from="1629396403194" duration="496000" />
-      <workItem from="1629396934229" duration="5906000" />
+      <workItem from="1629396934229" duration="15486000" />
     </task>
     <servers />
   </component>
