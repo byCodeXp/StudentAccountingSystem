@@ -912,3 +912,57 @@
 2021-08-20 23:15:43.4943 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
 2021-08-20 23:15:43.4943 Info Adding target ConsoleTarget(Name=lifetimeConsole)
 2021-08-20 23:15:43.5274 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-20 23:27:05.0534 Info Shutdown() called. Logger closing...
+2021-08-20 23:27:05.0534 Info Closing old configuration.
+2021-08-20 23:27:05.0672 Info Logger has been closed down.
+2021-08-20 23:27:05.0672 Info AppDomain Shutting down. Logger closing...
+2021-08-20 23:27:05.0672 Info Logger has been shut down.
+2021-08-20 23:41:41.7326 Info Message Template Auto Format enabled
+2021-08-20 23:41:41.7531 Info Loading assembly: NLog.Web.AspNetCore
+2021-08-20 23:41:41.7944 Info Adding target FileTarget(Name=allfile)
+2021-08-20 23:41:41.7944 Info Adding target FileTarget(Name=ownFile-web)
+2021-08-20 23:41:41.7944 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-08-20 23:41:41.7944 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-08-20 23:41:41.8279 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-20 23:44:46.5917 Info Message Template Auto Format enabled
+2021-08-20 23:44:46.6210 Info Loading assembly: NLog.Web.AspNetCore
+2021-08-20 23:44:46.6649 Info Adding target FileTarget(Name=allfile)
+2021-08-20 23:44:46.6649 Info Adding target FileTarget(Name=ownFile-web)
+2021-08-20 23:44:46.6649 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-08-20 23:44:46.6649 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-08-20 23:44:46.6943 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-20 23:44:48.3812 Info AppDomain Shutting down. Logger closing...
+2021-08-20 23:44:48.4003 Info Logger has been shut down.
+2021-08-20 23:45:59.3949 Info Message Template Auto Format enabled
+2021-08-20 23:45:59.4087 Info Loading assembly: NLog.Web.AspNetCore
+2021-08-20 23:45:59.4865 Info Adding target FileTarget(Name=allfile)
+2021-08-20 23:45:59.4865 Info Adding target FileTarget(Name=ownFile-web)
+2021-08-20 23:45:59.4865 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-08-20 23:45:59.4930 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-08-20 23:45:59.5168 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-20 23:46:40.9600 Info Shutdown() called. Logger closing...
+2021-08-20 23:46:40.9600 Info Closing old configuration.
+2021-08-20 23:46:40.9698 Info Logger has been closed down.
+2021-08-20 23:46:40.9698 Info AppDomain Shutting down. Logger closing...
+2021-08-20 23:46:40.9698 Info Logger has been shut down.
+2021-08-20 23:46:54.5559 Info Message Template Auto Format enabled
+2021-08-20 23:46:54.5709 Info Loading assembly: NLog.Web.AspNetCore
+2021-08-20 23:46:54.6432 Info Adding target FileTarget(Name=allfile)
+2021-08-20 23:46:54.6432 Info Adding target FileTarget(Name=ownFile-web)
+2021-08-20 23:46:54.6432 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-08-20 23:46:54.6495 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-08-20 23:46:54.6861 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-20 23:49:16.7696 Info Shutdown() called. Logger closing...
+2021-08-20 23:49:16.7696 Info Closing old configuration.
+2021-08-20 23:49:16.7770 Info Logger has been closed down.
+2021-08-20 23:49:16.7770 Info AppDomain Shutting down. Logger closing...
+2021-08-20 23:49:16.7770 Info Logger has been shut down.
+2021-08-20 23:52:19.7307 Info Message Template Auto Format enabled
+2021-08-20 23:52:19.7546 Info Loading assembly: NLog.Web.AspNetCore
+2021-08-20 23:52:19.8102 Info Adding target FileTarget(Name=allfile)
+2021-08-20 23:52:19.8102 Info Adding target FileTarget(Name=ownFile-web)
+2021-08-20 23:52:19.8102 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-08-20 23:52:19.8102 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-08-20 23:52:19.8476 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=69, FilePath=D:\dev\StudentAccountingSystem\Api\bin\Debug\net5.0\nlog.config
+2021-08-21 01:36:56.8604 Info AppDomain Shutting down. Logger closing...
+2021-08-21 01:36:56.9149 Info Logger has been shut down.

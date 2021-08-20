@@ -38,6 +38,8 @@ namespace Api
             .AddDefaultTokenProviders()
             .AddSignInManager<SignInManager<User>>();
 
+            services.AddAutoMapper(typeof(MapperProfile));
+
             services.AddCors();
 
             services.AddAuthentication(options =>

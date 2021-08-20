@@ -2,17 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc915539-92d7-44fb-ac20-321d65cb0ee7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/features/admin/adminAPI.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/features/admin/adminSlice.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Business Logic/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Business Logic/Services/UserService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/store.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/course/courseAPI.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/course/courseAPI.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/course/courseSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/course/courseSlice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/features/user/userSlice.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/features/user/userSlice.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/admin/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/admin/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/types.d.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +63,7 @@
       <workItem from="1629395952984" duration="366000" />
       <workItem from="1629396403194" duration="496000" />
       <workItem from="1629396934229" duration="21354000" />
-      <workItem from="1629483589153" duration="4138000" />
+      <workItem from="1629483589153" duration="6179000" />
     </task>
     <servers />
   </component>

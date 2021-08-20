@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace Business_Logic.Services
 {
@@ -18,12 +19,14 @@ namespace Business_Logic.Services
         private readonly ILogger<CourseService> _logger;
         private readonly CourseQuery _query;
         private readonly CourseCommand _command;
+        private readonly IMapper _mapper;
 
-        public CourseService(DataContext context, ILogger<CourseService> logger)
+        public CourseService(DataContext context, ILogger<CourseService> logger, IMapper mapper)
         {
             _logger = logger;
             _query = new CourseQuery(context);
             _command = new CourseCommand(context);
+            _mapper = mapper;
         }
 
         public IEnumerable<CourseDTO> GetCourses(int page, int perPage)
@@ -32,16 +35,9 @@ namespace Business_Logic.Services
 
             _logger.LogInformation($"Courses on page: {page}, was returned");
 
-            foreach (var course in _query.GetAll().Skip(offset).Take(perPage))
-            {
-                yield return new CourseDTO
-                {
-                    Id = course.Id,
-                    Name = course.Name,
-                    Description = course.Description,
-                    Preview = course.Preview
-                };
-            }
+            var courses = _query.GetAll().OrderBy(m => m.CreatedTimeStamp).Skip(offset).Take(perPage);
+
+            return _mapper.Map<IEnumerable<CourseDTO>>(courses);
         }
 
         public async Task<CourseDTO> FindCourseAsync(Guid id)
@@ -52,13 +48,7 @@ namespace Business_Logic.Services
             {
                 _logger.LogInformation($"Returned course with id: {course.Id}");
 
-                return new CourseDTO
-                {
-                    Id = course.Id,
-                    Name = course.Name,
-                    Description = course.Description,
-                    Preview = course.Preview
-                };
+                return _mapper.Map<CourseDTO>(course);
             }
 
             throw new HttpResponseException("Not found");
@@ -70,13 +60,7 @@ namespace Business_Logic.Services
 
             _logger.LogInformation($"Course with id: {course.Id}, was created");
 
-            return new CourseDTO
-            {
-                Id = course.Id,
-                Name = course.Name,
-                Description = course.Description,
-                Preview = course.Preview
-            };
+            return _mapper.Map<CourseDTO>(course);
         }
 
         public async Task<HttpStatusCode> DeleteCourseAsync(Guid id)
@@ -91,8 +75,8 @@ namespace Business_Logic.Services
             var course = await _command.UpdateAsync(id, new Course { Name = courseDTO.Name, Description = courseDTO.Description });
 
             _logger.LogInformation($"Course with id: {id}, was updated");
-            
-            return new CourseDTO { Id = course.Id, Name = course.Name, Description = courseDTO.Description, Preview = course.Preview };
+
+            return _mapper.Map<CourseDTO>(course);
         }
     }
 }

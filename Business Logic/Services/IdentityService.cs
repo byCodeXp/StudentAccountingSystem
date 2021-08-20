@@ -1,4 +1,5 @@
-﻿using Data_Access_Layer.Models;
+﻿using AutoMapper;
+using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Errors;
 using Microsoft.AspNetCore.Identity;
@@ -16,36 +17,28 @@ namespace Business_Logic.Services
         private readonly ILogger<IdentityService> _logger;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtService _jwtService;
         private readonly EmailService _emailService;
+        private readonly IMapper _mapper;
 
         public IdentityService(
             ILogger<IdentityService> logger,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            RoleManager<IdentityRole> roleManager,
             JwtService jwtService,
-            EmailService emailService)
+            EmailService emailService, IMapper mapper)
         {
             _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
-            _roleManager = roleManager;
             _jwtService = jwtService;
             _emailService = emailService;
+            _mapper = mapper;
         }
 
         public async Task<HttpStatusCode> RegisterAsync(RegisterRequest request)
         {
-            var user = new User
-            {
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                UserName = request.Email,
-                Age = request.Age
-            };
+            var user = _mapper.Map<User>(request);
 
             var dentityResult = await _userManager.CreateAsync(user, request.Password);
 
@@ -108,14 +101,11 @@ namespace Business_Logic.Services
                 userRole = AppEnv.Roles.Customer;
             }
 
-            return _jwtService.WriteToken(new UserDTO {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                Age = user.Age,
-                Email = user.Email,
-                Role = userRole
-            });
+            var userDto = _mapper.Map<UserDTO>(user);
+
+            userDto.Role = userRole;
+
+            return _jwtService.WriteToken(userDto);
         }
 
         public async Task<HttpStatusCode> ConfirmEmail(string email, string token)
