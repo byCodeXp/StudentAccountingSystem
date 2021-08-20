@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Menu, Row, Col, Table } from 'antd';
 import { AppstoreOutlined, HddOutlined, UserOutlined, ProjectOutlined } from '@ant-design/icons';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { getCoursesAsync, getUsersAsync, selectCourses, selectUsers } from '../../features/admin/adminSlice';
+import { selectUser } from '../../features/user/userSlice';
+import { Navigate } from 'react-router-dom';
 
 const { SubMenu } = Menu;
 
 const Admin = () => {
-   const columns = [
-      { title: 'First name', dataIndex: 'firstName', key: 'firstName' },
-      { title: 'Second name', dataIndex: 'secondName', key: 'secondName' },
-      { title: 'Email', dataIndex: 'email', key: 'email' },
-      { title: 'Age', dataIndex: 'age', key: 'age' },
-      { title: 'Count subscribed courses', dataIndex: 'countCourses', key: 'countCourses' },
-   ];
+   const dispatch = useAppDispatch();
+
+   const courses = useAppSelector(selectCourses);
+   const users = useAppSelector(selectUsers);
+   const user = useAppSelector(selectUser);
+
+   useEffect(() => {
+      dispatch(getCoursesAsync(1));
+      dispatch(getUsersAsync(1));
+   }, []);
+
+   if (user.role != 'Admin') {
+      return <Navigate to="/" />;
+   }
 
    return (
       <Row gutter={32}>
@@ -35,9 +46,23 @@ const Admin = () => {
          <Col span={20}>
             <h1>Dashboard</h1>
             <h1>Users</h1>
-            <Table columns={columns}></Table>
+            <Table
+               dataSource={users}
+               columns={[
+                  { title: 'First name', dataIndex: 'firstName', key: 'firstName' },
+                  { title: 'Last Name', dataIndex: 'lastName', key: 'lastName' },
+                  { title: 'Age', dataIndex: 'age', key: 'age' },
+                  { title: 'Email', dataIndex: 'email', key: 'email' },
+               ]}
+            />
             <h1>Courses</h1>
-            <Table></Table>
+            <Table
+               dataSource={courses}
+               columns={[
+                  { title: 'Title', dataIndex: 'name', key: 'name' },
+                  { title: 'Description', dataIndex: 'description', key: 'description' },
+               ]}
+            />
             <h1>Statistics</h1>
          </Col>
       </Row>

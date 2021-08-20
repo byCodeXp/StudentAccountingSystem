@@ -1,29 +1,24 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { fetchCourses, fetchOneCourse } from './courseAPI';
+import { fetchCourses, fetchUsers } from './adminAPI';
 import { statusCodeText } from '../httpStatusCodes';
 
-const initialState: ICourseState = {
+const initialState = {
+   users: [],
    courses: [],
-   currentCourse: {
-      id: '',
-      title: '',
-      description: '',
-      preview: '',
-   },
    status: 'idle',
    error: '',
 };
 
-export const getCoursesAsync = createAsyncThunk('course/fetchCourses', async (page: number): Promise<{} | number> => {
+export const getCoursesAsync = createAsyncThunk('admin/fetchCourses', async (page: number): Promise<{} | number> => {
    return await fetchCourses(page);
 });
 
-export const getCourseAsync = createAsyncThunk('course/fetchOneCourse', async (id: string): Promise<{} | number> => {
-   return await fetchOneCourse(id);
+export const getUsersAsync = createAsyncThunk('admin/fetchUsers', async (page: number): Promise<{} | number> => {
+   return await fetchUsers(page);
 });
 
-export const courseSlice = createSlice({
+export const adminSlice = createSlice({
    name: 'course',
    initialState,
    reducers: {},
@@ -41,24 +36,24 @@ export const courseSlice = createSlice({
                state.status = 'success';
             }
          })
-         .addCase(getCourseAsync.pending, (state) => {
+         .addCase(getUsersAsync.pending, (state) => {
             state.status = 'loading';
          })
-         .addCase(getCourseAsync.fulfilled, (state, action) => {
+         .addCase(getUsersAsync.fulfilled, (state, action) => {
             if (typeof action.payload === 'number') {
                state.status = 'error';
                state.error = statusCodeText(action.payload);
             } else {
-               state.currentCourse = action.payload as ICourse;
+               state.users = action.payload as [];
                state.status = 'success';
             }
          });
    },
 });
 
-export const selectStatus = (state: RootState) => state.course.status;
-export const selectError = (state: RootState) => state.course.error;
-export const selectCourses = (state: RootState) => state.course.courses;
-export const selectCourse = (state: RootState) => state.course.currentCourse;
+export const selectStatus = (state: RootState) => state.admin.status;
+export const selectError = (state: RootState) => state.admin.error;
+export const selectCourses = (state: RootState) => state.admin.courses;
+export const selectUsers = (state: RootState) => state.admin.users;
 
-export default courseSlice.reducer;
+export default adminSlice.reducer;

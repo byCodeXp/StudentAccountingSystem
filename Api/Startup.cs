@@ -66,6 +66,8 @@ namespace Api
 
             services.AddScoped<IdentityService>();
 
+            services.AddScoped<UserService>();
+
             services.AddScoped<CourseService>();
 
             services.AddScoped<JwtService>();

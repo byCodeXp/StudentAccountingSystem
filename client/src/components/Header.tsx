@@ -31,8 +31,13 @@ export const Header = (props: { user: IUser }) => {
          <Menu.Item key="3">
             <Link to="/settings">Settings</Link>
          </Menu.Item>
+         {props.user.role === 'Admin' && (
+            <Menu.Item key="4">
+               <Link to="/admin">Admin panel</Link>
+            </Menu.Item>
+         )}
          <Menu.Divider />
-         <Menu.Item onClick={() => dispatch(logout())} key="4">
+         <Menu.Item onClick={() => dispatch(logout())} key="5">
             Log out
          </Menu.Item>
       </Menu>

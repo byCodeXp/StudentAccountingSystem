@@ -13,9 +13,12 @@ interface IRegisterRequest {
 }
 
 interface IUser {
+   id: string;
    firstName: string;
    lastName: string;
+   age: number;
    email: string;
+   role: string;
 }
 
 interface IUserState {
@@ -34,6 +37,13 @@ interface ICourse {
 interface ICourseState {
    courses: ICourse[];
    currentCourse: ICourse;
+   status: 'idle' | 'loading' | 'success' | 'error';
+   error: string;
+}
+
+interface IAdminState {
+   users: IUser[];
+   courses: ICourse[];
    status: 'idle' | 'loading' | 'success' | 'error';
    error: string;
 }

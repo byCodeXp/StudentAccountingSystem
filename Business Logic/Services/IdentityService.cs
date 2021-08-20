@@ -38,8 +38,6 @@ namespace Business_Logic.Services
 
         public async Task<HttpStatusCode> RegisterAsync(RegisterRequest request)
         {
-            await RolesEnsureCreate(AppEnv.Roles.Master, AppEnv.Roles.Admin, AppEnv.Roles.Customer);
-
             var user = new User
             {
                 FirstName = request.FirstName,
@@ -99,7 +97,25 @@ namespace Business_Logic.Services
 
             // TODO: Add refresh token
 
-            return _jwtService.WriteToken(user);
+            string userRole = "";
+
+            if (await _userManager.IsInRoleAsync(user, AppEnv.Roles.Admin))
+            {
+                userRole = AppEnv.Roles.Admin;
+            }
+            if (await _userManager.IsInRoleAsync(user, AppEnv.Roles.Customer))
+            {
+                userRole = AppEnv.Roles.Customer;
+            }
+
+            return _jwtService.WriteToken(new UserDTO {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Age = user.Age,
+                Email = user.Email,
+                Role = userRole
+            });
         }
 
         public async Task<HttpStatusCode> ConfirmEmail(string email, string token)
@@ -124,17 +140,6 @@ namespace Business_Logic.Services
             }
 
             throw new HttpResponseException("Not confirmed", result.Errors);
-        }
-
-        private async Task RolesEnsureCreate(params string[] roles)
-        {
-            foreach (var role in roles)
-            {
-                if (!await _roleManager.RoleExistsAsync(role))
-                {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
-                }
-            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Data_Access_Layer.Models;
+﻿using Data_Transfer_Objects;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -18,9 +18,11 @@ namespace Business_Logic.Services
             _symmetricSecurityKey = new SymmetricSecurityKey(secret);
         }
 
-        public string WriteToken(User user)
+        public string WriteToken(UserDTO user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -29,7 +31,8 @@ namespace Business_Logic.Services
                     new Claim("id", user.Id), // TODO: send once
                     new Claim("email", user.Email),
                     new Claim("firstName", user.FirstName),
-                    new Claim("lastName", user.LastName)
+                    new Claim("lastName", user.LastName),
+                    new Claim("role", user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature)

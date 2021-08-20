@@ -5,9 +5,12 @@ import { statusCodeText } from '../httpStatusCodes';
 
 const initialState: IUserState = {
    user: {
+      id: '',
       firstName: '',
       lastName: '',
+      age: 0,
       email: '',
+      role: '',
    },
    status: 'idle',
    error: '',
@@ -52,7 +55,7 @@ export const userSlice = createSlice({
             state.status = 'loading';
          })
          .addCase(registerAsync.fulfilled, (state, action) => {
-            if (action.payload === 400) {
+            if (action.payload === 401) {
                state.status = 'success';
             } else {
                state.status = 'error';
