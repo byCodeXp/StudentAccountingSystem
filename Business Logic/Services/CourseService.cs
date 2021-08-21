@@ -11,22 +11,58 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace Business_Logic.Services
 {
     public class CourseService
     {
         private readonly ILogger<CourseService> _logger;
+        private readonly JwtService _jwtService;
         private readonly CourseQuery _query;
         private readonly CourseCommand _command;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public CourseService(DataContext context, ILogger<CourseService> logger, IMapper mapper)
+        public CourseService(DataContext context, ILogger<CourseService> logger, IMapper mapper, JwtService jwtService, UserManager<User> userManager)
         {
             _logger = logger;
             _query = new CourseQuery(context);
             _command = new CourseCommand(context);
             _mapper = mapper;
+            _jwtService = jwtService;
+            _userManager = userManager;
+        }
+
+        public async Task<HttpStatusCode> SubscribeUser(string token, Guid courseId)
+        {
+            var userId = _jwtService.Verify(token).Issuer;
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
+            var course = await _query.GetOne(courseId);
+
+            if (course == null)
+            {
+                return HttpStatusCode.NotFound;
+            }
+
+            if (!user.SubscribedCourses.Contains(course))
+            {
+                user.SubscribedCourses.Add(course);
+
+            }
+            else
+            {
+                return HttpStatusCode.BadRequest;
+            }
+
+            return HttpStatusCode.OK;
         }
 
         public IEnumerable<CourseDTO> GetCourses(int page, int perPage)

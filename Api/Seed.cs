@@ -7,9 +7,24 @@ using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Api
 {
+    public static class WebHostExtensions
+    {
+        public static IHost Seed(this IHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                new Seed(services).InvokeAsync().Wait();
+            }
+
+            return host;
+        }
+    }
+
     public class Seed
     {
         private readonly DataContext _context;
