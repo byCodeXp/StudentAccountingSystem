@@ -35,13 +35,13 @@ namespace Api.Middlewares
                 switch (exception)
                 {
                     case HttpResponseException ex:
-                        response.StatusCode = (int) ex.HttpStatusCode;
+                        response.StatusCode = (int) HttpStatusCode.BadRequest;
                         message = ex.Message;
                         _logger.LogError(exception, message);
                         break;
                     default:
                         response.StatusCode = (int) HttpStatusCode.InternalServerError;
-                        _logger.LogError(exception, "Something error");
+                        _logger.LogError(exception, "Something went wrong");
                         break;
                 }
 

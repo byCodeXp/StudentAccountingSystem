@@ -7,7 +7,6 @@ using Data_Transfer_Objects;
 using Data_Transfer_Objects.Errors;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -48,7 +47,7 @@ namespace Business_Logic.Services
 
             if (course == null)
             {
-                throw new HttpResponseException($"Course with id: {id}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
+                throw new HttpResponseException($"Course with id: {id}, was not found");
             }
 
             return _mapper.Map<CourseDTO>(course);
@@ -60,7 +59,7 @@ namespace Business_Logic.Services
 
             if (!result)
             {
-                throw new HttpResponseException($"Course with name {course.Name}, cannot be created") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException($"Course with name {course.Name}, cannot be created");
             }
             
             return course;
@@ -70,7 +69,7 @@ namespace Business_Logic.Services
         {
             if (!_courseCommand.Delete(id))
             {
-                throw new HttpResponseException($"Course with id: {id}, cannot be deleted") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException($"Course with id: {id}, cannot be deleted");
             }
         }
 
@@ -80,7 +79,7 @@ namespace Business_Logic.Services
 
             if (!result)
             {
-                throw new HttpResponseException($"Course with id: {id}, cannot be updated") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException($"Course with id: {id}, cannot be updated");
             }
 
             return course;
@@ -94,19 +93,19 @@ namespace Business_Logic.Services
 
             if (user == null)
             {
-                throw new HttpResponseException($"User was not found") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException($"User was not found");
             }
 
             var course = _courseQuery.GetOne(courseId);
 
             if (course == null)
             {
-                throw new HttpResponseException($"Course with id: {courseId}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
+                throw new HttpResponseException($"Course with id: {courseId}, was not found");
             }
 
             if (!_userCommand.SubscribeCourse(user, course))
             {
-                throw new HttpResponseException($"Current user cannot be subscribed, on course with id: {courseId}") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException($"Current user cannot be subscribed, on course with id: {courseId}");
             }
         }
     }

@@ -5,7 +5,6 @@ using Data_Transfer_Objects.Errors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using SendGrid.Helpers.Mail;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Data_Transfer_Objects.Requests;
@@ -41,7 +40,7 @@ namespace Business_Logic.Services
 
             if (!identityResult.Succeeded)
             {
-                throw new HttpResponseException("Invalid credentials", identityResult.Errors) { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException("Invalid credentials", identityResult.Errors);
             }
             
             await _userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
@@ -60,14 +59,14 @@ namespace Business_Logic.Services
 
             if (user == null)
             {
-                throw new HttpResponseException("Invalid credentials") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException("Invalid credentials");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
             if (!result.Succeeded)
             {
-                throw new HttpResponseException("Invalid credentials") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException("Invalid credentials");
             }
 
             // TODO: Add refresh token
@@ -96,7 +95,7 @@ namespace Business_Logic.Services
 
             if (user == null)
             {
-                throw new HttpResponseException("Invalid credentials") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException("Invalid credentials");
             }
 
             var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
@@ -106,7 +105,7 @@ namespace Business_Logic.Services
 
             if (!result.Succeeded)
             {
-                throw new HttpResponseException("Email was not confirmed", result.Errors) { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException("Email was not confirmed", result.Errors);
             }
         }
     }

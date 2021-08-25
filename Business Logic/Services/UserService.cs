@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -54,7 +53,7 @@ namespace Business_Logic.Services
 
             if (user == null)
             {
-                throw new HttpResponseException($"User with id: {id}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
+                throw new HttpResponseException($"User with id: {id}, was not found");
             }
 
             return _mapper.Map<UserDTO>(user);
@@ -66,7 +65,7 @@ namespace Business_Logic.Services
 
             if (course == null)
             {
-                throw new HttpResponseException($"Course with id: {courseId}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
+                throw new HttpResponseException($"Course with id: {courseId}, was not found");
             }
 
             var userId = _jwtService.Verify(token).Issuer;
@@ -75,14 +74,14 @@ namespace Business_Logic.Services
             
             if (user == null)
             {
-                throw new HttpResponseException($"User was not found") { HttpStatusCode = HttpStatusCode.NotFound };
+                throw new HttpResponseException($"User was not found");
             }
 
             var result = _userCommand.SubscribeCourse(user, course);
 
             if (!result)
             {
-                throw new HttpResponseException($"Course with id: {courseId}, cannot be subscribed on user with id: {user.Id}") { HttpStatusCode = HttpStatusCode.BadRequest };
+                throw new HttpResponseException($"Course with id: {courseId}, cannot be subscribed on user with id: {user.Id}");
             }
         }
     }
