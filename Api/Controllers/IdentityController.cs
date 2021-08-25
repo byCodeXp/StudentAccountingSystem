@@ -32,7 +32,8 @@ namespace Api.Controllers
         [HttpGet("confirm")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
-            return Ok(await _identityService.ConfirmEmail(email, token));
+            await _identityService.ConfirmEmail(email, token);
+            return Ok();
         }
     }
 }

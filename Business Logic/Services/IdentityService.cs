@@ -4,7 +4,6 @@ using Data_Transfer_Objects;
 using Data_Transfer_Objects.Errors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 using System.Net;
 using System.Text;
@@ -15,7 +14,6 @@ namespace Business_Logic.Services
 {
     public class IdentityService
     {
-        private readonly ILogger<IdentityService> _logger;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly JwtService _jwtService;
@@ -23,13 +21,11 @@ namespace Business_Logic.Services
         private readonly IMapper _mapper;
 
         public IdentityService(
-            ILogger<IdentityService> logger,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             JwtService jwtService,
             EmailService emailService, IMapper mapper)
         {
-            _logger = logger;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtService = jwtService;
@@ -45,18 +41,13 @@ namespace Business_Logic.Services
 
             if (!identityResult.Succeeded)
             {
-                throw new HttpResponseException("Invalid credentials", identityResult.Errors);
+                throw new HttpResponseException("Invalid credentials", identityResult.Errors) { HttpStatusCode = HttpStatusCode.BadRequest };
             }
             
-            var result = await _userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
-
-            if (!result.Succeeded)
-            {
-                throw new HttpResponseException("Server error", identityResult.Errors);
-            }
+            await _userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token)); 
+            token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             var link = $"https://localhost:5001/api/Identity/ConfirmEmail?email={user.Email}&token={token}";
 
@@ -69,27 +60,27 @@ namespace Business_Logic.Services
 
             if (user == null)
             {
-                throw new HttpResponseException("Invalid credentials");
+                throw new HttpResponseException("Invalid credentials") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
             if (!result.Succeeded)
             {
-                throw new HttpResponseException("Invalid credentials");
+                throw new HttpResponseException("Invalid credentials") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
 
             // TODO: Add refresh token
 
             string userRole = "";
 
-            if (await _userManager.IsInRoleAsync(user, AppEnv.Roles.Admin))
-            {
-                userRole = AppEnv.Roles.Admin;
-            }
             if (await _userManager.IsInRoleAsync(user, AppEnv.Roles.Customer))
             {
                 userRole = AppEnv.Roles.Customer;
+            }
+            if (await _userManager.IsInRoleAsync(user, AppEnv.Roles.Admin))
+            {
+                userRole = AppEnv.Roles.Admin;
             }
 
             var userDto = _mapper.Map<UserDTO>(user);
@@ -99,13 +90,13 @@ namespace Business_Logic.Services
             return _jwtService.WriteToken(userDto);
         }
 
-        public async Task<HttpStatusCode> ConfirmEmail(string email, string token)
+        public async Task ConfirmEmail(string email, string token)
         {
             var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
-                throw new HttpResponseException("Not found");
+                throw new HttpResponseException("Invalid credentials") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
 
             var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
@@ -113,12 +104,10 @@ namespace Business_Logic.Services
 
             var result = await _userManager.ConfirmEmailAsync(user, codeDecoded);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                return HttpStatusCode.OK;
+                throw new HttpResponseException("Email was not confirmed", result.Errors) { HttpStatusCode = HttpStatusCode.BadRequest };
             }
-
-            throw new HttpResponseException("Not confirmed", result.Errors);
         }
     }
 }

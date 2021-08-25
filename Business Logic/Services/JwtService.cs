@@ -22,8 +22,6 @@ namespace Business_Logic.Services
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-
-
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = user.Id, // TODO: send once

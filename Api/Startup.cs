@@ -70,13 +70,10 @@ namespace Api
             // TODO: Add facebook authentication
 
             services.AddScoped<IdentityService>();
-
             services.AddScoped<UserService>();
-
             services.AddScoped<CourseService>();
 
             services.AddScoped<JwtService>();
-
             services.AddScoped<EmailService>();
 
             services.AddHangfire(configuration => configuration
@@ -123,7 +120,7 @@ namespace Api
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 
-            app.UseMiddleware<ErrorHandler>();
+            app.UseMiddleware<ErrorsHandlerMiddleware>();
 
             app.UseAuthentication()
                .UseAuthorization();

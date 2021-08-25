@@ -5,7 +5,6 @@ using Data_Access_Layer.Models;
 using Data_Access_Layer.Queries;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Errors;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -17,18 +16,18 @@ namespace Business_Logic.Services
 {
     public class CourseService
     {
-        private readonly ILogger<CourseService> _logger;
         private readonly JwtService _jwtService;
         private readonly CourseQuery _courseQuery;
         private readonly CourseCommand _courseCommand;
+        private readonly UserCommand _userCommand;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public CourseService(DataContext context, ILogger<CourseService> logger, IMapper mapper, JwtService jwtService, UserManager<User> userManager)
+        public CourseService(DataContext context, IMapper mapper, JwtService jwtService, UserManager<User> userManager)
         {
-            _logger = logger;
-            _courseQuery = new CourseQuery(context);
-            _courseCommand = new CourseCommand(context);
+            _userCommand = new(context);
+            _courseQuery = new(context);
+            _courseCommand = new(context);
             _mapper = mapper;
             _jwtService = jwtService;
             _userManager = userManager;
@@ -37,8 +36,6 @@ namespace Business_Logic.Services
         public IEnumerable<CourseDTO> GetCourses(int page, int perPage)
         {
             int offset = page <= 1 ? 0 : page * perPage - perPage;
-
-            _logger.LogInformation($"Courses on page: {page}, was returned");
 
             var courses = _courseQuery.GetAll().OrderBy(m => m.CreatedTimeStamp).Skip(offset).Take(perPage);
 
@@ -51,10 +48,8 @@ namespace Business_Logic.Services
 
             if (course == null)
             {
-                throw new HttpResponseException("Not found");
+                throw new HttpResponseException($"Course with id: {id}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
             }
-
-            _logger.LogInformation($"Returned course with id: {course.Id}");
 
             return _mapper.Map<CourseDTO>(course);
         }
@@ -65,21 +60,17 @@ namespace Business_Logic.Services
 
             if (!result)
             {
-                throw new HttpResponseException("Bad request!");
+                throw new HttpResponseException($"Course with name {course.Name}, cannot be created") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
             
-            _logger.LogInformation($"Course with name: {course.Name}, was created");
-
             return course;
         }
 
         public void DeleteCourse(Guid id)
         {
-            _logger.LogInformation($"Course with id: {id}, was deleted");
-
             if (!_courseCommand.Delete(id))
             {
-                throw new HttpResponseException("Bad request!");
+                throw new HttpResponseException($"Course with id: {id}, cannot be deleted") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
         }
 
@@ -89,13 +80,13 @@ namespace Business_Logic.Services
 
             if (!result)
             {
-                throw new HttpResponseException("Bad request!");
+                throw new HttpResponseException($"Course with id: {id}, cannot be updated") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
 
             return course;
         }
         
-        public async Task<HttpStatusCode> SubscribeUser(string token, Guid courseId)
+        public async Task SubscribeUser(string token, Guid courseId)
         {
             var userId = _jwtService.Verify(token).Issuer;
 
@@ -103,27 +94,20 @@ namespace Business_Logic.Services
 
             if (user == null)
             {
-                return HttpStatusCode.NotFound;
+                throw new HttpResponseException($"User was not found") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
 
             var course = _courseQuery.GetOne(courseId);
 
             if (course == null)
             {
-                return HttpStatusCode.NotFound;
+                throw new HttpResponseException($"Course with id: {courseId}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
             }
 
-            if (!user.SubscribedCourses.Contains(course))
+            if (!_userCommand.SubscribeCourse(user, course))
             {
-                user.SubscribedCourses.Add(course);
-
+                throw new HttpResponseException($"Current user cannot be subscribed, on course with id: {courseId}") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
-            else
-            {
-                return HttpStatusCode.BadRequest;
-            }
-
-            return HttpStatusCode.OK;
         }
     }
 }

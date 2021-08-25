@@ -37,7 +37,7 @@ namespace Business_Logic.Services
             _userQuery = new(context);
         }
 
-        public IEnumerable<UserDTO>GetUsers(int page, int perPage)
+        public IEnumerable<UserDTO> GetUsers(int page, int perPage)
         {
             int offset = page <= 1 ? 0 : page * perPage - perPage;
 
@@ -54,7 +54,7 @@ namespace Business_Logic.Services
 
             if (user == null)
             {
-                throw new HttpResponseException("Bad request!");
+                throw new HttpResponseException($"User with id: {id}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
             }
 
             return _mapper.Map<UserDTO>(user);
@@ -66,7 +66,7 @@ namespace Business_Logic.Services
 
             if (course == null)
             {
-                throw new HttpResponseException("Bad request!");
+                throw new HttpResponseException($"Course with id: {courseId}, was not found") { HttpStatusCode = HttpStatusCode.NotFound };
             }
 
             var userId = _jwtService.Verify(token).Issuer;
@@ -75,14 +75,14 @@ namespace Business_Logic.Services
             
             if (user == null)
             {
-                throw new HttpResponseException("Bad request!");
+                throw new HttpResponseException($"User was not found") { HttpStatusCode = HttpStatusCode.NotFound };
             }
 
             var result = _userCommand.SubscribeCourse(user, course);
 
             if (!result)
             {
-                throw new HttpResponseException("Bad request!");
+                throw new HttpResponseException($"Course with id: {courseId}, cannot be subscribed on user with id: {user.Id}") { HttpStatusCode = HttpStatusCode.BadRequest };
             }
         }
     }
