@@ -1,9 +1,6 @@
 ﻿using Data_Access_Layer.Models;
-using Data_Transfer_Objects.Errors;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Net;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace Data_Access_Layer.Commands
 {
@@ -16,55 +13,76 @@ namespace Data_Access_Layer.Commands
             _context = context;
         }
 
-        public async Task<Course> CreateAsync(Course course)
+        public bool Create(Course course)
         {
+            if (_context.Courses.Any(m => m.Name == course.Name))
+            {
+                return false;
+            }
+            
             course.CreatedTimeStamp = DateTime.Now;
             course.UpdatedTimeStamp = DateTime.Now;
 
-            var result = await _context.Courses.AddAsync(course);
-
-            if (result.State == EntityState.Added)
+            // TODO: make logging
+            try
             {
-                return result.Entity;
+                _context.Courses.Add(course);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return false;
             }
 
-            throw new HttpResponseException("Invalid credentials");
+            return true;
         }
 
-        public async Task<HttpStatusCode> DeleteAsync(Guid id)
+        public bool Delete(Guid id)
         {
-            var course = await _context.Courses.FindAsync(id);
+            var course = _context.Courses.Find(id);
 
             if (course == null)
             {
-                return HttpStatusCode.NotFound;
+                return false;
             }
 
-            _context.Courses.Remove(course);
-            
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Courses.Remove(course);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
-            return HttpStatusCode.OK;
+            return true;
         }
 
-        public async Task<Course> UpdateAsync(Guid id, Course course)
+        public bool Update(Guid id, Course course)
         {
-            Course courseUpdate = await _context.Courses.FindAsync(id);
+            var courseUpdate = _context.Courses.Find(id);
 
             if (courseUpdate == null)
             {
-                throw new HttpResponseException("Not found");
+                return false;
             }
 
             courseUpdate.Name = course.Name;
             courseUpdate.Description = course.Description;
             course.UpdatedTimeStamp = DateTime.Now;
 
-            _context.Courses.Update(courseUpdate);
+            try
+            {
+                _context.Courses.Update(courseUpdate);
+                _context.SaveChanges();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
 
-            await _context.SaveChangesAsync();
-
-            return courseUpdate;
+            return true;
         }
     }
 }

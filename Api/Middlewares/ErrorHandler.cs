@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace Api.Middlewares
 {
+    // FIX: response has server errors
+    
     public class ErrorHandler
     {
         private readonly RequestDelegate _next;

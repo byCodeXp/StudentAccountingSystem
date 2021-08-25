@@ -1,8 +1,7 @@
 ﻿using Business_Logic.Services;
-using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using System.Threading.Tasks;
+using Data_Transfer_Objects.Requests;
 
 namespace Api.Controllers
 {
@@ -17,22 +16,23 @@ namespace Api.Controllers
             _identityService = identityService;
         }
 
-        [HttpPost("Register")]
-        public async Task<HttpStatusCode> Register(RegisterRequest request)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            return await _identityService.RegisterAsync(request);
+            await _identityService.RegisterAsync(request);
+            return Ok();
         }
 
-        [HttpPost("Login")]
-        public async Task<string> Login(LoginRequest request)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            return await _identityService.LoginAsync(request);
+            return Ok(await _identityService.LoginAsync(request));
         }
 
-        [HttpGet("ConfirmEmail")]
-        public async Task<HttpStatusCode> ConfirmEmail(string email, string token)
+        [HttpGet("confirm")]
+        public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
-            return await _identityService.ConfirmEmail(email, token);
+            return Ok(await _identityService.ConfirmEmail(email, token));
         }
     }
 }

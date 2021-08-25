@@ -3,9 +3,6 @@ using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
@@ -20,39 +17,40 @@ namespace Api.Controllers
             _courseService = courseService;
         }
 
-        [HttpGet("Page/{page}")]
-        public IEnumerable<CourseDTO> Page(int? page)
+        [HttpGet("page/{page}")]
+        public IActionResult Get(int? page)
         {
             int perPage = 12;
-            return _courseService.GetCourses(page ?? 1, perPage);
+            return Ok(_courseService.GetCourses(page ?? 1, perPage));
         }
 
-        [HttpGet("Details/{id}")]
-        public async Task<CourseDTO> Course(Guid id)
+        [HttpGet("{id}")]
+        public IActionResult Get(Guid id)
         {
-            return await _courseService.FindCourseAsync(id);
+            return Ok(_courseService.GetCourseById(id));
         }
 
-        [HttpPost("Create")]
+        [HttpPost("create")]
         [Authorize(AppEnv.Roles.Admin)]
-        public async Task<CourseDTO> Create(CourseDTO course)
+        public IActionResult Create([FromBody] CourseDTO course)
         {
             // TODO: ModelState validation
-            return await _courseService.CreateCourseAsync(course);
+            return Ok(_courseService.CreateCourse(course));
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("delete")]
         [Authorize(AppEnv.Roles.Admin)]
-        public async Task<HttpStatusCode> Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            return await _courseService.DeleteCourseAsync(id);
+            _courseService.DeleteCourse(id);
+            return Ok();
         }
 
-        [HttpPut("Edit")]
+        [HttpPut("update")]
         [Authorize(AppEnv.Roles.Admin)]
-        public async Task<CourseDTO> Edit(Guid id, CourseDTO course)
+        public IActionResult Update(Guid id, [FromBody] CourseDTO course)
         {
-            return await _courseService.EditCourseAsync(id, course);
+            return Ok(_courseService.EditCourse(id, course));
         }
     }
 }

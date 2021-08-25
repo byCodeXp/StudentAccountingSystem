@@ -19,21 +19,82 @@ namespace Business_Logic.Services
     {
         private readonly ILogger<CourseService> _logger;
         private readonly JwtService _jwtService;
-        private readonly CourseQuery _query;
-        private readonly CourseCommand _command;
+        private readonly CourseQuery _courseQuery;
+        private readonly CourseCommand _courseCommand;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
         public CourseService(DataContext context, ILogger<CourseService> logger, IMapper mapper, JwtService jwtService, UserManager<User> userManager)
         {
             _logger = logger;
-            _query = new CourseQuery(context);
-            _command = new CourseCommand(context);
+            _courseQuery = new CourseQuery(context);
+            _courseCommand = new CourseCommand(context);
             _mapper = mapper;
             _jwtService = jwtService;
             _userManager = userManager;
         }
 
+        public IEnumerable<CourseDTO> GetCourses(int page, int perPage)
+        {
+            int offset = page <= 1 ? 0 : page * perPage - perPage;
+
+            _logger.LogInformation($"Courses on page: {page}, was returned");
+
+            var courses = _courseQuery.GetAll().OrderBy(m => m.CreatedTimeStamp).Skip(offset).Take(perPage);
+
+            return _mapper.Map<IEnumerable<CourseDTO>>(courses);
+        }
+
+        public CourseDTO GetCourseById(Guid id)
+        {
+            Course course = _courseQuery.GetOne(id);
+
+            if (course == null)
+            {
+                throw new HttpResponseException("Not found");
+            }
+
+            _logger.LogInformation($"Returned course with id: {course.Id}");
+
+            return _mapper.Map<CourseDTO>(course);
+        }
+
+        public CourseDTO CreateCourse(CourseDTO course)
+        {
+            var result = _courseCommand.Create(_mapper.Map<Course>(course));
+
+            if (!result)
+            {
+                throw new HttpResponseException("Bad request!");
+            }
+            
+            _logger.LogInformation($"Course with name: {course.Name}, was created");
+
+            return course;
+        }
+
+        public void DeleteCourse(Guid id)
+        {
+            _logger.LogInformation($"Course with id: {id}, was deleted");
+
+            if (!_courseCommand.Delete(id))
+            {
+                throw new HttpResponseException("Bad request!");
+            }
+        }
+
+        public CourseDTO EditCourse(Guid id, CourseDTO course)
+        {
+            var result = _courseCommand.Update(id, _mapper.Map<Course>(course));
+
+            if (!result)
+            {
+                throw new HttpResponseException("Bad request!");
+            }
+
+            return course;
+        }
+        
         public async Task<HttpStatusCode> SubscribeUser(string token, Guid courseId)
         {
             var userId = _jwtService.Verify(token).Issuer;
@@ -45,7 +106,7 @@ namespace Business_Logic.Services
                 return HttpStatusCode.NotFound;
             }
 
-            var course = await _query.GetOne(courseId);
+            var course = _courseQuery.GetOne(courseId);
 
             if (course == null)
             {
@@ -63,56 +124,6 @@ namespace Business_Logic.Services
             }
 
             return HttpStatusCode.OK;
-        }
-
-        public IEnumerable<CourseDTO> GetCourses(int page, int perPage)
-        {
-            int offset = page <= 1 ? 0 : page * perPage - perPage;
-
-            _logger.LogInformation($"Courses on page: {page}, was returned");
-
-            var courses = _query.GetAll().OrderBy(m => m.CreatedTimeStamp).Skip(offset).Take(perPage);
-
-            return _mapper.Map<IEnumerable<CourseDTO>>(courses);
-        }
-
-        public async Task<CourseDTO> FindCourseAsync(Guid id)
-        {
-            Course course = await _query.GetOne(id);
-
-            if (course != null)
-            {
-                _logger.LogInformation($"Returned course with id: {course.Id}");
-
-                return _mapper.Map<CourseDTO>(course);
-            }
-
-            throw new HttpResponseException("Not found");
-        }
-
-        public async Task<CourseDTO> CreateCourseAsync(CourseDTO courseDTO)
-        {
-            var course = await _command.CreateAsync(new Course { Name = courseDTO.Name, Description = courseDTO.Description });
-
-            _logger.LogInformation($"Course with id: {course.Id}, was created");
-
-            return _mapper.Map<CourseDTO>(course);
-        }
-
-        public async Task<HttpStatusCode> DeleteCourseAsync(Guid id)
-        {
-            _logger.LogInformation($"Course with id: {id}, was deleted");
-
-            return await _command.DeleteAsync(id);
-        }
-
-        public async Task<CourseDTO> EditCourseAsync(Guid id, CourseDTO courseDTO)
-        {
-            var course = await _command.UpdateAsync(id, new Course { Name = courseDTO.Name, Description = courseDTO.Description });
-
-            _logger.LogInformation($"Course with id: {id}, was updated");
-
-            return _mapper.Map<CourseDTO>(course);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using Data_Access_Layer.Models;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Data_Access_Layer.Queries
 {
@@ -19,9 +18,9 @@ namespace Data_Access_Layer.Queries
             return _context.Courses;
         }
 
-        public async Task<Course> GetOne(Guid id)
+        public Course GetOne(Guid id)
         {
-            return await _context.Courses.FindAsync(id);
+            return _context.Courses.Find(id);
         }
     }
 }

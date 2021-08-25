@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Data_Transfer_Objects
+namespace Data_Transfer_Objects.Requests
 {
     public class LoginRequest
     {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
+using Data_Transfer_Objects.Requests;
 
 namespace Api
 {

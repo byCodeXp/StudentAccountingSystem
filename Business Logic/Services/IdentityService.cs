@@ -9,6 +9,7 @@ using SendGrid.Helpers.Mail;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Data_Transfer_Objects.Requests;
 
 namespace Business_Logic.Services
 {
@@ -36,27 +37,23 @@ namespace Business_Logic.Services
             _mapper = mapper;
         }
 
-        public async Task<HttpStatusCode> RegisterAsync(RegisterRequest request)
+        public async Task RegisterAsync(RegisterRequest request)
         {
             var user = _mapper.Map<User>(request);
 
-            var dentityResult = await _userManager.CreateAsync(user, request.Password);
+            var identityResult = await _userManager.CreateAsync(user, request.Password);
 
-            if (!dentityResult.Succeeded)
+            if (!identityResult.Succeeded)
             {
-                throw new HttpResponseException("Invalid credentials", dentityResult.Errors);
+                throw new HttpResponseException("Invalid credentials", identityResult.Errors);
             }
-
-            _logger.LogInformation($"User created with id: {user.Id}");
             
             var result = await _userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
 
             if (!result.Succeeded)
             {
-                throw new HttpResponseException("Server error", dentityResult.Errors);
+                throw new HttpResponseException("Server error", identityResult.Errors);
             }
-
-            _logger.LogInformation($"Role added to user");
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token)); 
@@ -64,10 +61,6 @@ namespace Business_Logic.Services
             var link = $"https://localhost:5001/api/Identity/ConfirmEmail?email={user.Email}&token={token}";
 
             await _emailService.SendMailAsync("Successfully registration", new EmailAddress(user.Email), $"Your activation link: {link}");
-
-            _logger.LogInformation($"Confirmation link was send on email address: {user.Email}");
-
-            return HttpStatusCode.Created;
         }
 
         public async Task<string> LoginAsync(LoginRequest request)
@@ -85,8 +78,6 @@ namespace Business_Logic.Services
             {
                 throw new HttpResponseException("Invalid credentials");
             }
-
-            _logger.LogInformation($"Successfully user authentication with id: {user.Id}");
 
             // TODO: Add refresh token
 
@@ -124,8 +115,6 @@ namespace Business_Logic.Services
 
             if (result.Succeeded)
             {
-                _logger.LogInformation($"Successfully user email confirmation with id: {user.Id}");
-
                 return HttpStatusCode.OK;
             }
 
