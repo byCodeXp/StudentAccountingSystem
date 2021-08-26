@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using Api.Errors;
-using Data_Transfer_Objects.Errors;
+using Business_Logic.Errors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 

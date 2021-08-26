@@ -1,6 +1,8 @@
 ﻿using System;
 using Business_Logic.Services;
 using Data_Transfer_Objects;
+using Data_Transfer_Objects.Entities;
+using Data_Transfer_Objects.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +19,10 @@ namespace Api.Controllers
             _courseService = courseService;
         }
 
-        [HttpGet("page/{page}")]
-        public IActionResult Get(int? page)
+        [HttpGet("page")]
+        public IActionResult Get(GetPageRequest request)
         {
-            int perPage = 12;
-            return Ok(_courseService.GetCourses(page ?? 1, perPage));
+            return Ok(_courseService.GetCourses(request));
         }
 
         [HttpGet("{id}")]

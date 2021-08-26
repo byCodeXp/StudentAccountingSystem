@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Business_Logic.Errors;
 using Data_Access_Layer;
 using Data_Access_Layer.Commands;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.Queries;
-using Data_Transfer_Objects;
-using Data_Transfer_Objects.Errors;
+using Data_Transfer_Objects.Entities;
 
 namespace Business_Logic.Services
 {

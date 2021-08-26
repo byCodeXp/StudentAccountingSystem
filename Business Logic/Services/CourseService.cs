@@ -3,12 +3,13 @@ using Data_Access_Layer;
 using Data_Access_Layer.Commands;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.Queries;
-using Data_Transfer_Objects;
-using Data_Transfer_Objects.Errors;
-using System.Collections.Generic;
+using Business_Logic.Errors;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Data_Transfer_Objects.Entities;
+using Data_Transfer_Objects.Requests;
+using Data_Transfer_Objects.ViewModels;
 using Microsoft.AspNetCore.Identity;
 
 namespace Business_Logic.Services
@@ -32,13 +33,29 @@ namespace Business_Logic.Services
             _userManager = userManager;
         }
 
-        public IEnumerable<CourseDTO> GetCourses(int page, int perPage)
+        public CourseVM GetCourses(GetPageRequest request)
         {
-            int offset = page <= 1 ? 0 : page * perPage - perPage;
+            var courses = _courseQuery.GetAll();
 
-            var courses = _courseQuery.GetAll().OrderBy(m => m.CreatedTimeStamp).Skip(offset).Take(perPage);
+            switch (request.SortBy)
+            {
+                case SortBy.Asc:
+                    courses = courses.OrderBy(m => m.Name);
+                    break;
+                case SortBy.Desc:
+                    courses = courses.OrderByDescending(m => m.Name);
+                    break;
+            }
+            
+            courses = courses.Skip(request.Offset).Take(request.PerPage);
+            
+            var courseVm = new CourseVM
+            {
+                TotalCount = _courseQuery.GetCount(),
+                Courses = _mapper.Map<CourseDTO[]>(courses)
+            };
 
-            return _mapper.Map<IEnumerable<CourseDTO>>(courses);
+            return courseVm;
         }
 
         public CourseDTO GetCourseById(Guid id)

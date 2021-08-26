@@ -1,6 +1,6 @@
 using System;
 using Business_Logic.Services;
-using Data_Transfer_Objects;
+using Data_Transfer_Objects.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers

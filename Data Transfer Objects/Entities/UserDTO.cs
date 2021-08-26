@@ -1,22 +1,22 @@
 ﻿using FluentValidation;
 
-namespace Data_Transfer_Objects.Requests
+namespace Data_Transfer_Objects.Entities
 {
-    public class RegisterRequest
+    public class UserDTO
     {
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public string Password { get; set; }
         public int Age { get; set; }
+        public string Role { get; set;}
     }
-
-    public class RegisterRequestValidation : AbstractValidator<RegisterRequest>
+    
+    public class UserDTOValidation : AbstractValidator<UserDTO>
     {
-        public RegisterRequestValidation()
+        public UserDTOValidation()
         {
             RuleFor(m => m.Email).NotEmpty().EmailAddress();
-            RuleFor(m => m.Password).NotEmpty().MinimumLength(8);
             RuleFor(m => m.Age).GreaterThan(0);
         }
     }

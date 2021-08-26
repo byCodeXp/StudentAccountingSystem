@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Data_Access_Layer.Models;
 using Microsoft.AspNetCore.Identity;
-using Data_Transfer_Objects;
 using AutoMapper;
 using Data_Access_Layer;
 using Data_Access_Layer.Commands;
 using Data_Access_Layer.Queries;
-using Data_Transfer_Objects.Errors;
+using Data_Transfer_Objects.Entities;
+using Business_Logic.Errors;
+using Data_Transfer_Objects.Requests;
+using Data_Transfer_Objects.ViewModels;
 
 namespace Business_Logic.Services
 {
@@ -36,15 +37,31 @@ namespace Business_Logic.Services
             _userQuery = new(context);
         }
 
-        public IEnumerable<UserDTO> GetUsers(int page, int perPage)
+        public UserVM GetUsers(GetPageRequest request)
         {
-            int offset = page <= 1 ? 0 : page * perPage - perPage;
+            var users = _userQuery.GetAll();
 
-            var users = _userQuery.GetAll().Skip(offset).Take(perPage); // TODO: order by
+            switch (request.SortBy)
+            {
+                case SortBy.Asc:
+                    users = users.OrderBy(m => m.CreatedTimeStamp);
+                    break;
+                case SortBy.Desc:
+                    users = users.OrderByDescending(m => m.CreatedTimeStamp);
+                    break;
+            }
 
+            users = users.Skip(request.Offset).Take(request.PerPage);
+
+            var userVM = new UserVM
+            {
+                TotalCount = _userQuery.GetCount(),
+                Users = _mapper.Map<UserDTO[]>(users)
+            };
+            
             // TODO: also return users role
             
-            return _mapper.Map<IEnumerable<UserDTO>>(users);
+            return userVM;
         }
         
         public UserDTO GetUserById(Guid id)

@@ -17,6 +17,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
+using Data_Transfer_Objects.Entities;
+using Data_Transfer_Objects.Requests;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 namespace Api
 {
@@ -93,6 +97,19 @@ namespace Api
 
             services.AddHangfireServer();
 
+            services.AddFluentValidation(options =>
+            {
+                options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                options.RegisterValidatorsFromAssemblyContaining<Startup>();
+            });
+
+            services.AddTransient<IValidator<UserDTO>, UserDTOValidation>();
+            services.AddTransient<IValidator<CourseDTO>, CourseDTOValidation>();
+            services.AddTransient<IValidator<CategoryDTO>, CategoryDTOValidation>();
+            services.AddTransient<IValidator<GetPageRequest>, GetPageRequestValid>();
+            services.AddTransient<IValidator<LoginRequest>, LoginRequestValidation>();
+            services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidation>();
+            
             services.AddControllers();
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" }));
         }

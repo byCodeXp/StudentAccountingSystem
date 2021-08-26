@@ -23,5 +23,10 @@ namespace Data_Access_Layer.Queries
         {
             return _context.Courses.Find(id);
         }
+
+        public int GetCount()
+        {
+            return _context.Courses.Count();
+        }
     }
 }

@@ -4,6 +4,7 @@ using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Data_Transfer_Objects.Requests;
 
 namespace Api.Controllers
 {
@@ -19,10 +20,10 @@ namespace Api.Controllers
             _userService = userService;
         }
 
-        [HttpGet("page/{page}")]
-        public IActionResult Get(int? page)
+        [HttpGet("page")]
+        public IActionResult Get(GetPageRequest request)
         {
-            return Ok(_userService.GetUsers(page ?? 1, 10));
+            return Ok(_userService.GetUsers(request));
         }
         
         [HttpGet("{id}")]

@@ -22,5 +22,10 @@ namespace Data_Access_Layer.Queries
         {
             return _context.Users.Find(id);
         }
+
+        public int GetCount()
+        {
+            return _context.Users.Count();
+        }
     }
 }

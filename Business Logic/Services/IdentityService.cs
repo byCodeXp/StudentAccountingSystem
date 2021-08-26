@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
-using Data_Transfer_Objects.Errors;
+using Business_Logic.Errors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using SendGrid.Helpers.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 
 namespace Business_Logic.Services
