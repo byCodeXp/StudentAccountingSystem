@@ -7,6 +7,7 @@ namespace Data_Access_Layer.Queries
     public class CourseQuery
     {
         private readonly DataContext _context;
+        
 
         public CourseQuery(DataContext context)
         {

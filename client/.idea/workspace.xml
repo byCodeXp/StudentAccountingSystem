@@ -2,20 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc915539-92d7-44fb-ac20-321d65cb0ee7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../.vs/StudentProgress/DesignTimeBuild/.dtbcache.v2" beforeDir="false" afterPath="$PROJECT_DIR$/../.vs/StudentProgress/DesignTimeBuild/.dtbcache.v2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.vs/StudentProgress/v17/.suo" beforeDir="false" afterPath="$PROJECT_DIR$/../.vs/StudentProgress/v17/.suo" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Controllers/CourseController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Controllers/CourseController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Controllers/IdentityController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Controllers/IdentityController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Controllers/UserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Controllers/UserController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/MapperProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/MapperProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Middlewares/ErrorHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Middlewares/ErrorHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Api/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Startup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Business Logic/Services/IdentityService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Business Logic/Services/IdentityService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Transfer Objects/LoginRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Transfer Objects/Requests/LoginRequest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Data Transfer Objects/RegisterRequest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Data Transfer Objects/Requests/RegisterRequest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Course.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Course.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,6 +65,7 @@
       <workItem from="1629396934229" duration="21354000" />
       <workItem from="1629483589153" duration="6179000" />
       <workItem from="1629813843932" duration="946000" />
+      <workItem from="1629875602817" duration="1327000" />
     </task>
     <servers />
   </component>

@@ -16,7 +16,7 @@ namespace Data_Access_Layer
         {
             builder.ApplyConfiguration(new UserConfiguration());
             builder.ApplyConfiguration(new CourseConfiguration());
-            builder.ApplyConfiguration(new BadgeConfiguration());
+            builder.ApplyConfiguration(new CategoryConfiguration());
 
             base.OnModelCreating(builder);
         }

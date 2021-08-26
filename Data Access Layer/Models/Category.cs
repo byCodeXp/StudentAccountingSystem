@@ -10,7 +10,7 @@ namespace Data_Access_Layer.Models
         public ICollection<Course> Courses { get; set; }
     }
 
-    public class BadgeConfiguration : IEntityTypeConfiguration<Category>
+    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {

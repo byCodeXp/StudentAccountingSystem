@@ -14,7 +14,7 @@ const { TabPane } = Tabs;
 const Course = () => {
    const dispatch = useAppDispatch();
 
-   const { description, preview, title } = useAppSelector(selectCourse);
+   const course = useAppSelector(selectCourse);
 
    const { id } = useParams();
 
@@ -58,7 +58,7 @@ const Course = () => {
       <PageHeader
          className="site-page-header-responsive"
          onBack={() => window.history.back()}
-         title={title}
+         title={course.title}
          tags={[
             <Tag color="green">node.js</Tag>,
             <Tag color="purple">.net</Tag>,
@@ -73,10 +73,10 @@ const Course = () => {
       >
          <Row gutter={32}>
             <Col span={12}>
-               <img style={{ width: '100%' }} src={preview} />
+               <img style={{ width: '100%' }} src={course.preview} />
                <Tabs defaultActiveKey="1">
                   <TabPane style={{ padding: 8 }} tab="Description" key="1">
-                     {description}
+                     {course.description}
                      <Steps progressDot current={1} direction="vertical">
                         <Step title="Finished" description="Introduction" />
                         <Step title="Finished" description="Create a services site 2015-09-01." />

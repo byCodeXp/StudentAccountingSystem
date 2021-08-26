@@ -70,6 +70,7 @@ namespace Api
             // TODO: Add facebook authentication
 
             services.AddScoped<IdentityService>();
+            services.AddScoped<CategoryService>();
             services.AddScoped<UserService>();
             services.AddScoped<CourseService>();
 
