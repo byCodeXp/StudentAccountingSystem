@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using Business_Logic.Errors;
+using Business_Logic.Exceptions;
 using Data_Access_Layer;
 using Data_Access_Layer.Commands;
 using Data_Access_Layer.Models;

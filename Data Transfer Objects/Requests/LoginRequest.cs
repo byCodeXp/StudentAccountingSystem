@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Data_Transfer_Objects.Requests
 {
     public class LoginRequest
     {
         public string Email { get; set; }
-        [Required]
         public string Password { get; set; }
     }
 

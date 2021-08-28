@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Linq;
 using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Data_Transfer_Objects.Requests;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -14,10 +16,12 @@ namespace Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, ILogger<UserController> logger)
         {
             _userService = userService;
+            _logger = logger;
         }
 
         [HttpGet("page")]
@@ -33,8 +37,9 @@ namespace Api.Controllers
         }
         
         [HttpPost("subscribe")] 
-        public async Task<IActionResult> SubscribeOnCourse(Guid courseId, string token)
+        public async Task<IActionResult> SubscribeOnCourse(Guid courseId, DateTime date)
         {
+            Request.Headers.TryGetValue("Authorization", out var token);
             await _userService.SubscribeUserOnCourseAsync(courseId, token);
             return Ok();
         }

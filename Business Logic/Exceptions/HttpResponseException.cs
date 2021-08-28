@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-namespace Business_Logic.Errors
+namespace Business_Logic.Exceptions
 {
     public class HttpResponseException : Exception
     {

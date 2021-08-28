@@ -8,7 +8,7 @@ using Data_Access_Layer;
 using Data_Access_Layer.Commands;
 using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
-using Business_Logic.Errors;
+using Business_Logic.Exceptions;
 using Data_Transfer_Objects.Requests;
 using Data_Transfer_Objects.ViewModels;
 

@@ -3,7 +3,7 @@ using Data_Access_Layer;
 using Data_Access_Layer.Commands;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.Queries;
-using Business_Logic.Errors;
+using Business_Logic.Exceptions;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,11 +11,13 @@ using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using Data_Transfer_Objects.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Business_Logic.Services
 {
     public class CourseService
     {
+        private readonly JobService _jobService;
         private readonly JwtService _jwtService;
         private readonly CourseQuery _courseQuery;
         private readonly CourseCommand _courseCommand;
@@ -23,7 +25,7 @@ namespace Business_Logic.Services
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
-        public CourseService(DataContext context, IMapper mapper, JwtService jwtService, UserManager<User> userManager)
+        public CourseService(DataContext context, IMapper mapper, JwtService jwtService, UserManager<User> userManager, JobService jobService)
         {
             _userCommand = new(context);
             _courseQuery = new(context);
@@ -31,9 +33,10 @@ namespace Business_Logic.Services
             _mapper = mapper;
             _jwtService = jwtService;
             _userManager = userManager;
+            _jobService = jobService;
         }
 
-        public CourseVM GetCourses(GetPageRequest request)
+        public CourseVM GetCourses([FromQuery] GetPageRequest request)
         {
             var courses = _courseQuery.GetAll();
 
@@ -102,7 +105,7 @@ namespace Business_Logic.Services
             return course;
         }
         
-        public async Task SubscribeUser(string token, Guid courseId)
+        public async Task SubscribeUser(string token, Guid courseId, DateTime dateTime)
         {
             var userId = _jwtService.Verify(token).Issuer;
 
@@ -124,6 +127,8 @@ namespace Business_Logic.Services
             {
                 throw new HttpResponseException($"Current user cannot be subscribed, on course with id: {courseId}");
             }
+            
+            _jobService.ScheduleCourseReminder(_mapper.Map<UserDTO>(user), _mapper.Map<CourseDTO>(course), dateTime);
         }
     }
 }

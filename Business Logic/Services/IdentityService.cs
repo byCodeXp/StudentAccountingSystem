@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
-using Business_Logic.Errors;
+using Business_Logic.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using SendGrid.Helpers.Mail;
