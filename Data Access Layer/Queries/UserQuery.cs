@@ -6,26 +6,26 @@ namespace Data_Access_Layer.Queries
 {
     public class UserQuery
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
 
         public UserQuery(DataContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public IQueryable<User> GetAll()
         {
-            return _context.Users;
+            return context.Users;
         }
 
         public User GetOne(Guid id)
         {
-            return _context.Users.Find(id);
+            return context.Users.Find(id);
         }
 
         public int GetCount()
         {
-            return _context.Users.Count();
+            return context.Users.Count();
         }
     }
 }

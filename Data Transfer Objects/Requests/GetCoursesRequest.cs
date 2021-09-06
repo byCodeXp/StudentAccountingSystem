@@ -1,23 +1,25 @@
+using System.Collections.Generic;
 using FluentValidation;
 
 namespace Data_Transfer_Objects.Requests
 {
     public enum SortBy
     {
-        Desc,
-        Asc
+        Relevance,
+        New,
+        Popular,
+        Alphabetically
     };
     
-    public class GetPageRequest
+    public class GetCoursesRequest
     {
         public int Page { get; set; }
         public int PerPage { get; set; }
         public SortBy SortBy { get; set; }
-
-        public int Offset => Page <= 1 ? 0 : Page * PerPage - PerPage;
+        public IEnumerable<string> Categories { get; set; }
     }
 
-    public class GetPageRequestValid : AbstractValidator<GetPageRequest>
+    public class GetPageRequestValid : AbstractValidator<GetCoursesRequest>
     {
         public GetPageRequestValid()
         {

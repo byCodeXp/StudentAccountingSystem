@@ -1,6 +1,8 @@
 using System;
 using Business_Logic.Services;
+using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -9,37 +11,40 @@ namespace Api.Controllers
     [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly CategoryService _categoryService;
+        private readonly CategoryService categoryService;
 
         public CategoryController(CategoryService categoryService)
         {
-            _categoryService = categoryService;
+            this.categoryService = categoryService;
         }
 
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(_categoryService.GetCategories());
+            return Ok(categoryService.GetCategories());
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Create(CategoryDTO category)
         {
-            _categoryService.CreateCategory(category);
+            categoryService.CreateCategory(category);
             return Ok();
         }
         
         [HttpPut("update")]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Update(Guid id, CategoryDTO category)
         {
-            _categoryService.EditCategory(id, category);
+            categoryService.EditCategory(id, category);
             return Ok();
         }
         
         [HttpDelete("delete")]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Delete(Guid id)
         {
-            _categoryService.RemoveCategory(id);
+            categoryService.RemoveCategory(id);
             return Ok();
         }
     }

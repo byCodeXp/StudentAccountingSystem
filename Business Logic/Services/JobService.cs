@@ -8,17 +8,17 @@ namespace Business_Logic.Services
 {
     public class JobService
     {
-        private EmailService _emailService;
+        private EmailService emailService;
         
         public JobService(EmailService emailService)
         {
-            _emailService = emailService;
+            this.emailService = emailService;
         }
 
         public void ScheduleCourseReminder(UserDTO user, CourseDTO course, DateTime dateStart)
         {
             string content = $"This is reminder for course: {course.Name}";
-            
+            // TODO: lambda
             if (dateStart > DateTime.Today + TimeSpan.FromDays(30))
             {
                 BackgroundJob.Schedule(() => Invoke("Course reminder", user.Email, content), dateStart - TimeSpan.FromDays(30));
@@ -35,7 +35,7 @@ namespace Business_Logic.Services
 
         private async Task Invoke(string subject, string email, string htmlContent)
         {
-            await _emailService.SendMailAsync(subject, new EmailAddress(email), htmlContent);
+            await emailService.SendMailAsync(subject, new EmailAddress(email), htmlContent);
         }
     }
 }

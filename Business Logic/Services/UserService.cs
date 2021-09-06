@@ -16,12 +16,12 @@ namespace Business_Logic.Services
 {
     public class UserService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly CourseQuery _courseQuery;
-        private readonly UserCommand _userCommand;
-        private readonly UserQuery _userQuery;
-        private readonly JwtService _jwtService;
-        private readonly IMapper _mapper;
+        private readonly UserManager<User> userManager;
+        private readonly CourseQuery courseQuery;
+        private readonly UserCommand userCommand;
+        private readonly UserQuery userQuery;
+        private readonly JwtService jwtService;
+        private readonly IMapper mapper;
 
         public UserService(
             UserManager<User> userManager,
@@ -29,34 +29,26 @@ namespace Business_Logic.Services
             IMapper mapper,
             DataContext context)
         {
-            _userManager = userManager;
-            _jwtService = jwtService;
-            _mapper = mapper;
-            _userCommand = new (context);
-            _courseQuery = new(context);
-            _userQuery = new(context);
+            this.userManager = userManager;
+            this.jwtService = jwtService;
+            this.mapper = mapper;
+            userCommand = new(context);
+            courseQuery = new(context);
+            userQuery = new(context);
         }
 
-        public UserVM GetUsers(GetPageRequest request)
+        private int Offset (int page, int perPage) => page <= 1 ? 0 : page * perPage - perPage;
+        
+        public UserVM GetUsers(GetUsersRequest request)
         {
-            var users = _userQuery.GetAll();
+            var users = userQuery.GetAll();
 
-            switch (request.SortBy)
-            {
-                case SortBy.Asc:
-                    users = users.OrderBy(m => m.CreatedTimeStamp);
-                    break;
-                case SortBy.Desc:
-                    users = users.OrderByDescending(m => m.CreatedTimeStamp);
-                    break;
-            }
-
-            users = users.Skip(request.Offset).Take(request.PerPage);
+            users = users.OrderBy(m => m.CreatedTimeStamp).Skip(Offset(request.Page, request.PerPage)).Take(request.PerPage);
 
             var userVM = new UserVM
             {
-                TotalCount = _userQuery.GetCount(),
-                Users = _mapper.Map<UserDTO[]>(users)
+                TotalCount = userQuery.GetCount(),
+                Users = mapper.Map<UserDTO[]>(users)
             };
             
             // TODO: also return users role
@@ -66,35 +58,35 @@ namespace Business_Logic.Services
         
         public UserDTO GetUserById(Guid id)
         {
-            var user = _userQuery.GetOne(id);
+            var user = userQuery.GetOne(id);
 
             if (user == null)
             {
                 throw new HttpResponseException($"User with id: {id}, was not found");
             }
 
-            return _mapper.Map<UserDTO>(user);
+            return mapper.Map<UserDTO>(user);
         }
 
         public async Task SubscribeUserOnCourseAsync(Guid courseId, string token)
         {
-            var course = _courseQuery.GetOne(courseId);
+            var course = courseQuery.GetOne(courseId);
 
             if (course == null)
             {
                 throw new HttpResponseException($"Course with id: {courseId}, was not found");
             }
 
-            var userId = _jwtService.Verify(token).Issuer;
+            var userId = jwtService.Verify(token).Issuer;
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await userManager.FindByIdAsync(userId);
             
             if (user == null)
             {
                 throw new HttpResponseException($"User was not found");
             }
 
-            var result = _userCommand.SubscribeCourse(user, course);
+            var result = userCommand.SubscribeCourse(user, course);
 
             if (!result)
             {

@@ -9,30 +9,30 @@ namespace Api.Controllers
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        private readonly IdentityService _identityService;
+        private readonly IdentityService identityService;
 
         public IdentityController(IdentityService identityService)
         {
-            _identityService = identityService;
+            this.identityService = identityService;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            await _identityService.RegisterAsync(request);
+            await identityService.RegisterAsync(request);
             return Ok();
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            return Ok(await _identityService.LoginAsync(request));
+            return Ok(await identityService.LoginAsync(request));
         }
 
         [HttpGet("confirm")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
-            await _identityService.ConfirmEmail(email, token);
+            await identityService.ConfirmEmail(email, token);
             return Ok();
         }
     }

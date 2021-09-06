@@ -3,37 +3,48 @@ import { Link, Navigate } from 'react-router-dom';
 import { Button, Checkbox, Form, Input, Row, message } from 'antd';
 import { KeyOutlined, MailOutlined } from '@ant-design/icons';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectStatus, selectError, resetStatus, loginAsync } from '../../features/user/userSlice';
+import { selectStatus, selectError, loginAsync, resetStatus } from '../../features/identitySlice';
 
 const LoginPage = () => {
-   const status = useAppSelector(selectStatus);
-   const error = useAppSelector(selectError);
-
    const dispatch = useAppDispatch();
+
+   const status = useAppSelector(selectStatus);
+   const errorMessage = useAppSelector(selectError);
 
    const onFinish = (values: ILoginRequest) => {
       dispatch(loginAsync(values));
    };
 
    useEffect(() => {
-      if (status === 'error') {
-         message.error(error);
+      if (status === 'failed') {
+         message.error(errorMessage);
          dispatch(resetStatus());
       }
    }, [status]);
 
    if (status === 'signed') {
-      return <Navigate to="/catalog" />;
+      return <Navigate to="/catalog/1" />;
    }
 
    return (
       <div className="place-middle">
          <h1 style={{ textAlign: 'center' }}>Login</h1>
          <Form onFinish={onFinish} style={{ minWidth: '320px' }}>
-            <Form.Item name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
-               <Input disabled={status === 'loading'} placeholder="Email" prefix={<MailOutlined />} autoComplete="username" />
+            <Form.Item
+               name="email"
+               rules={[{ required: true, message: 'Please input your email!' }]}
+            >
+               <Input
+                  disabled={status === 'loading'}
+                  placeholder="Email"
+                  prefix={<MailOutlined />}
+                  autoComplete="username"
+               />
             </Form.Item>
-            <Form.Item name="password" rules={[{ required: true, message: 'Please input your password!' }]}>
+            <Form.Item
+               name="password"
+               rules={[{ required: true, message: 'Please input your password!' }]}
+            >
                <Input.Password
                   disabled={status === 'loading'}
                   placeholder="Password"

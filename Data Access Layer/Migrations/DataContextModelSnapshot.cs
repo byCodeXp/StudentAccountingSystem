@@ -80,7 +80,9 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedTimeStamp")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 9, 1, 7, 40, 28, 755, DateTimeKind.Utc).AddTicks(9694));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -95,7 +97,12 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedTimeStamp")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 9, 1, 7, 40, 28, 761, DateTimeKind.Utc).AddTicks(1568));
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

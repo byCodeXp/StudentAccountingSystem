@@ -3,11 +3,16 @@ import { Button, Form, Input, Divider, message } from 'antd';
 import { UserOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
 import { Link, Navigate } from 'react-router-dom';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import { selectStatus, selectError, resetStatus, registerAsync } from '../../features/user/userSlice';
+import {
+   selectStatus,
+   selectError,
+   registerAsync,
+   resetStatus,
+} from '../../features/identitySlice';
 
 const Register = () => {
    const status = useAppSelector(selectStatus);
-   const error = useAppSelector(selectError);
+   const errorMessage = useAppSelector(selectError);
 
    const dispatch = useAppDispatch();
 
@@ -16,8 +21,8 @@ const Register = () => {
    };
 
    useEffect(() => {
-      if (status === 'error') {
-         message.error(error);
+      if (status === 'failed') {
+         message.error(errorMessage);
          dispatch(resetStatus());
       }
    }, [status]);
@@ -34,10 +39,16 @@ const Register = () => {
             <Divider orientation="left" plain>
                Personal information
             </Divider>
-            <Form.Item name="firstName" rules={[{ required: true, message: 'Please input your first name!' }]}>
+            <Form.Item
+               name="firstName"
+               rules={[{ required: true, message: 'Please input your first name!' }]}
+            >
                <Input placeholder="First name" prefix={<UserOutlined />} />
             </Form.Item>
-            <Form.Item name="lastName" rules={[{ required: true, message: 'Please input your last name!' }]}>
+            <Form.Item
+               name="lastName"
+               rules={[{ required: true, message: 'Please input your last name!' }]}
+            >
                <Input placeholder="Last name" prefix={<UserOutlined />} />
             </Form.Item>
             <Form.Item
@@ -54,7 +65,10 @@ const Register = () => {
             <Divider orientation="left" plain>
                Privacy information
             </Divider>
-            <Form.Item name="email" rules={[{ required: true, message: 'Please input your email!' }]}>
+            <Form.Item
+               name="email"
+               rules={[{ required: true, message: 'Please input your email!' }]}
+            >
                <Input placeholder="Email" prefix={<MailOutlined />} />
             </Form.Item>
             <Form.Item

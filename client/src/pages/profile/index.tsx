@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Typography, Space, Tabs, Divider, Button } from 'antd';
 import { Avatar } from 'antd';
 import { UserOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../../app/hooks';
+import { selectUser } from '../../features/identitySlice';
 
 const { TabPane } = Tabs;
 
 const Profile = () => {
+   const user = useAppSelector(selectUser);
+
+   const name = `${user?.firstName} ${user?.lastName}`;
+
    return (
       <Row justify="center">
          <Col span={10}>
             <Row justify="space-between" align="middle">
                <Space>
                   <Avatar shape="square" size={48} icon={<UserOutlined />} />
-                  <Typography.Text>Username</Typography.Text>
+                  <Typography.Text>{name}</Typography.Text>
                </Space>
                <Link to="/settings">
                   <Button shape="circle" icon={<SettingOutlined />} />

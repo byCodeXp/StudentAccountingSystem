@@ -6,16 +6,16 @@ namespace Data_Access_Layer.Commands
 {
     public class CourseCommand
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
 
         public CourseCommand(DataContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public bool Create(Course course)
         {
-            if (_context.Courses.Any(m => m.Name == course.Name))
+            if (context.Courses.Any(m => m.Name == course.Name))
             {
                 return false;
             }
@@ -26,8 +26,8 @@ namespace Data_Access_Layer.Commands
             // TODO: make logging
             try
             {
-                _context.Courses.Add(course);
-                _context.SaveChanges();
+                context.Courses.Add(course);
+                context.SaveChanges();
             }
             catch (Exception)
             {
@@ -39,7 +39,7 @@ namespace Data_Access_Layer.Commands
 
         public bool Delete(Guid id)
         {
-            var course = _context.Courses.Find(id);
+            var course = context.Courses.Find(id);
 
             if (course == null)
             {
@@ -48,8 +48,8 @@ namespace Data_Access_Layer.Commands
 
             try
             {
-                _context.Courses.Remove(course);
-                _context.SaveChanges();
+                context.Courses.Remove(course);
+                context.SaveChanges();
             }
             catch (Exception)
             {
@@ -61,7 +61,7 @@ namespace Data_Access_Layer.Commands
 
         public bool Update(Guid id, Course course)
         {
-            var courseUpdate = _context.Courses.Find(id);
+            var courseUpdate = context.Courses.Find(id);
 
             if (courseUpdate == null)
             {
@@ -74,8 +74,8 @@ namespace Data_Access_Layer.Commands
 
             try
             {
-                _context.Courses.Update(courseUpdate);
-                _context.SaveChanges();
+                context.Courses.Update(courseUpdate);
+                context.SaveChanges();
             }
             catch (Exception)
             {

@@ -73,8 +73,9 @@ namespace Data_Access_Layer.Migrations
                     Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Preview = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedTimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedTimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Views = table.Column<int>(type: "int", nullable: false),
+                    CreatedTimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 9, 1, 7, 40, 28, 755, DateTimeKind.Utc).AddTicks(9694)),
+                    UpdatedTimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValue: new DateTime(2021, 9, 1, 7, 40, 28, 761, DateTimeKind.Utc).AddTicks(1568))
                 },
                 constraints: table =>
                 {

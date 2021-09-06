@@ -22,7 +22,7 @@ export default () => {
          <Route path="register" element={<RegisterPage />} />
          <Route path="confirm" element={<ConfirmPage />} />
          {/*Courses routes*/}
-         <Route path="catalog" element={<CatalogPage />} />
+         <Route path="catalog/:page" element={<CatalogPage />} />
          <Route path="course/:id" element={<CoursePage />} />
          {/*Profile routes*/}
          <Route path="profile" element={<ProfilePage />} />

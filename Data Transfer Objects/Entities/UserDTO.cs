@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Collections.Generic;
+using FluentValidation;
 
 namespace Data_Transfer_Objects.Entities
 {
@@ -9,7 +10,10 @@ namespace Data_Transfer_Objects.Entities
         public string LastName { get; set; }
         public string Email { get; set; }
         public int Age { get; set; }
+        
+        public IEnumerable<CourseDTO> Courses { get; set; }
         public string Role { get; set;}
+        
     }
     
     public class UserDTOValidation : AbstractValidator<UserDTO>

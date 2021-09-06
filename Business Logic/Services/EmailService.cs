@@ -8,26 +8,26 @@ namespace Business_Logic.Services
 {
     public class EmailService
     {
-        private readonly ILogger<EmailService> _logger;
-        private readonly IConfiguration _configuration;
-        private readonly SendGridClient _client;
-        private readonly EmailAddress _sender;
+        private readonly ILogger<EmailService> logger;
+        private readonly IConfiguration configuration;
+        private readonly SendGridClient client;
+        private readonly EmailAddress sender;
 
         public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
         {
-            _logger = logger;
-            _configuration = configuration;
+            this.logger = logger;
+            this.configuration = configuration;
 
-            _client = new SendGridClient(_configuration["SendGrid:ApiKey"]);
-            _sender = new EmailAddress(_configuration["SendGrid:Sender:Email"], _configuration["SendGrid:Sender:Name"]);
+            client = new SendGridClient(this.configuration["SendGrid:ApiKey"]);
+            sender = new EmailAddress(this.configuration["SendGrid:Sender:Email"], this.configuration["SendGrid:Sender:Name"]);
         }
 
         public async Task<Response> SendMailAsync(string subject, EmailAddress to, string htmlContent)
         {
-            var msg = MailHelper.CreateSingleEmail(_sender, to, subject, "", htmlContent);
-            var response = await _client.SendEmailAsync(msg);
+            var msg = MailHelper.CreateSingleEmail(sender, to, subject, "", htmlContent);
+            var response = await client.SendEmailAsync(msg);
 
-            _logger.LogInformation($"Email was sended, on email address: {to.Email}");
+            logger.LogInformation($"Email was sended, on email address: {to.Email}");
 
             return response;
         }

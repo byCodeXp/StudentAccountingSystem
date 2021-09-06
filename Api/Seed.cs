@@ -27,13 +27,13 @@ namespace Api
 
     public class Seed
     {
-        private readonly DataContext _context;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly DataContext context;
+        private readonly RoleManager<IdentityRole> roleManager;
 
         public Seed(IServiceProvider serviceProvider)
         {
-            _context = serviceProvider.GetService<DataContext>();
-            _roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
+            context = serviceProvider.GetService<DataContext>();
+            roleManager = serviceProvider.GetService<RoleManager<IdentityRole>>();
         }
 
         public async Task InvokeAsync()
@@ -71,7 +71,7 @@ namespace Api
                 unityCategory
             );
 
-            _context.SaveChanges();
+            context.SaveChanges();
 
             // Create courses
 
@@ -123,22 +123,22 @@ namespace Api
 
             foreach (var course in courses)
             {
-                if (!_context.Courses.Any(m => m.Name == course.Name))
+                if (!context.Courses.Any(m => m.Name == course.Name))
                 {
-                    _context.Courses.Add(course);
+                    context.Courses.Add(course);
                 }
             }
 
-            _context.SaveChanges();
+            context.SaveChanges();
         }
 
         private void EnsureCreateCategories(params Category[] categories)
         {
             foreach (var category in categories)
             {
-                if (!_context.Categories.Any(e => e.Name == category.Name))
+                if (!context.Categories.Any(e => e.Name == category.Name))
                 {
-                    _context.Categories.Add(category);
+                    context.Categories.Add(category);
                 }
             }
         }
@@ -147,9 +147,9 @@ namespace Api
         {
             foreach (var role in roles)
             {
-                if (!await _roleManager.RoleExistsAsync(role))
+                if (!await roleManager.RoleExistsAsync(role))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
         }

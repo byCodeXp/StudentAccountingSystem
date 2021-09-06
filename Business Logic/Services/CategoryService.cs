@@ -13,56 +13,56 @@ namespace Business_Logic.Services
 {
     public class CategoryService
     {
-        private readonly CategoryQuery _categoryQuery;
-        private readonly CategoryCommand _categoryCommand;
-        private readonly IMapper _mapper;
+        private readonly CategoryQuery categoryQuery;
+        private readonly CategoryCommand categoryCommand;
+        private readonly IMapper mapper;
         
         public CategoryService(DataContext context, IMapper mapper)
         {
-            _mapper = mapper;
-            _categoryCommand = new(context);
-            _categoryQuery = new(context);
+            this.mapper = mapper;
+            categoryCommand = new(context);
+            categoryQuery = new(context);
         }
 
         public IEnumerable<CategoryDTO> GetCategories()
         {
-            return _mapper.Map<IEnumerable<CategoryDTO>>(
-                _categoryQuery.GetAll().OrderBy(m => m.Name)
+            return mapper.Map<IEnumerable<CategoryDTO>>(
+                categoryQuery.GetAll().OrderBy(m => m.Name)
             );
         }
 
         public CategoryDTO GetCategoryById(Guid id)
         {
-            var category = _categoryQuery.GetOne(id);
+            var category = categoryQuery.GetById(id);
 
             if (category == null)
             {
                 throw new HttpResponseException($"Category with id: {id}, was not found");
             }
 
-            return _mapper.Map<CategoryDTO>(category);
+            return mapper.Map<CategoryDTO>(category);
         }
 
         public void CreateCategory(CategoryDTO categoryDto)
         {
-            if (_categoryQuery.ExistsWithName(categoryDto.Name))
+            if (categoryQuery.ExistsWithName(categoryDto.Name))
             {
                 throw new HttpResponseException($"Category with name: {categoryDto.Name} already exists");
             }
             
-            _categoryCommand.Add(_mapper.Map<Category>(categoryDto));
+            categoryCommand.Add(mapper.Map<Category>(categoryDto));
         }
 
         public void EditCategory(Guid id, CategoryDTO categoryDto)
         {
-            var category = _categoryQuery.GetOne(id);
+            var category = categoryQuery.GetById(id);
 
             if (category == null)
             {
                 throw new HttpResponseException($"Category with id: {id}, was not found");
             }
 
-            if (_categoryQuery.ExistsWithName(categoryDto.Name))
+            if (categoryQuery.ExistsWithName(categoryDto.Name))
             {
                 throw new HttpResponseException($"Category with name: {categoryDto.Name} already exists");
             }
@@ -70,19 +70,19 @@ namespace Business_Logic.Services
             category.Name = categoryDto.Name;
             category.UpdatedTimeStamp = DateTime.UtcNow;
             
-            _categoryCommand.Update(category);
+            categoryCommand.Update(category);
         }
 
         public void RemoveCategory(Guid id)
         {
-            var category = _categoryQuery.GetOne(id);
+            var category = categoryQuery.GetById(id);
 
             if (category == null)
             {
                 throw new HttpResponseException($"Category with id: {id}, was not found");
             }
             
-            _categoryCommand.Delete(category);
+            categoryCommand.Delete(category);
         }
     }
 }

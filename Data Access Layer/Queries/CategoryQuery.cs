@@ -6,26 +6,31 @@ namespace Data_Access_Layer.Queries
 {
     public class CategoryQuery
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
 
         public CategoryQuery(DataContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public IQueryable<Category> GetAll()
         {
-            return _context.Categories;
+            return context.Categories;
         }
 
-        public Category GetOne(Guid id)
+        public Category GetById(Guid id)
         {
-            return _context.Categories.Find(id);
+            return context.Categories.Find(id);
+        }
+
+        public Category GetByName(string name)
+        {
+            return context.Categories.FirstOrDefault(m => m.Name == name);
         }
 
         public bool ExistsWithName(string name)
         {
-            return _context.Categories.Any(m => m.Name.Equals(name));
+            return context.Categories.Any(m => m.Name.Equals(name));
         }
     }
 }

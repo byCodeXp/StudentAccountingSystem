@@ -5,11 +5,11 @@ namespace Data_Access_Layer.Commands
 {
     public class UserCommand
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
 
         public UserCommand(DataContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public bool SubscribeCourse(User user, Course course)
@@ -20,7 +20,7 @@ namespace Data_Access_Layer.Commands
             }
 
             user.SubscribedCourses.Add(course);
-            _context.SaveChanges();
+            context.SaveChanges();
             
             return true;
         }

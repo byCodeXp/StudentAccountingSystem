@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cc915539-92d7-44fb-ac20-321d65cb0ee7" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Api/Logs/internal-nlog-AspNetCore.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/Course.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Course.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="cc915539-92d7-44fb-ac20-321d65cb0ee7" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="TypeScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -32,18 +35,37 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Desktop/react-15" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="yarn" />
     <property name="prettierjs.PrettierConfiguration.Package" value="D:\dev\StudentAccountingSystem\client\node_modules\prettier" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="settings.javascript.prettier" />
     <property name="ts.external.directory.path" value="D:\dev\StudentAccountingSystem\client\node_modules\typescript\lib" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\dev\StudentAccountingSystem\client\src\features" />
       <recent name="D:\dev\StudentAccountingSystem\client\src\pages\auth" />
       <recent name="D:\dev\StudentAccountingSystem\client\src\pages" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -66,6 +88,23 @@
       <workItem from="1629483589153" duration="6179000" />
       <workItem from="1629813843932" duration="946000" />
       <workItem from="1629875602817" duration="1327000" />
+      <workItem from="1630151934906" duration="1341000" />
+      <workItem from="1630157973808" duration="338000" />
+      <workItem from="1630160511633" duration="5855000" />
+      <workItem from="1630242195868" duration="392000" />
+      <workItem from="1630243883096" duration="924000" />
+      <workItem from="1630256856356" duration="942000" />
+      <workItem from="1630274497222" duration="126000" />
+      <workItem from="1630315344495" duration="1605000" />
+      <workItem from="1630432991490" duration="30604000" />
+      <workItem from="1630508608269" duration="4550000" />
+      <workItem from="1630520106203" duration="3029000" />
+      <workItem from="1630555018225" duration="11000" />
+      <workItem from="1630557352146" duration="7254000" />
+      <workItem from="1630587840934" duration="7994000" />
+      <workItem from="1630644723195" duration="6100000" />
+      <workItem from="1630820475776" duration="4590000" />
+      <workItem from="1630848762181" duration="8380000" />
     </task>
     <servers />
   </component>

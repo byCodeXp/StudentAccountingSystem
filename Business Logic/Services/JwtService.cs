@@ -10,12 +10,12 @@ namespace Business_Logic.Services
 {
     public class JwtService
     {
-        private readonly SymmetricSecurityKey _symmetricSecurityKey;
+        private readonly SymmetricSecurityKey symmetricSecurityKey;
 
         public JwtService(IConfiguration configuration)
         {
             var secret = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]);
-            _symmetricSecurityKey = new SymmetricSecurityKey(secret);
+            symmetricSecurityKey = new SymmetricSecurityKey(secret);
         }
 
         public string WriteToken(UserDTO user)
@@ -33,7 +33,7 @@ namespace Business_Logic.Services
                     new Claim("role", user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
-                SigningCredentials = new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature)
+                SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha512Signature)
             };
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
@@ -46,7 +46,7 @@ namespace Business_Logic.Services
             var tokenHandler = new JwtSecurityTokenHandler();
             tokenHandler.ValidateToken(jwt, new TokenValidationParameters()
             {
-                IssuerSigningKey = _symmetricSecurityKey,
+                IssuerSigningKey = symmetricSecurityKey,
                 ValidateIssuerSigningKey = true,
                 ValidateIssuer = false,
                 ValidateAudience = false

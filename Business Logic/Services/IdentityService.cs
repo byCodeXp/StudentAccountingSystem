@@ -9,61 +9,67 @@ using System.Text;
 using System.Threading.Tasks;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
+using Microsoft.Extensions.Logging;
 
 namespace Business_Logic.Services
 {
     public class IdentityService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
-        private readonly JwtService _jwtService;
-        private readonly EmailService _emailService;
-        private readonly IMapper _mapper;
+        private readonly UserManager<User> userManager;
+        private readonly SignInManager<User> signInManager;
+        private readonly JwtService jwtService;
+        private readonly EmailService emailService;
+        private readonly IMapper mapper;
+        private readonly ILogger<IdentityService> logger;
 
         public IdentityService(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             JwtService jwtService,
-            EmailService emailService, IMapper mapper)
+            EmailService emailService, IMapper mapper, ILogger<IdentityService> logger)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _jwtService = jwtService;
-            _emailService = emailService;
-            _mapper = mapper;
+            this.userManager = userManager;
+            this.signInManager = signInManager;
+            this.jwtService = jwtService;
+            this.emailService = emailService;
+            this.mapper = mapper;
+            this.logger = logger;
         }
 
         public async Task RegisterAsync(RegisterRequest request)
         {
-            var user = _mapper.Map<User>(request);
+            var user = mapper.Map<User>(request);
+            user.UserName = request.Email;
 
-            var identityResult = await _userManager.CreateAsync(user, request.Password);
+            logger.LogInformation(user.Email.ToString());
+            
+            var identityResult = await userManager.CreateAsync(user, request.Password);
 
             if (!identityResult.Succeeded)
             {
                 throw new HttpResponseException("Invalid credentials", identityResult.Errors);
             }
             
-            await _userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
+            await userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             var link = $"https://localhost:5001/api/Identity/ConfirmEmail?email={user.Email}&token={token}";
 
-            await _emailService.SendMailAsync("Successfully registration", new EmailAddress(user.Email), $"Your activation link: {link}");
+            // await _emailService.SendMailAsync("Successfully registration", new EmailAddress(user.Email), $"Your activation link: {link}");
         }
 
         public async Task<string> LoginAsync(LoginRequest request)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
+            var user = await userManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
                 throw new HttpResponseException("Invalid credentials");
             }
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+            var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
             if (!result.Succeeded)
             {
@@ -74,25 +80,25 @@ namespace Business_Logic.Services
 
             string userRole = "";
 
-            if (await _userManager.IsInRoleAsync(user, AppEnv.Roles.Customer))
+            if (await userManager.IsInRoleAsync(user, AppEnv.Roles.Customer))
             {
                 userRole = AppEnv.Roles.Customer;
             }
-            if (await _userManager.IsInRoleAsync(user, AppEnv.Roles.Admin))
+            if (await userManager.IsInRoleAsync(user, AppEnv.Roles.Admin))
             {
                 userRole = AppEnv.Roles.Admin;
             }
 
-            var userDto = _mapper.Map<UserDTO>(user);
+            var userDto = mapper.Map<UserDTO>(user);
 
             userDto.Role = userRole;
 
-            return _jwtService.WriteToken(userDto);
+            return jwtService.WriteToken(userDto);
         }
 
         public async Task ConfirmEmail(string email, string token)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
@@ -102,7 +108,7 @@ namespace Business_Logic.Services
             var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
             var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
 
-            var result = await _userManager.ConfirmEmailAsync(user, codeDecoded);
+            var result = await userManager.ConfirmEmailAsync(user, codeDecoded);
 
             if (!result.Succeeded)
             {

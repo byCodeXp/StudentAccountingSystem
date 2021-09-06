@@ -12,46 +12,45 @@ namespace Api.Controllers
     [ApiController]
     public class CourseController : ControllerBase
     {
-        private readonly CourseService _courseService;
+        private readonly CourseService courseService;
 
         public CourseController(CourseService courseService)
         {
-            _courseService = courseService;
+            this.courseService = courseService;
         }
 
-        [HttpGet("page")]
-        public IActionResult Get(GetPageRequest request)
+        [HttpGet("get")]
+        public IActionResult Get([FromQuery] GetCoursesRequest request)
         {
-            return Ok(_courseService.GetCourses(request));
+            return Ok(courseService.GetCourses(request));
         }
 
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            return Ok(_courseService.GetCourseById(id));
+            return Ok(courseService.GetCourseById(id));
         }
 
         [HttpPost("create")]
-        [Authorize(AppEnv.Roles.Admin)]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Create([FromBody] CourseDTO course)
         {
-            // TODO: ModelState validation
-            return Ok(_courseService.CreateCourse(course));
+            return Ok(courseService.CreateCourse(course));
         }
 
         [HttpDelete("delete")]
-        [Authorize(AppEnv.Roles.Admin)]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Delete(Guid id)
         {
-            _courseService.DeleteCourse(id);
+            courseService.DeleteCourse(id);
             return Ok();
         }
 
         [HttpPut("update")]
-        [Authorize(AppEnv.Roles.Admin)]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Update(Guid id, [FromBody] CourseDTO course)
         {
-            return Ok(_courseService.EditCourse(id, course));
+            return Ok(courseService.EditCourse(id, course));
         }
     }
 }

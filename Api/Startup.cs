@@ -80,6 +80,7 @@ namespace Api
 
             services.AddScoped<JwtService>();
             services.AddScoped<EmailService>();
+            services.AddScoped<JobService>();
 
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -106,7 +107,7 @@ namespace Api
             services.AddTransient<IValidator<UserDTO>, UserDTOValidation>();
             services.AddTransient<IValidator<CourseDTO>, CourseDTOValidation>();
             services.AddTransient<IValidator<CategoryDTO>, CategoryDTOValidation>();
-            services.AddTransient<IValidator<GetPageRequest>, GetPageRequestValid>();
+            services.AddTransient<IValidator<GetCoursesRequest>, GetPageRequestValid>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidation>();
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidation>();
             

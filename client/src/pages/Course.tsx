@@ -2,10 +2,16 @@ import { useState, createElement, useEffect } from 'react';
 import { PageHeader, Tabs, Button, Row, Col, Tag, Form } from 'antd';
 import { Steps, Tooltip } from 'antd';
 import { Comment, Avatar, Input } from 'antd';
-import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, BellOutlined } from '@ant-design/icons';
+import {
+   DislikeFilled,
+   DislikeOutlined,
+   LikeFilled,
+   LikeOutlined,
+   BellOutlined,
+} from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { getCourseAsync, selectCourse, selectStatus } from '../features/course/courseSlice';
 import { useParams } from 'react-router-dom';
+import { getOneCourseAsync, selectCurrentCourse } from '../features/courseSlice';
 
 const { TextArea } = Input;
 const { Step } = Steps;
@@ -14,12 +20,12 @@ const { TabPane } = Tabs;
 const Course = () => {
    const dispatch = useAppDispatch();
 
-   const course = useAppSelector(selectCourse);
-
    const { id } = useParams();
 
+   const course = useAppSelector(selectCurrentCourse);
+
    useEffect(() => {
-      dispatch(getCourseAsync(id));
+      dispatch(getOneCourseAsync(id));
    }, []);
 
    const [likes, setLikes] = useState(0);
@@ -58,13 +64,10 @@ const Course = () => {
       <PageHeader
          className="site-page-header-responsive"
          onBack={() => window.history.back()}
-         title={course.title}
-         tags={[
-            <Tag color="green">node.js</Tag>,
-            <Tag color="purple">.net</Tag>,
-            <Tag color="blue">c#</Tag>,
-            <Tag color="orange">javaScript</Tag>,
-         ]}
+         title={course?.name}
+         tags={course?.categories.map((category) => (
+            <Tag color="green">{category.name}</Tag>
+         ))}
          extra={[
             <Button key="3">
                <BellOutlined /> Subscribe
@@ -73,16 +76,22 @@ const Course = () => {
       >
          <Row gutter={32}>
             <Col span={12}>
-               <img style={{ width: '100%' }} src={course.preview} />
+               <img style={{ width: '100%' }} src={course?.preview} />
                <Tabs defaultActiveKey="1">
                   <TabPane style={{ padding: 8 }} tab="Description" key="1">
-                     {course.description}
+                     {course?.description}
                      <Steps progressDot current={1} direction="vertical">
                         <Step title="Finished" description="Introduction" />
                         <Step title="Finished" description="Create a services site 2015-09-01." />
-                        <Step title="In Progress" description="Solve initial network problems 2015-09-01" />
+                        <Step
+                           title="In Progress"
+                           description="Solve initial network problems 2015-09-01"
+                        />
                         <Step title="Waiting" description="Technical testing 2015-09-01" />
-                        <Step title="Waiting" description="Network problems being solved 2015-09-01" />
+                        <Step
+                           title="Waiting"
+                           description="Network problems being solved 2015-09-01"
+                        />
                      </Steps>
                   </TabPane>
                   <TabPane tab="Details" key="2">
@@ -93,11 +102,21 @@ const Course = () => {
             <Col span={12}>
                Comments:
                <Comment
-                  avatar={<Avatar src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg" alt="Han Solo" />}
+                  avatar={
+                     <Avatar
+                        src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg"
+                        alt="Han Solo"
+                     />
+                  }
                   content={
                      <>
                         <Form.Item>
-                           <TextArea showCount maxLength={256} placeholder="Left feedback..." rows={4} />
+                           <TextArea
+                              showCount
+                              maxLength={256}
+                              placeholder="Left feedback..."
+                              rows={4}
+                           />
                         </Form.Item>
                         <Form.Item>
                            <Button htmlType="submit" type="primary">
@@ -108,7 +127,12 @@ const Course = () => {
                   }
                />
                <Comment
-                  avatar={<Avatar src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg" alt="Han Solo" />}
+                  avatar={
+                     <Avatar
+                        src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg"
+                        alt="Han Solo"
+                     />
+                  }
                   author="John Doe"
                   content="Good course! & Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis est iste porro quaerat
                      sit! Dolorem in laborum magni nobis qui, recusandae voluptatem. Iure, quo."
@@ -116,7 +140,12 @@ const Course = () => {
                   actions={actions}
                />
                <Comment
-                  avatar={<Avatar src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg" alt="Han Solo" />}
+                  avatar={
+                     <Avatar
+                        src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg"
+                        alt="Han Solo"
+                     />
+                  }
                   author="John Doe"
                   content="Good course! & Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis est iste porro quaerat
                      sit! Dolorem in laborum magni nobis qui, recusandae voluptatem. Iure, quo."
@@ -124,7 +153,12 @@ const Course = () => {
                   actions={actions}
                />
                <Comment
-                  avatar={<Avatar src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg" alt="Han Solo" />}
+                  avatar={
+                     <Avatar
+                        src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg"
+                        alt="Han Solo"
+                     />
+                  }
                   author="John Doe"
                   content="Good course! & Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis est iste porro quaerat
                      sit! Dolorem in laborum magni nobis qui, recusandae voluptatem. Iure, quo."
@@ -132,7 +166,12 @@ const Course = () => {
                   actions={actions}
                />
                <Comment
-                  avatar={<Avatar src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg" alt="Han Solo" />}
+                  avatar={
+                     <Avatar
+                        src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg"
+                        alt="Han Solo"
+                     />
+                  }
                   author="John Doe"
                   content="Good course! & Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis est iste porro quaerat
                      sit! Dolorem in laborum magni nobis qui, recusandae voluptatem. Iure, quo."
@@ -140,7 +179,12 @@ const Course = () => {
                   actions={actions}
                />
                <Comment
-                  avatar={<Avatar src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg" alt="Han Solo" />}
+                  avatar={
+                     <Avatar
+                        src="https://static.wikia.nocookie.net/rustarwars/images/f/f4/HanSolo.jpg"
+                        alt="Han Solo"
+                     />
+                  }
                   author="John Doe"
                   content="Good course! & Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis est iste porro quaerat
                      sit! Dolorem in laborum magni nobis qui, recusandae voluptatem. Iure, quo."

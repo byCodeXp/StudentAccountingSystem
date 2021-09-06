@@ -4,28 +4,29 @@ namespace Data_Access_Layer.Commands
 {
     public class CategoryCommand
     {
-        private readonly DataContext _context;
+        private readonly DataContext context;
 
         public CategoryCommand(DataContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public void Add(Category category)
         {
-            _context.Categories.Add(category);
-            _context.SaveChanges();
+            context.Categories.Add(category);
+            context.SaveChanges();
         }
 
         public void Update(Category category)
         {
-            _context.Categories.Update(category);
-            _context.SaveChanges();
+            context.Categories.Update(category);
+            context.SaveChanges();
         }
 
         public void Delete(Category category)
         {
-            _context.Categories.Remove(category);
+            context.Categories.Remove(category);
+            context.SaveChanges(); // TODO: in services
         }
     }
 }

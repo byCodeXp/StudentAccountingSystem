@@ -10,20 +10,20 @@ namespace Api.Middlewares
 {
     public class ErrorsHandlerMiddleware
     {
-        private readonly RequestDelegate _next;
-        private readonly ILogger<ErrorsHandlerMiddleware> _logger;
+        private readonly RequestDelegate next;
+        private readonly ILogger<ErrorsHandlerMiddleware> logger;
         
         public ErrorsHandlerMiddleware(RequestDelegate next, ILogger<ErrorsHandlerMiddleware> logger)
         {
-            _next = next;
-            _logger = logger;
+            this.next = next;
+            this.logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                await _next(context);
+                await next(context);
             }
             catch (Exception exception)
             {
@@ -37,11 +37,11 @@ namespace Api.Middlewares
                     case HttpResponseException ex:
                         response.StatusCode = (int) HttpStatusCode.BadRequest;
                         message = ex.Message;
-                        _logger.LogError(exception, message);
+                        logger.LogError(exception, message);
                         break;
                     default:
                         response.StatusCode = (int) HttpStatusCode.InternalServerError;
-                        _logger.LogError(exception, "Something went wrong");
+                        logger.LogError(exception, "Something went wrong");
                         break;
                 }
 

@@ -15,32 +15,34 @@ namespace Api.Controllers
     [Authorize(Roles = AppEnv.Roles.Admin)]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
-        private readonly ILogger<UserController> _logger;
+        private readonly UserService userService;
+        private readonly ILogger<UserController> logger;
 
         public UserController(UserService userService, ILogger<UserController> logger)
         {
-            _userService = userService;
-            _logger = logger;
+            this.userService = userService;
+            this.logger = logger;
         }
 
-        [HttpGet("page")]
-        public IActionResult Get(GetPageRequest request)
+        [HttpGet("get")]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
+        public IActionResult Get([FromQuery] GetUsersRequest request)
         {
-            return Ok(_userService.GetUsers(request));
+            return Ok(userService.GetUsers(request));
         }
         
         [HttpGet("{id}")]
+        [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Get(Guid id)
         {
-            return Ok(_userService.GetUserById(id));
+            return Ok(userService.GetUserById(id));
         }
         
         [HttpPost("subscribe")] 
         public async Task<IActionResult> SubscribeOnCourse(Guid courseId, DateTime date)
         {
             Request.Headers.TryGetValue("Authorization", out var token);
-            await _userService.SubscribeUserOnCourseAsync(courseId, token);
+            await userService.SubscribeUserOnCourseAsync(courseId, token);
             return Ok();
         }
     }
