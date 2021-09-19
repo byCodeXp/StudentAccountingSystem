@@ -28,8 +28,12 @@ namespace Data_Access_Layer.Queries
             return context.Categories.FirstOrDefault(m => m.Name == name);
         }
 
-        public bool ExistsWithName(string name)
+        public bool ExistsWithName(string name, params Category[] ignore)
         {
+            if (ignore != null)
+            {
+                return context.Categories.Where(m => !ignore.Contains(m)).Any(m => m.Name.Equals(name));
+            }
             return context.Categories.Any(m => m.Name.Equals(name));
         }
     }

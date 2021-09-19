@@ -13,8 +13,7 @@ namespace Data_Access_Layer.Models
         public int Age { get; set; }
         public DateTime CreatedTimeStamp { get; set; }
         public DateTime UpdatedTimeStamp { get; set; }
-
-        public ICollection<Course> SubscribedCourses { get; set; }
+        public List<Course> SubscribedCourses { get; set; } = new();
     }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
@@ -28,7 +27,6 @@ namespace Data_Access_Layer.Models
             builder.Property(m => m.CreatedTimeStamp).IsRequired();
             builder.Property(m => m.UpdatedTimeStamp).IsRequired();
             builder.HasMany(m => m.SubscribedCourses).WithMany(m => m.SubscribedUsers);
-
         }
     }
 }

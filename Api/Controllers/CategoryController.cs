@@ -1,4 +1,5 @@
 using System;
+using Business_Logic.Helpers;
 using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
@@ -12,10 +13,12 @@ namespace Api.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly CategoryService categoryService;
-
-        public CategoryController(CategoryService categoryService)
+        private readonly RazorTemplateHelper razorTemplateHelper;
+        
+        public CategoryController(CategoryService categoryService, RazorTemplateHelper razorTemplateHelper)
         {
             this.categoryService = categoryService;
+            this.razorTemplateHelper = razorTemplateHelper;
         }
 
         [HttpGet]
@@ -34,13 +37,13 @@ namespace Api.Controllers
         
         [HttpPut("update")]
         [Authorize(Roles = AppEnv.Roles.Admin)]
-        public IActionResult Update(Guid id, CategoryDTO category)
+        public IActionResult Update(CategoryDTO category)
         {
-            categoryService.EditCategory(id, category);
+            categoryService.UpdateCategory(category);
             return Ok();
         }
         
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Delete(Guid id)
         {

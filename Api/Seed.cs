@@ -57,6 +57,7 @@ namespace Api
             var devOpsCategory = new Category { Name = "DevOps" };
             var blenderCategory = new Category { Name = "Blender" };
             var unityCategory = new Category { Name = "Unity" };
+            var jsCategory = new Category { Name = "JavaScript" };
 
             EnsureCreateCategories(
                 figmaCategory,
@@ -68,7 +69,8 @@ namespace Api
                 mongoCategory,
                 devOpsCategory,
                 blenderCategory,
-                unityCategory
+                unityCategory,
+                jsCategory
             );
 
             context.SaveChanges();
@@ -131,7 +133,7 @@ namespace Api
 
             context.SaveChanges();
         }
-
+        
         private void EnsureCreateCategories(params Category[] categories)
         {
             foreach (var category in categories)

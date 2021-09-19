@@ -1,0 +1,11 @@
+.place-middle {
+   position: fixed;
+   left: 50%;
+   top: 50%;
+   transform: translate(-50%, -50%);
+}
+
+.site-page-header {
+   border: 1px solid rgb(235, 237, 240);
+   background-color: #fff;
+}

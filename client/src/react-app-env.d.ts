@@ -1,50 +1,11 @@
 /// <reference types="react-scripts" />
 
-interface ICategory {
-   id: string;
-   name: string;
-}
-
-interface ICourse {
-   id: string | null;
-   name: string;
-   description: string;
-   preview: string;
-   categories: ICategory[];
-}
-
-enum SortBy {
-   Relevance,
-   New,
-   Popular,
-   Alphabetically,
-}
-
-interface ICoursesRequest {
-   page: number;
-   perPage: number;
-   sortBy: SortBy;
-   categories: string[];
-}
-
-interface ICourseState {
-   courses: ICourse[];
-   count: number;
-   currentCourse: ICourse | null;
-   status: 'idle' | 'loading' | 'success' | 'error';
-   error: string;
-}
-
-interface ICategoryState {
-   categories: ICategory[];
-   status: 'idle' | 'loading' | 'success' | 'error';
-   error: string;
-}
-
-interface IdentityState {
-   user: IUser | null;
-   status: 'guest' | 'loading' | 'signed' | 'failed' | 'success';
-   error: string;
+interface IRegisterRequest {
+   firstName: string;
+   lastName: string;
+   age: number;
+   email: string;
+   password: string;   
 }
 
 interface ILoginRequest {
@@ -53,31 +14,63 @@ interface ILoginRequest {
    remember: boolean;
 }
 
-interface IRegisterRequest {
-   firstName: string;
-   lastName: string;
-   age: number;
-   email: string;
-   password: string;
-}
-
 interface IUser {
    id: string;
    firstName: string;
    lastName: string;
    age: number;
    email: string;
-   courses: ICourse[];
    role: string;
+   registerAt: string;
+   courses: [];
 }
 
-interface IUserRequest {
+interface IdentityState {
+   user: IUser | undefined;
+   courses: ICourse[];
+   status: 'idle' | 'loading' | 'failed' | 'success' | 'signed';
+   errorMessage: string;
+}
+
+type Sort = 'Relevance' | 'New' | 'Popular' | 'Alphabetically';
+
+interface ICoursesRequest {
    page: number;
    perPage: number;
+   sortBy: Sort;
+   categories: Array<string>;
+}
+
+interface ICourse {
+   id: string;
+   name: string;
+   description: string;
+   preview: string;
+   categories: ICategory[];
+}
+
+interface ICourseState {
+   currentCourse: ICourse | undefined;
+   courses: ICourse[];
+   totalCount: number;
+   status: 'idle' | 'loading' | 'success' | 'deleted' | 'failed';
+   errorMessage: string;
+}
+
+interface ICategory {
+   id: string;
+   name: string;
+   color: string;
+}
+
+interface ICategoryState {
+   categories: ICategory[];
+   status: 'idle' | 'loading' | 'success' | 'failed';
+   errorMessage: string;
 }
 
 interface IUserState {
    users: IUser[];
-   status: 'idle' | 'loading' | 'success' | 'error';
-   error: string;
+   status: 'idle' | 'loading' | 'success' | 'failed';
+   errorMessage: string;
 }

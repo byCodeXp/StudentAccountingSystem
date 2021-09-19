@@ -20,14 +20,9 @@ namespace Data_Access_Layer.Commands
                 return false;
             }
             
-            course.CreatedTimeStamp = DateTime.Now;
-            course.UpdatedTimeStamp = DateTime.Now;
-
-            // TODO: make logging
             try
             {
                 context.Courses.Add(course);
-                context.SaveChanges();
             }
             catch (Exception)
             {
@@ -49,7 +44,6 @@ namespace Data_Access_Layer.Commands
             try
             {
                 context.Courses.Remove(course);
-                context.SaveChanges();
             }
             catch (Exception)
             {
@@ -59,28 +53,21 @@ namespace Data_Access_Layer.Commands
             return true;
         }
 
-        public bool Update(Guid id, Course course)
+        public bool Update(Course newCourse)
         {
-            var courseUpdate = context.Courses.Find(id);
+            var course = context.Courses.Find(newCourse.Id);
 
-            if (courseUpdate == null)
+            if (course == null)
             {
                 return false;
             }
 
-            courseUpdate.Name = course.Name;
-            courseUpdate.Description = course.Description;
-            course.UpdatedTimeStamp = DateTime.Now;
+            course.Name = newCourse.Name;
+            course.Description = newCourse.Description;
+            course.Preview = newCourse.Preview;
+            course.Categories = newCourse.Categories;
 
-            try
-            {
-                context.Courses.Update(courseUpdate);
-                context.SaveChanges();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            context.Courses.Update(course);
 
             return true;
         }

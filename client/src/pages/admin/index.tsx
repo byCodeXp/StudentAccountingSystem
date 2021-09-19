@@ -1,23 +1,27 @@
 import React, { useState } from 'react';
-import { Menu, Row, Col } from 'antd';
-import { AppstoreOutlined, HddOutlined, UserOutlined, ProjectOutlined } from '@ant-design/icons';
-import Users from './users';
-import Courses from './courses';
-
-const { SubMenu } = Menu;
-
-const TabContent = (element: { title: string; content: any }) => {
-   const { title, content } = element;
-   return <>{content}</>;
-};
+import { Col, Menu, Row } from 'antd';
+import {
+   AppstoreOutlined,
+   HddOutlined,
+   UserOutlined,
+   NumberOutlined,
+} from '@ant-design/icons';
+import { CourseTab } from './sections/course';
+import { CategorySection } from './sections/category';
+import { UserSection } from './sections/user';
 
 const items = [
-   { title: 'Dashboard', content: null },
-   { title: 'Users', content: <Users /> },
-   { title: 'Courses', content: <Courses /> },
+   { title: 'Dashboard', icon: <AppstoreOutlined />, content: null },
+   { title: 'Users', icon: <UserOutlined />, content: <UserSection /> },
+   { title: 'Courses', icon: <HddOutlined />, content: <CourseTab /> },
+   {
+      title: 'Categories',
+      icon: <NumberOutlined />,
+      content: <CategorySection />,
+   },
 ];
 
-const Admin = () => {
+export const AdminPage = () => {
    const [active, setActive] = useState(0);
 
    const openTab = (index: number) => setActive(index);
@@ -26,30 +30,18 @@ const Admin = () => {
       <Row gutter={32}>
          <Col span={4}>
             <Menu mode="inline">
-               <Menu.Item onClick={() => openTab(0)} icon={<AppstoreOutlined />}>
-                  Dashboard
-               </Menu.Item>
-               <SubMenu key="users" title="Users" icon={<UserOutlined />}>
-                  <Menu.Item onClick={() => openTab(1)}>All</Menu.Item>
-                  <Menu.Item>Statistics</Menu.Item>
-               </SubMenu>
-               <SubMenu key="courses" title="Courses" icon={<HddOutlined />}>
-                  <Menu.Item onClick={() => openTab(2)}>All</Menu.Item>
-                  <Menu.Item>Statistics</Menu.Item>
-               </SubMenu>
-               <SubMenu key="stats" title="Statistics" icon={<ProjectOutlined />}>
-                  <Menu.Item>All</Menu.Item>
-                  <Menu.Item>Reports</Menu.Item>
-               </SubMenu>
+               {items.map((item, index) => (
+                  <Menu.Item
+                     key={index}
+                     icon={item.icon}
+                     onClick={() => openTab(index)}
+                  >
+                     {item.title}
+                  </Menu.Item>
+               ))}
             </Menu>
          </Col>
-         <Col span={20}>
-            {items[active] && (
-               <TabContent title={items[active].title} content={items[active].content} />
-            )}
-         </Col>
+         <Col span={20}>{items[active].content}</Col>
       </Row>
    );
 };
-
-export default Admin;

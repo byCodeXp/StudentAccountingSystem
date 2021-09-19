@@ -1,23 +1,23 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import identityReducer from '../features/identitySlice';
-import categoryReducer from '../features/categorySlice';
 import courseReducer from '../features/courseSlice';
-import userReducer from '../features/userSlice';
+import categoryReducer from '../features/categorySlice';
+import useReducer from '../features/userSlice';
 
 export const store = configureStore({
-   reducer: {
-      identity: identityReducer,
-      category: categoryReducer,
-      course: courseReducer,
-      user: userReducer,
-   },
+  reducer: {
+    identity: identityReducer,
+    course: courseReducer,
+    category: categoryReducer,
+    user: useReducer
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppThunk<ReturnType = void> = ThunkAction<
-   ReturnType,
-   RootState,
-   unknown,
-   Action<string>
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
 >;

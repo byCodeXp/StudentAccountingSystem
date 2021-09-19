@@ -1,0 +1,41 @@
+@model Data_Transfer_Objects.EmailTemplates.SubscribedEmailModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Demystifying Email Design</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body style="background-color: #dcdcdc; margin: 0; font-family: Calibri, sans-serif; padding: 64px 0 0;">
+<table style="margin-top: 64px; background-color: #ffffff" cellpadding="0" cellspacing="0" align="center" width="600">
+    <tr>
+        <td>
+            <img style="object-fit: cover;" width="600" height="380" src="@Model.Preview" alt="image" />
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 16px 32px;">
+            <p>
+                <b style="color: #525252; font-size: 20px;">@Model.Title</b>
+            </p>
+            <p>
+                Congratulations! You have been subscribed on course which started <b>@Model.Date</b>.
+            </p>
+            <p>
+                We will notify you in 30, 7, and in one day before starting course.
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" style="padding-bottom: 32px">
+            <span style="color: #7684ff">&copy; StudentProgress @DateTime.Now.Year.ToString()</span>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

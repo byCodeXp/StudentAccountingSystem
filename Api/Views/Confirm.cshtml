@@ -1,0 +1,28 @@
+@model string
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Demystifying Email Design</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+<body>
+<p>Hello!</p>
+<p>Thank you for creating your StudentProgress Account.</p>
+<p>
+    To complete your registration, click the link below: <br/>
+    <a href="@Model">Confirm your account</a>
+</p>
+<p>
+    Yours truly, <br/>
+    The StudentProgress Team <br/>
+    <a href="https://localhost:3000">https://www.studentprogress.com</a> <br/>
+    The Drive to Learn
+</p>
+</body>
+</html>

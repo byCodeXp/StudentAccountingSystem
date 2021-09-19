@@ -1,39 +1,46 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
 using Business_Logic.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using SendGrid.Helpers.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Business_Logic.Helpers;
+using Business_Logic.Utils;
+using Data_Access_Layer;
+using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using Microsoft.Extensions.Logging;
+using SendGrid.Helpers.Mail;
 
 namespace Business_Logic.Services
 {
     public class IdentityService
     {
+        private readonly IJwtUtility jwtUtility;
         private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
-        private readonly JwtService jwtService;
-        private readonly EmailService emailService;
         private readonly IMapper mapper;
+        private readonly CourseQuery courseQuery;
         private readonly ILogger<IdentityService> logger;
+        private readonly EmailService emailService;
+        private readonly RazorTemplateHelper razorTemplateHelper;
 
         public IdentityService(
+            IJwtUtility jwtUtility,
             UserManager<User> userManager,
-            SignInManager<User> signInManager,
-            JwtService jwtService,
-            EmailService emailService, IMapper mapper, ILogger<IdentityService> logger)
+            EmailService emailService, IMapper mapper,
+            DataContext context, ILogger<IdentityService> logger, RazorTemplateHelper razorTemplateHelper)
         {
+            this.jwtUtility = jwtUtility;
             this.userManager = userManager;
-            this.signInManager = signInManager;
-            this.jwtService = jwtService;
             this.emailService = emailService;
             this.mapper = mapper;
             this.logger = logger;
+            this.razorTemplateHelper = razorTemplateHelper;
+            courseQuery = new (context);
         }
 
         public async Task RegisterAsync(RegisterRequest request)
@@ -41,13 +48,11 @@ namespace Business_Logic.Services
             var user = mapper.Map<User>(request);
             user.UserName = request.Email;
 
-            logger.LogInformation(user.Email.ToString());
-            
             var identityResult = await userManager.CreateAsync(user, request.Password);
 
             if (!identityResult.Succeeded)
             {
-                throw new HttpResponseException("Invalid credentials", identityResult.Errors);
+                throw new BadRequestRestException("Invalid credentials", identityResult.Errors);
             }
             
             await userManager.AddToRoleAsync(user, AppEnv.Roles.Customer);
@@ -55,27 +60,39 @@ namespace Business_Logic.Services
             var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
             token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            var link = $"https://localhost:5001/api/Identity/ConfirmEmail?email={user.Email}&token={token}";
+            var link = $"https://localhost:5001/api/identity/confirm?email={user.Email}&token={token}";
 
-            // await _emailService.SendMailAsync("Successfully registration", new EmailAddress(user.Email), $"Your activation link: {link}");
+            var template = await razorTemplateHelper.GetTemplateHtmlAsStringAsync("Confirm", link);
+            
+            await emailService.SendMailAsync("Successfully registration", new EmailAddress(user.Email), template);
+
+            logger.LogInformation($"Registered user with id {user.Id}");
         }
 
-        public async Task<string> LoginAsync(LoginRequest request)
+        public async Task<UserResponse> LoginAsync(LoginRequest request)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
 
             if (user == null)
             {
-                throw new HttpResponseException("Invalid credentials");
+                throw new BadRequestRestException("Invalid credentials");
             }
 
-            var result = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
-            if (!result.Succeeded)
+            var checkPassword = await userManager.CheckPasswordAsync(user, request.Password);
+
+            if (!checkPassword)
             {
-                throw new HttpResponseException("Invalid credentials");
+                throw new BadRequestRestException("Invalid credentials");
             }
 
+            var checkEmail = await userManager.IsEmailConfirmedAsync(user);
+
+            if (!checkEmail)
+            {
+                throw new BadRequestRestException("Not confirmed email");
+            }
+            
             // TODO: Add refresh token
 
             string userRole = "";
@@ -93,27 +110,37 @@ namespace Business_Logic.Services
 
             userDto.Role = userRole;
 
-            return jwtService.WriteToken(userDto);
+            var courses = courseQuery.GetCoursesByUserId(user.Id);
+
+            logger.LogInformation($"Was login user with id {user.Id}");
+            
+            return new UserResponse
+            {
+                Token = jwtUtility.GenerateToken(userDto),
+                Courses = mapper.Map<List<CourseDTO>>(courses)
+            };
         }
 
-        public async Task ConfirmEmail(string email, string token)
+        public async Task ConfirmEmail(string email, string emailToken)
         {
             var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
-                throw new HttpResponseException("Invalid credentials");
+                throw new BadRequestRestException("Invalid credentials");
             }
 
-            var codeDecodedBytes = WebEncoders.Base64UrlDecode(token);
+            var codeDecodedBytes = WebEncoders.Base64UrlDecode(emailToken);
             var codeDecoded = Encoding.UTF8.GetString(codeDecodedBytes);
 
             var result = await userManager.ConfirmEmailAsync(user, codeDecoded);
 
             if (!result.Succeeded)
             {
-                throw new HttpResponseException("Email was not confirmed", result.Errors);
+                throw new BadRequestRestException("Email was not confirmed", result.Errors);
             }
+            
+            logger.LogInformation($"User with id {user.Id} confirm email");
         }
     }
 }

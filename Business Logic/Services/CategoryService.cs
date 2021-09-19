@@ -8,6 +8,7 @@ using Data_Access_Layer.Commands;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
+using Microsoft.Extensions.Logging;
 
 namespace Business_Logic.Services
 {
@@ -15,62 +16,62 @@ namespace Business_Logic.Services
     {
         private readonly CategoryQuery categoryQuery;
         private readonly CategoryCommand categoryCommand;
+        private readonly DataContext context;
         private readonly IMapper mapper;
-        
-        public CategoryService(DataContext context, IMapper mapper)
+        private readonly ILogger<CategoryService> logger;
+
+        public CategoryService(DataContext context, IMapper mapper, ILogger<CategoryService> logger)
         {
+            this.context = context;
             this.mapper = mapper;
+            this.logger = logger;
             categoryCommand = new(context);
             categoryQuery = new(context);
         }
 
         public IEnumerable<CategoryDTO> GetCategories()
         {
-            return mapper.Map<IEnumerable<CategoryDTO>>(
-                categoryQuery.GetAll().OrderBy(m => m.Name)
-            );
+            var categories = categoryQuery.GetAll().OrderBy(m => m.Name);
+
+            logger.LogInformation($"Returned {categories.Count()} categories");
+
+            return mapper.Map<List<CategoryDTO>>(categories);
         }
 
-        public CategoryDTO GetCategoryById(Guid id)
+        public void CreateCategory(CategoryDTO category)
         {
-            var category = categoryQuery.GetById(id);
-
-            if (category == null)
+            if (categoryQuery.ExistsWithName(category.Name))
             {
-                throw new HttpResponseException($"Category with id: {id}, was not found");
-            }
-
-            return mapper.Map<CategoryDTO>(category);
-        }
-
-        public void CreateCategory(CategoryDTO categoryDto)
-        {
-            if (categoryQuery.ExistsWithName(categoryDto.Name))
-            {
-                throw new HttpResponseException($"Category with name: {categoryDto.Name} already exists");
+                throw new BadRequestRestException($"Category with name: {category.Name} already exists");
             }
             
-            categoryCommand.Add(mapper.Map<Category>(categoryDto));
+            categoryCommand.Add(mapper.Map<Category>(category));
+            context.SaveChanges();
+            
+            logger.LogInformation($"Created category with name \"{category.Name}\"");
         }
 
-        public void EditCategory(Guid id, CategoryDTO categoryDto)
+        public void UpdateCategory(CategoryDTO categoryDto)
         {
-            var category = categoryQuery.GetById(id);
+            var category = categoryQuery.GetById(categoryDto.Id);
 
             if (category == null)
             {
-                throw new HttpResponseException($"Category with id: {id}, was not found");
+                throw new NotFoundRestException($"Category with id: {categoryDto.Id}, was not found");
             }
 
-            if (categoryQuery.ExistsWithName(categoryDto.Name))
+            if (categoryQuery.ExistsWithName(categoryDto.Name, category))
             {
-                throw new HttpResponseException($"Category with name: {categoryDto.Name} already exists");
+                throw new BadRequestRestException($"Category with name: {categoryDto.Name} already exists");
             }
 
             category.Name = categoryDto.Name;
-            category.UpdatedTimeStamp = DateTime.UtcNow;
+            category.Color = categoryDto.Color;
             
             categoryCommand.Update(category);
+            context.SaveChanges();
+            
+            logger.LogInformation($"Updated category with name \"{category.Name}\"");
         }
 
         public void RemoveCategory(Guid id)
@@ -79,10 +80,13 @@ namespace Business_Logic.Services
 
             if (category == null)
             {
-                throw new HttpResponseException($"Category with id: {id}, was not found");
+                throw new NotFoundRestException($"Category with id: {id}, was not found");
             }
             
             categoryCommand.Delete(category);
+            context.SaveChanges();
+            
+            logger.LogInformation($"Removed category with name \"{category.Name}\"");
         }
     }
 }

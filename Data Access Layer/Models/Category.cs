@@ -1,23 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data_Access_Layer.Models
 {
     public class Category : Entity
     {
         public string Name { get; set; }
-        public ICollection<Course> Courses { get; set; }
+        public string Color { get; set; }
+        public List<Course> Courses { get; set; }
     }
 
-    public class CategoryConfiguration : IEntityTypeConfiguration<Category>
+    public class CategoryConfiguration : EntityConfiguration<Category>
     {
-        public void Configure(EntityTypeBuilder<Category> builder)
+        public override void Configure(EntityTypeBuilder<Category> builder)
         {
+            base.Configure(builder);
             builder.HasIndex(m => m.Name).IsUnique();
             builder.Property(m => m.Name).IsRequired();
-            builder.Property(m => m.CreatedTimeStamp).IsRequired();
-            builder.Property(m => m.UpdatedTimeStamp).IsRequired();
             builder.HasMany(m => m.Courses).WithMany(m => m.Categories);
         }
     }

@@ -14,19 +14,16 @@ namespace Data_Access_Layer.Commands
         public void Add(Category category)
         {
             context.Categories.Add(category);
-            context.SaveChanges();
         }
 
         public void Update(Category category)
         {
             context.Categories.Update(category);
-            context.SaveChanges();
         }
 
         public void Delete(Category category)
         {
             context.Categories.Remove(category);
-            context.SaveChanges(); // TODO: in services
         }
     }
 }

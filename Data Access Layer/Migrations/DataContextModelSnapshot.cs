@@ -55,15 +55,22 @@ namespace Data_Access_Layer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedTimeStamp")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 9, 12, 13, 28, 15, 744, DateTimeKind.Utc).AddTicks(1454));
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedTimeStamp")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 9, 12, 13, 28, 15, 752, DateTimeKind.Utc).AddTicks(22));
 
                     b.HasKey("Id");
 
@@ -82,7 +89,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("CreatedTimeStamp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 1, 7, 40, 28, 755, DateTimeKind.Utc).AddTicks(9694));
+                        .HasDefaultValue(new DateTime(2021, 9, 12, 13, 28, 15, 773, DateTimeKind.Utc).AddTicks(8824));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -99,7 +106,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 1, 7, 40, 28, 761, DateTimeKind.Utc).AddTicks(1568));
+                        .HasDefaultValue(new DateTime(2021, 9, 12, 13, 28, 15, 774, DateTimeKind.Utc).AddTicks(274));
 
                     b.Property<int>("Views")
                         .HasColumnType("int");

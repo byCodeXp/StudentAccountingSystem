@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Collections.Generic;
 
 namespace Data_Access_Layer.Models
@@ -11,18 +9,17 @@ namespace Data_Access_Layer.Models
         public string Description { get; set; }
         public string Preview { get; set; }
         public int Views { get; set; }
-        public ICollection<Category> Categories { get; set; }
-        public ICollection<User> SubscribedUsers { get; set; }
+        public List<Category> Categories { get; set; } = new();
+        public List<User> SubscribedUsers { get; set; } = new();
     }
 
-    public class CourseConfiguration : IEntityTypeConfiguration<Course>
+    public class CourseConfiguration : EntityConfiguration<Course>
     {
-        public void Configure(EntityTypeBuilder<Course> builder)
+        public override void Configure(EntityTypeBuilder<Course> builder)
         {
+            base.Configure(builder);
             builder.Property(m => m.Name).HasMaxLength(128).IsRequired();
             builder.Property(m => m.Description).IsRequired();
-            builder.Property(m => m.CreatedTimeStamp).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnAdd();
-            builder.Property(m => m.UpdatedTimeStamp).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnUpdate();
             builder.HasMany(m => m.Categories).WithMany(m => m.Courses);
             builder.HasMany(m => m.SubscribedUsers).WithMany(m => m.SubscribedCourses);
         }

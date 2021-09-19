@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
+using Business_Logic.Helpers;
+using Business_Logic.Utils;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using FluentValidation;
@@ -40,6 +42,7 @@ namespace Api
             services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
             })
             .AddEntityFrameworkStores<DataContext>()
             .AddDefaultTokenProviders()
@@ -58,7 +61,6 @@ namespace Api
             .AddJwtBearer(jwt =>
             {
                 var secret = Encoding.ASCII.GetBytes(Configuration["Jwt:Secret"]);
-
                 jwt.SaveToken = true;
                 jwt.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -72,16 +74,23 @@ namespace Api
             });
 
             // TODO: Add facebook authentication
-
+            
+            // Services
             services.AddScoped<IdentityService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<UserService>();
             services.AddScoped<CourseService>();
 
-            services.AddScoped<JwtService>();
             services.AddScoped<EmailService>();
             services.AddScoped<JobService>();
+            
+            // Utilities
+            services.AddScoped<IJwtUtility, JwtUtility>();
 
+            // Helpers
+
+            services.AddScoped<RazorTemplateHelper>();
+            
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -96,22 +105,23 @@ namespace Api
                 })
             );
 
-            services.AddHangfireServer();
+            // services.AddHangfireServer();
 
             services.AddFluentValidation(options =>
             {
-                options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+                options.DisableDataAnnotationsValidation = true;
                 options.RegisterValidatorsFromAssemblyContaining<Startup>();
             });
 
+            // Validations
             services.AddTransient<IValidator<UserDTO>, UserDTOValidation>();
             services.AddTransient<IValidator<CourseDTO>, CourseDTOValidation>();
             services.AddTransient<IValidator<CategoryDTO>, CategoryDTOValidation>();
-            services.AddTransient<IValidator<GetCoursesRequest>, GetPageRequestValid>();
+            services.AddTransient<IValidator<CoursesRequest>, GetPageRequestValid>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidation>();
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidation>();
             
-            services.AddControllers();
+            services.AddControllersWithViews();
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" }));
         }
 
@@ -124,7 +134,6 @@ namespace Api
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
 
             app.UseCors(options => options
@@ -141,11 +150,10 @@ namespace Api
 
             app.UseMiddleware<ErrorsHandlerMiddleware>();
 
-            app.UseAuthentication()
-               .UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseHangfireDashboard();
-            backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
 
             app.UseEndpoints(endpoints =>
             {

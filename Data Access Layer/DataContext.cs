@@ -9,14 +9,14 @@ namespace Data_Access_Layer
         public DataContext(DbContextOptions<DataContext> options)
             : base(options)
         {
-
+            
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.ApplyConfiguration(new UserConfiguration());
-            builder.ApplyConfiguration(new CourseConfiguration());
             builder.ApplyConfiguration(new CategoryConfiguration());
+            builder.ApplyConfiguration(new CourseConfiguration());
+            builder.ApplyConfiguration(new UserConfiguration());
 
             base.OnModelCreating(builder);
         }

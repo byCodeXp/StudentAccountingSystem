@@ -34,7 +34,12 @@ namespace Api.Middlewares
                 
                 switch (exception)
                 {
-                    case HttpResponseException ex:
+                    case NotFoundRestException ex:
+                        response.StatusCode = (int) HttpStatusCode.NotFound;
+                        message = ex.Message;
+                        logger.LogError(exception, message);
+                        break;
+                    case BadRequestRestException ex:
                         response.StatusCode = (int) HttpStatusCode.BadRequest;
                         message = ex.Message;
                         logger.LogError(exception, message);

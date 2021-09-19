@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Data_Access_Layer.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data_Access_Layer.Queries
 {
@@ -15,10 +17,10 @@ namespace Data_Access_Layer.Queries
 
         public IQueryable<User> GetAll()
         {
-            return context.Users;
+            return context.Users.Include(m => m.SubscribedCourses);
         }
 
-        public User GetOne(Guid id)
+        public User GetById(Guid id)
         {
             return context.Users.Find(id);
         }
@@ -27,5 +29,11 @@ namespace Data_Access_Layer.Queries
         {
             return context.Users.Count();
         }
+
+        public IEnumerable<Course> GetCoursesByUser (User user)
+        {
+            return context.Users.Include(m => m.SubscribedCourses).FirstOrDefault(m => m.Id == user.Id)?.SubscribedCourses;
+        }
+        
     }
 }

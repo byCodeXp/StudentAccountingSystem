@@ -1,4 +1,3 @@
-using System.Linq;
 using Data_Access_Layer.Models;
 
 namespace Data_Access_Layer.Commands
@@ -12,17 +11,14 @@ namespace Data_Access_Layer.Commands
             this.context = context;
         }
 
-        public bool SubscribeCourse(User user, Course course)
+        public void SubscribeCourse(User user, Course course)
         {
-            if (user.SubscribedCourses.Any(m => m.Id == course.Id))
-            {
-                return false;
-            }
-
             user.SubscribedCourses.Add(course);
-            context.SaveChanges();
-            
-            return true;
+        }
+
+        public void UnsubscribeCourse(User user, Course course)
+        {
+            user.SubscribedCourses.Remove(course);
         }
     }
 }

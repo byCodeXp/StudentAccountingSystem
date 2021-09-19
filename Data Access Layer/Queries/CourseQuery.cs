@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Data_Access_Layer.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,6 @@ namespace Data_Access_Layer.Queries
     public class CourseQuery
     {
         private readonly DataContext context;
-        
 
         public CourseQuery(DataContext context)
         {
@@ -25,9 +25,16 @@ namespace Data_Access_Layer.Queries
             return context.Courses.Include(m => m.Categories).FirstOrDefault(m => m.Id == id);
         }
 
-        public int GetCount()
+        public IEnumerable<Course> GetCoursesByUserId(string id)
         {
-            return context.Courses.Count();
+            var user = context.Users.Include(m => m.SubscribedCourses).FirstOrDefault(m => m.Id == id);
+
+            if (user == null)
+            {
+                return null;
+            }
+            
+            return user.SubscribedCourses;
         }
     }
 }

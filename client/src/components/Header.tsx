@@ -1,25 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Layout, Row, Space, Avatar, Typography, Menu, Dropdown, Badge } from 'antd';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { selectUser, logout } from '../features/identitySlice';
-import { BellOutlined } from '@ant-design/icons';
+import {
+   Row,
+   Layout,
+   Button,
+   Avatar,
+   Dropdown,
+   Menu,
+   Space,
+   Typography,
+} from 'antd';
 
-export const Header = (props: { user: IUser | null }) => {
-   const dispatch = useAppDispatch();
-
-   const user = useAppSelector(selectUser);
-   const name = `${user?.firstName} ${user?.lastName}`;
-
-   const handleClickLogout = () => {
-      dispatch(logout());
-   };
-
+export const Header = (props: {
+   signed: boolean;
+   user?: IUser;
+   onLogout: any;
+}) => {
    const menu = (
       <Menu style={{ marginTop: 16 }}>
          <Menu.Item key="1" disabled>
             <Typography.Text>
-               Signed as <b>{user?.firstName + ' ' + user?.lastName}</b>
+               Signed as{' '}
+               <b>{`${props.user?.firstName} ${props.user?.lastName}`}</b>
             </Typography.Text>
          </Menu.Item>
          <Menu.Item key="2">
@@ -34,7 +36,7 @@ export const Header = (props: { user: IUser | null }) => {
             </Menu.Item>
          )}
          <Menu.Divider />
-         <Menu.Item onClick={handleClickLogout} key="5">
+         <Menu.Item key="5" onClick={props.onLogout}>
             Log out
          </Menu.Item>
       </Menu>
@@ -42,45 +44,53 @@ export const Header = (props: { user: IUser | null }) => {
 
    return (
       <Layout.Header>
-         <Row justify="space-between" align="middle">
-            <Link to="/">
-               <Button type="link">StudentProgress</Button>
-            </Link>
-            <div style={{ display: 'flex', gap: 24 }}>
-               <Link to="/">Home</Link>
+         <Row justify="space-between" align="middle" style={{ height: 64 }}>
+            <Button
+               type="link"
+               style={{ fontSize: 18, display: 'flex', alignItems: 'center' }}
+            >
+               StudentProgress
+            </Button>
+            <div
+               style={{
+                  display: 'flex',
+                  gap: 24,
+                  textDecoration: 'underline',
+                  color: '#ffffff',
+               }}
+            >
+               <Link to="/" style={{ color: '#ffffff' }}>
+                  Home
+               </Link>
                <Link to="/catalog/1">Catalog</Link>
-               <Link to="/about">About</Link>
-               <Link to="/contact">Contact</Link>
+               <Link to="/about" style={{ color: '#ffffff' }}>
+                  About
+               </Link>
             </div>
-            {!props.user && (
+            {props.signed === true ? (
+               <Space align="center">
+                  <Dropdown overlay={menu} trigger={['click']}>
+                     <Button type="text" style={{ padding: 0 }}>
+                        <Space
+                           style={{ cursor: 'pointer' }}
+                           className="ant-dropdown-link"
+                        >
+                           <Avatar
+                              style={{
+                                 color: '#f56a00',
+                                 backgroundColor: '#fde3cf',
+                              }}
+                           >
+                              {props.user?.firstName.slice(0, 1).toUpperCase()}
+                           </Avatar>
+                        </Space>
+                     </Button>
+                  </Dropdown>
+               </Space>
+            ) : (
                <Link to="/login">
                   <Button type="link">Login</Button>
                </Link>
-            )}
-            {props.user && (
-               <div
-                  style={{
-                     display: 'flex',
-                     placeItems: 'center',
-                  }}
-               >
-                  <div style={{ marginRight: 32 }}>
-                     <Badge dot>
-                        <BellOutlined style={{ color: '#fff' }} />
-                     </Badge>
-                  </div>
-                  <Space align="center">
-                     <Dropdown overlay={menu} trigger={['click']}>
-                        <a className="ant-dropdown-link" onClick={(e) => e.preventDefault()}>
-                           <Space>
-                              <Avatar style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>
-                                 {name.slice(0, 1).toUpperCase()}
-                              </Avatar>
-                           </Space>
-                        </a>
-                     </Dropdown>
-                  </Space>
-               </div>
             )}
          </Row>
       </Layout.Header>

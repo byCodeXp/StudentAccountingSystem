@@ -19,8 +19,8 @@ namespace Api.Controllers
             this.courseService = courseService;
         }
 
-        [HttpGet("get")]
-        public IActionResult Get([FromQuery] GetCoursesRequest request)
+        [HttpPost("get")]
+        public IActionResult Get([FromBody] CoursesRequest request)
         {
             return Ok(courseService.GetCourses(request));
         }
@@ -28,7 +28,13 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            return Ok(courseService.GetCourseById(id));
+            return Ok(courseService.GetOneCourse(id));
+        }
+
+        [HttpGet("user/{id}/courses")]
+        public IActionResult GetUserCourses(string id)
+        {
+            return Ok(courseService.GetCoursesByUserId(id));
         }
 
         [HttpPost("create")]
@@ -38,7 +44,7 @@ namespace Api.Controllers
             return Ok(courseService.CreateCourse(course));
         }
 
-        [HttpDelete("delete")]
+        [HttpDelete("delete/{id}")]
         [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Delete(Guid id)
         {
@@ -48,9 +54,9 @@ namespace Api.Controllers
 
         [HttpPut("update")]
         [Authorize(Roles = AppEnv.Roles.Admin)]
-        public IActionResult Update(Guid id, [FromBody] CourseDTO course)
+        public IActionResult Update([FromBody] CourseDTO course)
         {
-            return Ok(courseService.EditCourse(id, course));
+            return Ok(courseService.EditCourse(course));
         }
     }
 }

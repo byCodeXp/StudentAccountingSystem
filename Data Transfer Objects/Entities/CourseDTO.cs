@@ -10,8 +10,8 @@ namespace Data_Transfer_Objects.Entities
         public string Name { get; set; }
         public string Description { get; set; }
         public string Preview { get; set; }
-        
-        public ICollection<CategoryDTO> Categories { get; set; }
+        public int Views { get; set; }
+        public List<CategoryDTO> Categories { get; set; }
     }
 
     public class CourseDTOValidation : AbstractValidator<CourseDTO>
