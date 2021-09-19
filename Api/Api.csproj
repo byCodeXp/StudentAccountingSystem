@@ -35,4 +35,8 @@
     <ProjectReference Include="..\Data Transfer Objects\Data Transfer Objects.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Logs" />
+  </ItemGroup>
+
 </Project>
