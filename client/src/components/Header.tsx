@@ -12,7 +12,6 @@ import {
 } from 'antd';
 
 export const Header = (props: {
-   signed: boolean;
    user?: IUser;
    onLogout: any;
 }) => {
@@ -20,8 +19,7 @@ export const Header = (props: {
       <Menu style={{ marginTop: 16 }}>
          <Menu.Item key="1" disabled>
             <Typography.Text>
-               Signed as{' '}
-               <b>{`${props.user?.firstName} ${props.user?.lastName}`}</b>
+               Signed as <b>{`${props.user?.firstName} ${props.user?.lastName}`}</b>
             </Typography.Text>
          </Menu.Item>
          <Menu.Item key="2">
@@ -67,7 +65,7 @@ export const Header = (props: {
                   About
                </Link>
             </div>
-            {props.signed === true ? (
+            {props.user ? (
                <Space align="center">
                   <Dropdown overlay={menu} trigger={['click']}>
                      <Button type="text" style={{ padding: 0 }}>

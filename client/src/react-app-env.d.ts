@@ -35,6 +35,7 @@ interface IdentityState {
 type Sort = 'Relevance' | 'New' | 'Popular' | 'Alphabetically';
 
 interface ICoursesRequest {
+   search?: string;
    page: number;
    perPage: number;
    sortBy: Sort;

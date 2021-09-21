@@ -3,16 +3,9 @@ using FluentValidation;
 
 namespace Data_Transfer_Objects.Requests
 {
-    public enum SortBy
-    {
-        Relevance,
-        New,
-        Popular,
-        Alphabetically
-    };
-    
     public class CoursesRequest
     {
+        public string Search { get; set; }
         public int Page { get; set; }
         public int PerPage { get; set; }
         public string SortBy { get; set; }

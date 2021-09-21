@@ -7,7 +7,7 @@ using Data_Transfer_Objects.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Business_Logic.Utils
+namespace Business_Logic.Helpers
 {
     public class JwtModel
     {
@@ -20,18 +20,18 @@ namespace Business_Logic.Utils
         public DateTime Expires { get; set; }
     }
     
-    public interface IJwtUtility
+    public interface IJwtHelper
     {
         public string GenerateToken(UserDTO user);
         public JwtModel DecodeToken(string token);
         public JwtSecurityToken Verify(string token);
     }
-    
-    public class JwtUtility : IJwtUtility
+
+    public class JwtHelper : IJwtHelper
     {
         private readonly SymmetricSecurityKey symmetricSecurityKey;
         
-        public JwtUtility(IConfiguration configuration)
+        public JwtHelper(IConfiguration configuration)
         {
             var secret = Encoding.ASCII.GetBytes(configuration["Jwt:Secret"]);
             symmetricSecurityKey = new SymmetricSecurityKey(secret);

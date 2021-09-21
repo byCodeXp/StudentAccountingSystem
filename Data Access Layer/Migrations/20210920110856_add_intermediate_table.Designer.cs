@@ -4,14 +4,16 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210920110856_add_intermediate_table")]
+    partial class add_intermediate_table
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +48,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("CreatedTimeStamp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 281, DateTimeKind.Utc).AddTicks(4043));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 11, 8, 55, 631, DateTimeKind.Utc).AddTicks(33));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -55,7 +57,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 292, DateTimeKind.Utc).AddTicks(1107));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 11, 8, 55, 634, DateTimeKind.Utc).AddTicks(5570));
 
                     b.HasKey("Id");
 
@@ -74,7 +76,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("CreatedTimeStamp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 336, DateTimeKind.Utc).AddTicks(6664));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 11, 8, 55, 644, DateTimeKind.Utc).AddTicks(6507));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -91,7 +93,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 336, DateTimeKind.Utc).AddTicks(7965));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 11, 8, 55, 644, DateTimeKind.Utc).AddTicks(7032));
 
                     b.Property<int>("Views")
                         .HasColumnType("int");
@@ -99,6 +101,23 @@ namespace Data_Access_Layer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("Data_Access_Layer.Models.Job", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("JobId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SubscribeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ScheduledJobs");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.Subscribe", b =>
@@ -109,9 +128,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<Guid?>("CourseId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Jobs")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");

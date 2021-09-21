@@ -1,6 +1,4 @@
-import { request } from 'http';
 import { createClient, responseData, responseError } from '../api/apiService';
-const qs = require('qs');
 
 const client = createClient('course');
 

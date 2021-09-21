@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Col, Menu, Row } from 'antd';
 import {
    AppstoreOutlined,
@@ -26,10 +26,14 @@ export const AdminPage = () => {
 
    const openTab = (index: number) => setActive(index);
 
+   const [width, setWidth] = useState(window.innerWidth);
+
+   useEffect(() => window.onresize = () => setWidth(window.innerWidth), []);
+
    return (
       <Row gutter={32}>
-         <Col span={4}>
-            <Menu mode="inline">
+         <Col xxl={{ span: 4 }} xl={{ span: 5 }} span={24} style={{ marginBottom: 32 }}>
+            <Menu mode={width <= 1200 ? 'horizontal' : 'inline'}>
                {items.map((item, index) => (
                   <Menu.Item
                      key={index}
@@ -41,7 +45,7 @@ export const AdminPage = () => {
                ))}
             </Menu>
          </Col>
-         <Col span={20}>{items[active].content}</Col>
+         <Col xxl={{ span: 20 }} xl={{ span: 19 }} span={24}>{items[active].content}</Col>
       </Row>
    );
 };

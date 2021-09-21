@@ -21,7 +21,6 @@ namespace Data_Access_Layer.Models
             builder.Property(m => m.Name).HasMaxLength(128).IsRequired();
             builder.Property(m => m.Description).IsRequired();
             builder.HasMany(m => m.Categories).WithMany(m => m.Courses);
-            builder.HasMany(m => m.SubscribedUsers).WithMany(m => m.SubscribedCourses);
         }
     }
 }

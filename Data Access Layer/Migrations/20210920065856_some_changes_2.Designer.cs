@@ -4,14 +4,16 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210920065856_some_changes_2")]
+    partial class some_changes_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +36,21 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("CategoryCourse");
                 });
 
+            modelBuilder.Entity("CourseUser", b =>
+                {
+                    b.Property<Guid>("SubscribedCoursesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("SubscribedUsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("SubscribedCoursesId", "SubscribedUsersId");
+
+                    b.HasIndex("SubscribedUsersId");
+
+                    b.ToTable("UserCourses");
+                });
+
             modelBuilder.Entity("Data_Access_Layer.Models.Category", b =>
                 {
                     b.Property<Guid>("Id")
@@ -46,7 +63,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("CreatedTimeStamp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 281, DateTimeKind.Utc).AddTicks(4043));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 6, 58, 55, 398, DateTimeKind.Utc).AddTicks(5917));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -55,7 +72,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 292, DateTimeKind.Utc).AddTicks(1107));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 6, 58, 55, 402, DateTimeKind.Utc).AddTicks(3786));
 
                     b.HasKey("Id");
 
@@ -74,7 +91,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("CreatedTimeStamp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 336, DateTimeKind.Utc).AddTicks(6664));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 6, 58, 55, 413, DateTimeKind.Utc).AddTicks(4505));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -91,7 +108,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .ValueGeneratedOnUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 20, 21, 12, 3, 336, DateTimeKind.Utc).AddTicks(7965));
+                        .HasDefaultValue(new DateTime(2021, 9, 20, 6, 58, 55, 413, DateTimeKind.Utc).AddTicks(5121));
 
                     b.Property<int>("Views")
                         .HasColumnType("int");
@@ -99,30 +116,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Courses");
-                });
-
-            modelBuilder.Entity("Data_Access_Layer.Models.Subscribe", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CourseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Jobs")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Subscribes");
                 });
 
             modelBuilder.Entity("Data_Access_Layer.Models.User", b =>
@@ -357,19 +350,19 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Data_Access_Layer.Models.Subscribe", b =>
+            modelBuilder.Entity("CourseUser", b =>
                 {
-                    b.HasOne("Data_Access_Layer.Models.Course", "Course")
+                    b.HasOne("Data_Access_Layer.Models.Course", null)
                         .WithMany()
-                        .HasForeignKey("CourseId");
+                        .HasForeignKey("SubscribedCoursesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Data_Access_Layer.Models.User", "User")
+                    b.HasOne("Data_Access_Layer.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Course");
-
-                    b.Navigation("User");
+                        .HasForeignKey("SubscribedUsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

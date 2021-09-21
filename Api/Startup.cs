@@ -18,7 +18,6 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 using Business_Logic.Helpers;
-using Business_Logic.Utils;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using FluentValidation;
@@ -76,6 +75,7 @@ namespace Api
             // TODO: Add facebook authentication
             
             // Services
+
             services.AddScoped<IdentityService>();
             services.AddScoped<CategoryService>();
             services.AddScoped<UserService>();
@@ -84,11 +84,8 @@ namespace Api
             services.AddScoped<EmailService>();
             services.AddScoped<JobService>();
             
-            // Utilities
-            services.AddScoped<IJwtUtility, JwtUtility>();
-
             // Helpers
-
+            services.AddScoped<IJwtHelper, JwtHelper>();
             services.AddScoped<RazorTemplateHelper>();
             
             services.AddHangfire(configuration => configuration
@@ -105,7 +102,7 @@ namespace Api
                 })
             );
 
-            // services.AddHangfireServer();
+            services.AddHangfireServer();
 
             services.AddFluentValidation(options =>
             {

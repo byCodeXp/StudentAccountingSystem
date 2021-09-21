@@ -11,39 +11,45 @@ using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
 using Business_Logic.Exceptions;
 using Business_Logic.Helpers;
-using Business_Logic.Utils;
 using Data_Transfer_Objects.EmailTemplates;
 using Data_Transfer_Objects.Requests;
 using Data_Transfer_Objects.ViewModels;
+using Hangfire;
+using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 
 namespace Business_Logic.Services
 {
     public class UserService
     {
-        private readonly IJwtUtility jwtUtility;
         private readonly UserManager<User> userManager;
         private readonly CourseQuery courseQuery;
-        private readonly UserCommand userCommand;
         private readonly UserQuery userQuery;
+        private readonly SubscribeCommand subscribeCommand;
+        private readonly SubscribeQuery subscribeQuery;
         private readonly IMapper mapper;
         private readonly DataContext context;
         private readonly EmailService emailService;
         private readonly RazorTemplateHelper razorTemplateHelper;
+        private readonly JobService jobService;
+        private readonly IJwtHelper jwtHelper;
+        private readonly ILogger<UserService> logger;
 
         public UserService(
-            IJwtUtility jwtUtility,
             UserManager<User> userManager,
             IMapper mapper,
-            DataContext context, EmailService emailService, RazorTemplateHelper razorTemplateHelper)
+            DataContext context, EmailService emailService, RazorTemplateHelper razorTemplateHelper, JobService jobService, ILogger<UserService> logger, IJwtHelper jwtHelper)
         {
-            this.jwtUtility = jwtUtility;
             this.userManager = userManager;
             this.mapper = mapper;
             this.context = context;
             this.emailService = emailService;
             this.razorTemplateHelper = razorTemplateHelper;
-            userCommand = new(context);
+            this.jobService = jobService;
+            this.logger = logger;
+            this.jwtHelper = jwtHelper;
+            subscribeCommand = new(context);
+            subscribeQuery = new(context);
             courseQuery = new(context);
             userQuery = new(context);
         }
@@ -52,13 +58,46 @@ namespace Business_Logic.Services
         
         public UserVM GetUsers(UsersRequest request)
         {
-            // TODO: add sort
+            var users = userQuery.GetAll();
 
-            var users = userQuery.GetAll().OrderBy(m => m.CreatedTimeStamp).Skip(Offset(request.Page, request.PerPage)).Take(request.PerPage);
+            // Search
+            
+            if (string.IsNullOrEmpty(request.SearchByFirstName))
+            {
+                users = users.Where(m => m.FirstName.Contains(request.SearchByFirstName) || m.LastName.Contains(request.SearchByFirstName));
+            }
+            
+            if (string.IsNullOrEmpty(request.SearchByLastName))
+            {
+                users = users.Where(m => m.FirstName.Contains(request.SearchByLastName) || m.LastName.Contains(request.SearchByLastName));
+            }
+            
+            // Sort
+            
+            switch (request.SortBy)
+            {
+                case "FirstName":
+                    users = request.Ascending ? users.OrderBy(m => m.FirstName) : users.OrderByDescending(m => m.FirstName);
+                    break;
+                case "LastName":
+                    users = request.Ascending ? users.OrderBy(m => m.LastName) : users.OrderByDescending(m => m.LastName);
+                    break;
+                case "Age":
+                    users = request.Ascending ? users.OrderBy(m => m.Age) : users.OrderByDescending(m => m.Age);
+                    break;
+            }
+
+            // Total count
+            
+            var count = users.Count();
+            
+            // Pagination
+            
+            users = users.Skip(Offset(request.Page, request.PerPage)).Take(request.PerPage);
             
             return new UserVM
             {
-                TotalCount = userQuery.GetCount(),
+                TotalCount = count,
                 Users = mapper.Map<List<UserDTO>>(users)
             };
         }
@@ -79,7 +118,7 @@ namespace Business_Logic.Services
         {
             var token = bearerToken.Split(" ").Last();
             
-            var userId = jwtUtility.DecodeToken(token).Issuer;
+            var userId = jwtHelper.DecodeToken(token).Issuer;
 
             var user = await userManager.FindByIdAsync(userId);
 
@@ -88,7 +127,7 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"User was not found");
             }
 
-            var courses = courseQuery.GetCoursesByUserId(user.Id);
+            var courses = subscribeQuery.GetUserCourses(user);
 
             return mapper.Map<List<CourseDTO>>(courses);
         }
@@ -96,7 +135,7 @@ namespace Business_Logic.Services
         public async Task SubscribeCourseAsync(SubscribeRequest request, string bearerToken)
         {
             var token = bearerToken.Split(" ").Last();
-
+            
             var course = courseQuery.GetOne(request.CourseId);
 
             if (course == null)
@@ -104,7 +143,7 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"Course with id: {request.CourseId}, was not found");
             }
 
-            var userId = jwtUtility.DecodeToken(token).Issuer;
+            var userId = jwtHelper.DecodeToken(token).Issuer;
 
             var user = await userManager.FindByIdAsync(userId);
             
@@ -117,10 +156,12 @@ namespace Business_Logic.Services
             {
                 throw new BadRequestRestException($"Course with id: {request.CourseId}, cannot be subscribed on user with id: {user.Id}");
             }
-            
-            userCommand.SubscribeCourse(user, course);
-            await context.SaveChangesAsync();
 
+            var jobs = jobService.ScheduleCourseReminder(mapper.Map<UserDTO>(user), mapper.Map<CourseDTO>(course), request.Date);
+
+            subscribeCommand.Subscribe(user, course, jobs.ToList());
+            await context.SaveChangesAsync();
+            
             var template = await razorTemplateHelper.GetTemplateHtmlAsStringAsync("Subscribed", new SubscribedEmailModel()
             {
                 Preview = course.Preview,
@@ -129,12 +170,11 @@ namespace Business_Logic.Services
             });
             
             await emailService.SendMailAsync("Course subscribe success", new EmailAddress(user.Email), template);
+            
         }
 
         public async Task UnsubscribeFromCourse(Guid courseId, string token)
         {
-            // TODO: remove jobs from hangfire
-            
             var course = courseQuery.GetOne(courseId);
 
             if (course == null)
@@ -144,7 +184,7 @@ namespace Business_Logic.Services
             
             var editedToken = token.Replace("Bearer ", "");
             
-            var userId = jwtUtility.DecodeToken(editedToken).Issuer;
+            var userId = jwtHelper.DecodeToken(editedToken).Issuer;
 
             var user = await userManager.FindByIdAsync(userId);
             
@@ -153,12 +193,18 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"User was not found");
             }
 
-            if (userQuery.GetCoursesByUser(user).All(m => m.Id != courseId))
+            var subscribe = subscribeCommand.Unsubscribe(user, course);
+            
+            if (subscribe == null)
             {
                 throw new BadRequestRestException($"Course with id: {courseId}, cannot be unsubscribed on user with id: {user.Id}");
             }
+
+            foreach (var job in subscribe.Jobs)
+            {
+                BackgroundJob.Delete(job);
+            }
             
-            userCommand.UnsubscribeCourse(user, course);
             await context.SaveChangesAsync();
         }
     }

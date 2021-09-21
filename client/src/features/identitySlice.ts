@@ -63,6 +63,7 @@ const identitySlice = createSlice({ // Rename to - accountSlice
       },
       logout: (state) => {
          state.status = 'idle';
+         state.user = undefined;
          storageUtil.clear();
       },
       resetStatus: (state) => {
@@ -124,7 +125,7 @@ const identitySlice = createSlice({ // Rename to - accountSlice
             state.status = 'loading';
          })
          .addCase(unsubscribeCourseAsync.fulfilled, (state, action) => {
-            const index = state.courses.findIndex(e => e.id == action.payload.id);
+            const index = state.courses.findIndex(e => e.id === action.payload.id);
             if (index !== -1) {
                state.courses = [...state.courses.slice(0, index), ...state.courses.slice(index + 1)];
             }

@@ -11,11 +11,6 @@ namespace Data_Access_Layer.Commands
             this.context = context;
         }
 
-        public void SubscribeCourse(User user, Course course)
-        {
-            user.SubscribedCourses.Add(course);
-        }
-
         public void UnsubscribeCourse(User user, Course course)
         {
             user.SubscribedCourses.Remove(course);

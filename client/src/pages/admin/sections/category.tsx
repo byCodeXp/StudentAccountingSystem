@@ -14,7 +14,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { createCategoryAsync, deleteCategoryAsync, selectCategories, updateCategoryAsync } from '../../../features/categorySlice';
 import { HeadRow } from '../components/headRow';
-import { CompactPicker, TwitterPicker } from 'react-color';
+import { CompactPicker } from 'react-color';
 
 export const CategorySection = () => {
    const dispatch = useAppDispatch();
@@ -78,6 +78,7 @@ export const CategorySection = () => {
                defaultPageSize: 4,
             }}
             dataSource={categories}
+            rowKey={item => item.id}
             columns={[
                {
                   title: 'Name',

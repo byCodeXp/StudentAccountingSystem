@@ -137,7 +137,7 @@ export const CourseTab = () => {
          });
          dispatch(resetStatusCourse());
       }
-   }, [statusCourse]);
+   }, [dispatch, statusCourse]);
 
    return (
       <>
@@ -151,6 +151,7 @@ export const CourseTab = () => {
             }}
             onChange={handlePagination}
             dataSource={courses}
+            rowKey={(item) => item.id}
             columns={[
                {
                   title: 'Preview',
@@ -181,6 +182,7 @@ export const CourseTab = () => {
                   title: 'Description',
                   dataIndex: 'description',
                   key: 'description',
+                  render: (description: string) => `${description.substring(0, 96)} ...`
                },
                {
                   title: '',

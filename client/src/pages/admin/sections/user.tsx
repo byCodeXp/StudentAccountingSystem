@@ -4,13 +4,6 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { getUsersAsync, selectUsers } from '../../../features/userSlice';
 import { HeadRow } from '../components/headRow';
 
-const courseTable = () => {
-   return <Table rowKey="courses" columns={[
-      {
-      }
-   ]} />;
-}
-
 export const UserSection = () => {
    const dispatch = useAppDispatch();
 
@@ -33,7 +26,10 @@ export const UserSection = () => {
             dataSource={users}
             expandable={{
                expandedRowRender: (record) => (
-                  <Table dataSource={record.courses} columns={[
+                  <Table
+                     dataSource={record.courses}
+                     rowKey="id"
+                     columns={[
                      {
                         title: 'Title',
                         dataIndex: 'name',
@@ -47,6 +43,7 @@ export const UserSection = () => {
                   ]}/>
                )
              }}
+             rowKey={item => item.id}
             columns={[
                {
                   title: 'First name',

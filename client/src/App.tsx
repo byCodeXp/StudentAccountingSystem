@@ -16,6 +16,7 @@ import { CatalogPage } from './pages/course/catalog';
 import { DetailsPage } from './pages/course/details';
 import { NotFoundPage } from './pages/404';
 import { AdminPage } from './pages/admin/index';
+import { ProfilePage } from './pages/profile';
 import 'antd/dist/antd.min.css';
 import './App.css';
 
@@ -37,12 +38,13 @@ const App = () => {
 
    return (
       <Layout style={{ minHeight: '100vh' }}>
-         <Header signed={status === 'signed'} user={user} onLogout={handleLogout} />
+         <Header user={user} onLogout={handleLogout} />
          <Content style={{ padding: '32px 64px' }}>
             <Routes>
-               <PrivateRoute path="login" element={<LoginPage />} condition={status !== 'signed'} redirect="/" />
-               <PrivateRoute path="register" element={<RegisterPage />} condition={status !== 'signed'} redirect="/" />
-               <PrivateRoute path="/admin" element={<AdminPage />} condition={status === 'signed' && user?.role === 'Admin'} redirect="/login" />
+               <PrivateRoute path="login" element={<LoginPage />} condition={user === undefined} redirect="/" />
+               <PrivateRoute path="register" element={<RegisterPage />} condition={user === undefined} redirect="/" />
+               <PrivateRoute path="/admin" element={<AdminPage />} condition={user !== undefined && user?.role === 'Admin'} redirect="/login" />
+               <PrivateRoute path="/profile" element={<ProfilePage />} condition={user !== undefined} redirect="/login" />
 
                <Route path="catalog/:page" element={<CatalogPage />} />
                <Route path="details/:id" element={<DetailsPage />} />

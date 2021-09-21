@@ -1,35 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { PageHeader, Row, Col, Tag, Button, DatePicker } from 'antd';
-import {
-   getOneCourseAsync,
-   selectCurrentCourse,
-   selectStatus,
-} from '../../features/courseSlice';
-import { useParams, Navigate } from 'react-router-dom';
+import { getOneCourseAsync, selectCurrentCourse, } from '../../features/courseSlice';
+import { useParams } from 'react-router-dom';
 import { BellOutlined } from '@ant-design/icons';
 import { subscribeOnCourseAsync, unsubscribeCourseAsync } from '../../features/identitySlice';
-import { getUserCoursesAsync, selectUser, selectUserCourses } from '../../features/identitySlice';
-
-const categoriesColors = [
-   { name: 'Angular', color: 'red' },
-   { name: 'Node.js', color: 'green' },
-   { name: 'Figma', color: 'purple' },
-   { name: 'UI/UX', color: 'pink' },
-   { name: 'Blender', color: 'orange' },
-   { name: 'TypeScript', color: 'blue' },
-   { name: 'DevOps', color: 'darkgray' },
-   { name: 'DevOps', color: 'darkgray' },
-   { name: 'Unity', color: 'yellow' },
-];
+import { getUserCoursesAsync, selectUserCourses } from '../../features/identitySlice';
+import moment, { now } from 'moment';
 
 export const DetailsPage = () => {
    const dispatch = useAppDispatch();
 
    const course = useAppSelector(selectCurrentCourse);
-   const user = useAppSelector(selectUser);
 
-   const status = useAppSelector(selectStatus);
    const { id } = useParams();
 
    const myCourses = useAppSelector(selectUserCourses);
@@ -37,15 +20,7 @@ export const DetailsPage = () => {
    useEffect(() => {
       dispatch(getUserCoursesAsync());
       dispatch(getOneCourseAsync(id));
-   }, [dispatch, id]);
-
-   const tagColor = (name: string) => {
-      const index = categoriesColors.findIndex((m) => m.name === name);
-      if (index !== -1) {
-         return categoriesColors[index].color;
-      }
-      return '';
-   };
+   }, []);
 
    const [date, setDate] = useState('');
 
@@ -65,17 +40,15 @@ export const DetailsPage = () => {
       setDate(dateString);
    };
 
-   const subStatus = (): boolean => {
-      const result = myCourses.find((m) => m.id === id);
-      if (result) {
-         return false;
-      }
-      return true;
-   };
+   const handleSubscribeAction = () => {
+      subStatus() ? handleOnUnsubscribe() : handleOnSubscribe();
+   }
+
+   const subStatus = (): boolean => myCourses.some(m => m.id === id);
 
    return (
       <Row>
-         <Col span={12} offset={6}>
+         <Col xxl={{ span: 14, offset: 5 }} xl={{ span: 16, offset: 4 }} lg={{ span: 20, offset: 2 }}>
             <PageHeader
                className="site-page-header-responsive"
                title={course?.name}
@@ -86,16 +59,10 @@ export const DetailsPage = () => {
                   </Tag>
                ))}
                extra={[
-                  subStatus() && <DatePicker onChange={handleOnDate} />,
-                  subStatus() ? (
-                     <Button onClick={handleOnSubscribe} key="1">
-                        <BellOutlined /> Subscribe
-                     </Button>
-                  ) : (
-                     <Button onClick={handleOnUnsubscribe} key="1">
-                        <BellOutlined /> Unsubscribe
-                     </Button>
-                  ),
+                  !subStatus() && <DatePicker key="1" onChange={handleOnDate} disabledDate={(currentDate: moment.Moment) => currentDate < moment(now())}/>,
+                  <Button onClick={handleSubscribeAction} key="2">
+                     <BellOutlined /> {subStatus() ? 'Unsubscribe' : 'Subscribe'}
+                  </Button>
                ]}
             >
                <Row gutter={32}>

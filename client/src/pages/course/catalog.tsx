@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Row, Col, Pagination, Card, Input, Space, Select, Collapse, Typography, List, Checkbox, } from 'antd';
+import { Row, Col, Pagination, Card, Input, Space, Select, Collapse, Typography, List, Checkbox } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { getCoursesAsync, selectCourses, selectCount, selectStatus, } from '../../features/courseSlice';
 import { Link, useParams, useNavigate } from 'react-router-dom';
@@ -25,6 +25,18 @@ export const CatalogPage = () => {
 
    const [tags, setTags] = useState<Array<string>>([]);
 
+   const [search, setSearch] = useState('');
+
+   const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
+
+   const onSearch = (value: string) => {
+      if (timer) {
+         clearTimeout(timer);
+      }
+      const timeout = setTimeout(() => setSearch(value), 400);
+      setTimer(timeout);
+   }
+
    useEffect(() => {
       dispatch(getCategoriesAsync());
    }, [dispatch]);
@@ -32,13 +44,14 @@ export const CatalogPage = () => {
    useEffect(() => {
       dispatch(
          getCoursesAsync({
+            search: search,
             page: parseInt(page),
             perPage: 8,
             sortBy: sort,
             categories: tags,
          })
       );
-   }, [dispatch, page, sort, tags]);
+   }, [dispatch, page, sort, tags, search]);
 
    const navigateToPage = (page: number) => {
       navigate(`/catalog/${page}`);
@@ -64,9 +77,10 @@ export const CatalogPage = () => {
 
    return (
       <Row gutter={32}>
-         <Col span={20}>
+         <Col xxl={{ span: 20 }} xl={{ span: 19 }} lg={{ span: 18 }}>
             <Input
                placeholder="Type to find here.."
+               onChange={(e) => onSearch(e.target.value)}
                addonAfter={
                   <Space size={20}>
                      <span>Sort by:</span>
@@ -86,7 +100,7 @@ export const CatalogPage = () => {
             />
             <Row gutter={24} style={{ marginTop: 24 }}>
                {courses.map((course, index) => (
-                  <Col key={index} span={6}>
+                  <Col key={index} xxl={{ span: 6 }} xl={{ span: 8 }} lg={{ span: 12 }} xs={{ span: 24 }}>
                      <Link to={`/details/${course.id}`}>
                         <Card
                            loading={status === 'loading'}
@@ -124,7 +138,7 @@ export const CatalogPage = () => {
                </Row>
             </Col>
          </Col>
-         <Col span={4}>
+         <Col xxl={{ span: 4 }} xl={{ span: 5 }} lg={{ span: 6 }}>
             <Collapse defaultActiveKey={['1']}>
                <Collapse.Panel
                   header={

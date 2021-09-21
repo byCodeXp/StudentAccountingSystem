@@ -32,7 +32,7 @@ namespace Data_Access_Layer.Queries
 
         public IEnumerable<Course> GetCoursesByUser (User user)
         {
-            return context.Users.Include(m => m.SubscribedCourses).FirstOrDefault(m => m.Id == user.Id)?.SubscribedCourses;
+            return context.Users.Include(m => m.SubscribedCourses).FirstOrDefault(c => c.Id == user.Id)?.SubscribedCourses;
         }
         
     }

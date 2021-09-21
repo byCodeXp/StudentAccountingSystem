@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.WebUtilities;
 using System.Text;
 using System.Threading.Tasks;
 using Business_Logic.Helpers;
-using Business_Logic.Utils;
 using Data_Access_Layer;
 using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
@@ -20,7 +19,7 @@ namespace Business_Logic.Services
 {
     public class IdentityService
     {
-        private readonly IJwtUtility jwtUtility;
+        private readonly IJwtHelper jwtHelper;
         private readonly UserManager<User> userManager;
         private readonly IMapper mapper;
         private readonly CourseQuery courseQuery;
@@ -29,17 +28,16 @@ namespace Business_Logic.Services
         private readonly RazorTemplateHelper razorTemplateHelper;
 
         public IdentityService(
-            IJwtUtility jwtUtility,
             UserManager<User> userManager,
             EmailService emailService, IMapper mapper,
-            DataContext context, ILogger<IdentityService> logger, RazorTemplateHelper razorTemplateHelper)
+            DataContext context, ILogger<IdentityService> logger, RazorTemplateHelper razorTemplateHelper, IJwtHelper jwtHelper)
         {
-            this.jwtUtility = jwtUtility;
             this.userManager = userManager;
             this.emailService = emailService;
             this.mapper = mapper;
             this.logger = logger;
             this.razorTemplateHelper = razorTemplateHelper;
+            this.jwtHelper = jwtHelper;
             courseQuery = new (context);
         }
 
@@ -116,7 +114,7 @@ namespace Business_Logic.Services
             
             return new UserResponse
             {
-                Token = jwtUtility.GenerateToken(userDto),
+                Token = jwtHelper.GenerateToken(userDto),
                 Courses = mapper.Map<List<CourseDTO>>(courses)
             };
         }

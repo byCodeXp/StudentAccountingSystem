@@ -39,21 +39,26 @@ namespace Business_Logic.Services
         {
             IQueryable<Course> courses = null;
 
-            // Filter
-
-            if (request?.Categories.Count > 0)
+            if (!string.IsNullOrEmpty(request.Search))
             {
-                courses = categoryQuery.GetAll()
-                    .Where(m => request.Categories.Contains(m.Name))
-                    .SelectMany(s => s.Courses)
-                    .Distinct();
+                // Search
+                
+                courses = courseQuery.GetAll().Where(m => m.Name.Contains(request.Search));
             }
+            else
+            {
+                // Filter
 
-            courses ??= courseQuery.GetAll();
+                if (request?.Categories.Count > 0)
+                {
+                    courses = categoryQuery.GetAll()
+                        .Where(m => request.Categories.Contains(m.Name))
+                        .SelectMany(s => s.Courses)
+                        .Distinct();
+                }
 
-            // Total count
-            
-            int totalCount = courses.Count();
+                courses ??= courseQuery.GetAll();
+            }
             
             // Sorting
             
@@ -72,6 +77,10 @@ namespace Business_Logic.Services
                     courses = courses.OrderBy(m => m.Name);
                     break;
             }
+            
+            // Total count
+            
+            int totalCount = courses.Count();
             
             // Pagination
             
