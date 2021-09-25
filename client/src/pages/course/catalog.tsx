@@ -17,16 +17,13 @@ export const CatalogPage = () => {
 
    const courses = useAppSelector(selectCourses);
    const totalCount = useAppSelector(selectCount);
-
    const status = useAppSelector(selectStatus);
 
    const { page } = useParams();
+
    const [sort, setSort] = useState<Sort>('Relevance');
-
    const [tags, setTags] = useState<Array<string>>([]);
-
    const [search, setSearch] = useState('');
-
    const [timer, setTimer] = useState<NodeJS.Timeout | undefined>(undefined);
 
    const onSearch = (value: string) => {

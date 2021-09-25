@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Data_Access_Layer;
-using Data_Access_Layer.Commands;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
 using Hangfire;
@@ -12,12 +10,10 @@ namespace Business_Logic.Services
     public class JobService
     {
         private readonly EmailService emailService;
-        private readonly DataContext context;
         
-        public JobService(EmailService emailService, DataContext context)
+        public JobService(EmailService emailService)
         {
             this.emailService = emailService;
-            this.context = context;
         }
 
         public IEnumerable<string> ScheduleCourseReminder(UserDTO user, CourseDTO course, DateTime dateStart)

@@ -64,12 +64,12 @@ namespace Business_Logic.Services
             
             if (string.IsNullOrEmpty(request.SearchByFirstName))
             {
-                users = users.Where(m => m.FirstName.Contains(request.SearchByFirstName) || m.LastName.Contains(request.SearchByFirstName));
+                users = users.Where(m => m.FirstName.Contains(request.SearchByFirstName));
             }
             
             if (string.IsNullOrEmpty(request.SearchByLastName))
             {
-                users = users.Where(m => m.FirstName.Contains(request.SearchByLastName) || m.LastName.Contains(request.SearchByLastName));
+                users = users.Where(m => m.LastName.Contains(request.SearchByLastName));
             }
             
             // Sort

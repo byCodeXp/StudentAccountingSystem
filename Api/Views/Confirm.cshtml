@@ -1,4 +1,4 @@
-@model string
+@model Data_Transfer_Objects.EmailTemplates.ConfirmEmailModel
 
 @{
     Layout = null;
@@ -16,12 +16,12 @@
 <p>Thank you for creating your StudentProgress Account.</p>
 <p>
     To complete your registration, click the link below: <br/>
-    <a href="@Model">Confirm your account</a>
+    <a href="@Model.ActivationLink">Confirm your account</a>
 </p>
 <p>
     Yours truly, <br/>
     The StudentProgress Team <br/>
-    <a href="https://localhost:3000">https://www.studentprogress.com</a> <br/>
+    <a href="@Model.SiteLink">@Model.SiteLink</a> <br/>
     The Drive to Learn
 </p>
 </body>

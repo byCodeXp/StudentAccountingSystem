@@ -1,5 +1,4 @@
 using System;
-using Business_Logic.Helpers;
 using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
@@ -13,12 +12,10 @@ namespace Api.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly CategoryService categoryService;
-        private readonly RazorTemplateHelper razorTemplateHelper;
         
-        public CategoryController(CategoryService categoryService, RazorTemplateHelper razorTemplateHelper)
+        public CategoryController(CategoryService categoryService)
         {
             this.categoryService = categoryService;
-            this.razorTemplateHelper = razorTemplateHelper;
         }
 
         [HttpGet]

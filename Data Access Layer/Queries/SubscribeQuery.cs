@@ -14,7 +14,7 @@ namespace Data_Access_Layer.Queries
 
         public IQueryable<Course> GetUserCourses(User user)
         {
-            return context.Subscribes.Where(c => c.User == user).Select(m => m.Course);
+            return context.UserSubscribes.Where(c => c.User == user).Select(m => m.Course);
         }
     }
 }

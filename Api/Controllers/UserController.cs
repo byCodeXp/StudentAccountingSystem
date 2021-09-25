@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Data_Transfer_Objects.Requests;
-using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -14,12 +13,10 @@ namespace Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService userService;
-        private readonly ILogger<UserController> logger;
 
-        public UserController(UserService userService, ILogger<UserController> logger)
+        public UserController(UserService userService)
         {
             this.userService = userService;
-            this.logger = logger;
         }
 
         [HttpGet("get")]

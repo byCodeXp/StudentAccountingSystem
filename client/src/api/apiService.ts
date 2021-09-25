@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import tokenUtil from '../utils/storageUtil';
+import storageUtil from '../utils/storageUtil';
 
 const BASE_ADDRESS = 'https://localhost:5001/api';
 
@@ -8,7 +8,7 @@ export const createClient = (route: string) => {
       baseURL: `${BASE_ADDRESS}/${route}`,
       timeout: 1500,
       headers: {
-         Authorization: tokenUtil.bearer(),
+         Authorization: storageUtil.bearer(),
       },
    });
 };

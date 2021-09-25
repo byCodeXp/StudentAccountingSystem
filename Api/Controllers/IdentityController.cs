@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Data_Transfer_Objects.Requests;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -10,10 +11,12 @@ namespace Api.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IdentityService identityService;
+        private readonly ILogger<IdentityController> logger;
 
-        public IdentityController(IdentityService identityService)
+        public IdentityController(IdentityService identityService, ILogger<IdentityController> logger)
         {
             this.identityService = identityService;
+            this.logger = logger;
         }
 
         [HttpPost("register")]
@@ -26,6 +29,7 @@ namespace Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
+            logger.LogInformation("Login");
             return Ok(await identityService.LoginAsync(request));
         }
 

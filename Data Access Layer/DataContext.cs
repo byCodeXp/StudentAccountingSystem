@@ -24,7 +24,7 @@ namespace Data_Access_Layer
                 .Entity<User>()
                 .HasMany(c => c.SubscribedCourses)
                 .WithMany(u => u.SubscribedUsers)
-                .UsingEntity<Subscribe>(
+                .UsingEntity<UserSubscribe>(
                     s => s.HasOne(m => m.Course).WithMany(),
                     s => s.HasOne(m => m.User).WithMany(),
                     s =>
@@ -43,6 +43,6 @@ namespace Data_Access_Layer
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Course> Courses { get; set; }
-        public DbSet<Subscribe> Subscribes { get; set; }
+        public DbSet<UserSubscribe> UserSubscribes { get; set; }
     }
 }

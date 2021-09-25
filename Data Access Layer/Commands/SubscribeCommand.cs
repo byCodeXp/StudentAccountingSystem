@@ -15,22 +15,22 @@ namespace Data_Access_Layer.Commands
 
         public void Subscribe(User user, Course course, List<string> jobs)
         {
-            var subscribe = new Subscribe
+            var subscribe = new UserSubscribe
             {
                 User = user,
                 Course = course,
                 Jobs = jobs
             };
 
-            context.Subscribes.Add(subscribe);
+            context.UserSubscribes.Add(subscribe);
         }
 
-        public Subscribe Unsubscribe(User user, Course course)
+        public UserSubscribe Unsubscribe(User user, Course course)
         {
-            var subscribe = context.Subscribes.FirstOrDefault(m => m.User.Id == user.Id && m.Course.Id == course.Id);
+            var subscribe = context.UserSubscribes.FirstOrDefault(m => m.User.Id == user.Id && m.Course.Id == course.Id);
             if (subscribe != null)
             {
-                context.Subscribes.Remove(subscribe);
+                context.UserSubscribes.Remove(subscribe);
             }
             return subscribe;
         }

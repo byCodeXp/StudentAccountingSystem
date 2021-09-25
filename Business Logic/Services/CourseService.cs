@@ -37,13 +37,13 @@ namespace Business_Logic.Services
         
         public CourseVM GetCourses(CoursesRequest request)
         {
-            IQueryable<Course> courses = null;
+            IQueryable<Course> courses = courseQuery.GetAll();
 
             if (!string.IsNullOrEmpty(request.Search))
             {
                 // Search
                 
-                courses = courseQuery.GetAll().Where(m => m.Name.Contains(request.Search));
+                courses = courses.Where(m => m.Name.Contains(request.Search));
             }
             else
             {
@@ -56,8 +56,6 @@ namespace Business_Logic.Services
                         .SelectMany(s => s.Courses)
                         .Distinct();
                 }
-
-                courses ??= courseQuery.GetAll();
             }
             
             // Sorting

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
@@ -76,7 +77,6 @@ namespace Business_Logic.Services
                 throw new BadRequestRestException("Invalid credentials");
             }
 
-
             var checkPassword = await userManager.CheckPasswordAsync(user, request.Password);
 
             if (!checkPassword)
@@ -93,20 +93,8 @@ namespace Business_Logic.Services
             
             // TODO: Add refresh token
 
-            string userRole = "";
-
-            if (await userManager.IsInRoleAsync(user, AppEnv.Roles.Customer))
-            {
-                userRole = AppEnv.Roles.Customer;
-            }
-            if (await userManager.IsInRoleAsync(user, AppEnv.Roles.Admin))
-            {
-                userRole = AppEnv.Roles.Admin;
-            }
-
             var userDto = mapper.Map<UserDTO>(user);
-
-            userDto.Role = userRole;
+            userDto.Role = string.Join(", ", await userManager.GetRolesAsync(user));
 
             var courses = courseQuery.GetCoursesByUserId(user.Id);
 

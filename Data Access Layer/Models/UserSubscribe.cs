@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Data_Access_Layer.Models
 {
-    public class Subscribe
+    public class UserSubscribe
     {
         public Guid Id { get; set; }
         public User User { get; set; }
