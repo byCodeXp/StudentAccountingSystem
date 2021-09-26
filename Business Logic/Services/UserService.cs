@@ -102,7 +102,7 @@ namespace Business_Logic.Services
             };
         }
         
-        public UserDTO GetUserById(Guid id)
+        public UserDTO GetUserById(string id)
         {
             var user = userQuery.GetById(id);
 

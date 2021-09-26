@@ -28,7 +28,7 @@ namespace Api.Controllers
         
         [HttpGet("{id}")]
         [Authorize(Roles = AppEnv.Roles.Admin)]
-        public IActionResult Get(Guid id)
+        public IActionResult Get(string id)
         {
             return Ok(userService.GetUserById(id));
         }

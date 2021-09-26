@@ -12,6 +12,7 @@ namespace Data_Transfer_Objects.Entities
         public string Preview { get; set; }
         public int Views { get; set; }
         public List<CategoryDTO> Categories { get; set; }
+        public bool Subscribed { get; set; }
     }
 
     public class CourseDTOValidation : AbstractValidator<CourseDTO>

@@ -1,18 +1,18 @@
 import { useEffect } from 'react';
 import { Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { getUsersAsync, selectUsers } from '../../../features/userSlice';
 import { HeadRow } from '../components/headRow';
+import { loadUsersAsync, selectUsers } from '../../../features/adminSlice';
 
 export const UserSection = () => {
    const dispatch = useAppDispatch();
 
-   const users = useAppSelector(selectUsers)
+   const users = useAppSelector(selectUsers);
 
    useEffect(() => {
-      dispatch(getUsersAsync({ page: 1, perPage: 4 }))
-   }, [dispatch])
-   
+      dispatch(loadUsersAsync({ page: 1, perPage: 4 }));
+   }, [dispatch]);
+
    return (
       <>
          <HeadRow title="Users" />
@@ -30,20 +30,21 @@ export const UserSection = () => {
                      dataSource={record.courses}
                      rowKey="id"
                      columns={[
-                     {
-                        title: 'Title',
-                        dataIndex: 'name',
-                        key: 'name'
-                     },
-                     {
-                        title: 'Description',
-                        dataIndex: 'description',
-                        key: 'description'
-                     },
-                  ]}/>
-               )
-             }}
-             rowKey={item => item.id}
+                        {
+                           title: 'Title',
+                           dataIndex: 'name',
+                           key: 'name',
+                        },
+                        {
+                           title: 'Description',
+                           dataIndex: 'description',
+                           key: 'description',
+                        },
+                     ]}
+                  />
+               ),
+            }}
+            rowKey={(item) => item.id}
             columns={[
                {
                   title: 'First name',
@@ -67,8 +68,8 @@ export const UserSection = () => {
                   render: (item) => {
                      const date = new Date(item);
                      return date.toDateString();
-                  }
-               }
+                  },
+               },
             ]}
          />
       </>

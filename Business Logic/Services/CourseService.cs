@@ -7,6 +7,7 @@ using Data_Access_Layer.Queries;
 using Business_Logic.Exceptions;
 using System.Linq;
 using AutoMapper;
+using Business_Logic.Helpers;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using Data_Transfer_Objects.ViewModels;
@@ -19,18 +20,24 @@ namespace Business_Logic.Services
         private readonly CourseQuery courseQuery;
         private readonly CourseCommand courseCommand;
         private readonly CategoryQuery categoryQuery;
+        private readonly SubscribeQuery subscribeQuery;
+        private readonly UserQuery userQuery;
         private readonly DataContext context;
         private readonly IMapper mapper;
+        private readonly IJwtHelper jwtHelper;
         private readonly ILogger<CourseService> logger;
 
-        public CourseService(DataContext context, IMapper mapper, ILogger<CourseService> logger)
+        public CourseService(DataContext context, IMapper mapper, ILogger<CourseService> logger, IJwtHelper jwtHelper)
         {
             categoryQuery = new(context);
             courseQuery = new(context);
             courseCommand = new(context);
+            userQuery = new(context);
+            subscribeQuery = new(context);
             this.context = context;
             this.mapper = mapper;
             this.logger = logger;
+            this.jwtHelper = jwtHelper;
         }
 
         private int Offset (int page, int perPage) => page <= 1 ? 0 : page * perPage - perPage;
@@ -99,7 +106,7 @@ namespace Business_Logic.Services
             return mapper.Map<List<CourseDTO>>(courses);
         }
 
-        public CourseDTO GetOneCourse(Guid id)
+        public CourseDTO GetOneCourse(Guid id, string token)
         {
             Course course = courseQuery.GetOne(id);
 
@@ -112,7 +119,21 @@ namespace Business_Logic.Services
 
             courseCommand.Update(course);
 
-            return mapper.Map<CourseDTO>(course);
+            var courseDto = mapper.Map<CourseDTO>(course);
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                var normalizeToken = token.Split(" ").Last();
+                var userId = jwtHelper.DecodeToken(normalizeToken).Issuer;
+                var user = userQuery.GetById(userId);
+                courseDto.Subscribed = subscribeQuery.IsUserSubscribeOnCourse(user, course);
+            }
+            else
+            {
+                courseDto.Subscribed = false;
+            }
+            
+            return courseDto;
         }
 
         public CourseDTO CreateCourse(CourseDTO courseDto)

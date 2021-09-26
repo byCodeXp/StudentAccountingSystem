@@ -16,5 +16,10 @@ namespace Data_Access_Layer.Queries
         {
             return context.UserSubscribes.Where(c => c.User == user).Select(m => m.Course);
         }
+
+        public bool IsUserSubscribeOnCourse(User user, Course course)
+        {
+            return context.UserSubscribes.Any(m => m.User == user && m.Course == course);
+        }
     }
 }

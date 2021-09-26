@@ -1,15 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import identityReducer from '../features/identitySlice';
-import courseReducer from '../features/courseSlice';
-import categoryReducer from '../features/categorySlice';
-import useReducer from '../features/userSlice';
+import catalogReducer from '../features/catalogSlice';
+import adminReducer from '../features/adminSlice';
 
 export const store = configureStore({
   reducer: {
     identity: identityReducer,
-    course: courseReducer,
-    category: categoryReducer,
-    user: useReducer
+    catalog: catalogReducer,
+    admin: adminReducer
   },
 });
 

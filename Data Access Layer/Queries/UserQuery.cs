@@ -20,7 +20,7 @@ namespace Data_Access_Layer.Queries
             return context.Users.Include(m => m.SubscribedCourses);
         }
 
-        public User GetById(Guid id)
+        public User GetById(string id)
         {
             return context.Users.Find(id);
         }

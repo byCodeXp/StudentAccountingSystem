@@ -1,49 +1,22 @@
 import { useEffect, useState } from 'react';
-import {
-   Button,
-   Collapse,
-   Form,
-   Input,
-   Modal,
-   Row,
-   Table,
-   TablePaginationConfig,
-   Typography,
-   Select,
-   notification,
-   Popover,
-   Image,
-   Tag,
-   Space,
-} from 'antd';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import {
-   addCourseAsync,
-   deleteCourseAsync,
-   getCoursesAsync,
-   resetStatusCourse,
-   selectCount,
-   selectCourses,
-   selectStatus,
-   updateCourseAsync,
-} from '../../../features/courseSlice';
 import { EditOutlined, EyeOutlined } from '@ant-design/icons';
-import {
-   getCategoriesAsync,
-   selectCategories,
-} from '../../../features/categorySlice';
 import { HeadRow } from '../components/headRow';
+import * as adminSlice from '../../../features/adminSlice';
+import { Button, Collapse, Form, Input, Modal, Row, Table, TablePaginationConfig, Typography, Select, Popover, Image, Tag, Space, } from 'antd';
 
 export const CourseTab = () => {
    const dispatch = useAppDispatch();
 
-   const categories = useAppSelector(selectCategories);
+   const categories = useAppSelector(adminSlice.selectCategories);
+   const courses = useAppSelector(adminSlice.selectCourses);
+   const totalCount = useAppSelector(adminSlice.selectCoursesCount);
 
-   const courses = useAppSelector(selectCourses);
-   const countCourses = useAppSelector(selectCount);
-   const statusCourse = useAppSelector(selectStatus);
+   const [form] = Form.useForm();
 
    const [options, setOptions] = useState({ page: 1, perPage: 8 });
+   const [mode, setMode] = useState<'idle' | 'edit' | 'add'>('idle');
+   const [currentEditableCourse, setCurrentEditableCourse] = useState<string | undefined>(undefined);
 
    const handlePagination = (pagination: TablePaginationConfig) => {
       setOptions({
@@ -51,10 +24,6 @@ export const CourseTab = () => {
          perPage: pagination.pageSize ?? 4,
       });
    };
-
-   const [editable, setEditable] = useState<string | undefined>(undefined);
-
-   const [mode, setMode] = useState<'idle' | 'edit' | 'add'>('idle');
 
    const handleOnAdd = () => {
       form.resetFields();
@@ -68,7 +37,7 @@ export const CourseTab = () => {
             ...course,
             categories: course.categories.map((m) => m.name),
          };
-         setEditable(id);
+         setCurrentEditableCourse(id);
          form.setFieldsValue(item);
          setMode('edit');
       }
@@ -84,67 +53,42 @@ export const CourseTab = () => {
          }
       });
 
-      const course: ICourse = {
-         ...values,
-         categories: categorySet,
-      };
-
-      console.log(course);
+      const course: ICourse = { ...values, categories: categorySet };
 
       if (mode === 'edit') {
-         dispatch(updateCourseAsync(course));
+         dispatch(adminSlice.updateCourseAsync(course));
       }
       if (mode === 'add') {
-         dispatch(addCourseAsync(course));
+         dispatch(adminSlice.createCourseAsync(course));
       }
       setMode('idle');
    };
 
    const handleOnDelete = () => {
       setMode('idle');
-      if (editable) {
-         dispatch(deleteCourseAsync(editable));
+      if (currentEditableCourse) {
+         dispatch(adminSlice.deleteCourseAsync(currentEditableCourse));
       }
    };
 
-   const handleOnCancel = () => {
-      setMode('idle');
-   };
-
-   const [form] = Form.useForm();
-
    useEffect(() => {
-      dispatch(getCategoriesAsync());
-   }, [dispatch]);
-
-   useEffect(() => {
+      dispatch(adminSlice.loadCategoriesAsync());
       dispatch(
-         getCoursesAsync({
+         adminSlice.loadCoursesAsync({
             page: options.page ?? 1,
             perPage: options.perPage ?? 1,
-            sortBy: 'New',
+            sortBy: 'Relevance',
             categories: [],
          })
       );
    }, [dispatch, options]);
-
-   useEffect(() => {
-      if (statusCourse === 'deleted') {
-         notification.success({
-            placement: 'bottomRight',
-            message: 'Deleted',
-            description: `Course ${123} was deleted`,
-         });
-         dispatch(resetStatusCourse());
-      }
-   }, [dispatch, statusCourse]);
 
    return (
       <>
          <HeadRow title="Courses" onClick={handleOnAdd} />
          <Table
             pagination={{
-               total: countCourses,
+               total: totalCount,
                showSizeChanger: true,
                pageSizeOptions: ['4', '8', '16', '32'],
                defaultPageSize: options.perPage,
@@ -159,7 +103,9 @@ export const CourseTab = () => {
                   key: 'preview',
                   render: (preview) => (
                      <Popover content={<Image width={256} src={preview} />}>
-                        <Button type="text"><EyeOutlined /></Button>
+                        <Button type="text">
+                           <EyeOutlined />
+                        </Button>
                      </Popover>
                   ),
                },
@@ -174,15 +120,20 @@ export const CourseTab = () => {
                   key: 'categories',
                   render: (categories: ICategory[]) => (
                      <Space>
-                        {categories.map((category, index) => <Tag key={index} color={category.color}>{category.name}</Tag>)}
+                        {categories.map((category, index) => (
+                           <Tag key={index} color={category.color}>
+                              {category.name}
+                           </Tag>
+                        ))}
                      </Space>
-                  )
+                  ),
                },
                {
                   title: 'Description',
                   dataIndex: 'description',
                   key: 'description',
-                  render: (description: string) => `${description.substring(0, 96)} ...`
+                  render: (description: string) =>
+                     `${description.substring(0, 96)} ...`,
                },
                {
                   title: '',
@@ -200,12 +151,12 @@ export const CourseTab = () => {
             ]}
          />
          <Modal
-            onCancel={handleOnCancel}
+            onCancel={() => setMode('idle')}
             title={`${mode === 'add' ? 'Add' : 'Edit'} course`}
             visible={mode !== 'idle'}
             footer={[
                <Form.Item>
-                  <Button onClick={handleOnCancel}>Cancel</Button>
+                  <Button onClick={() => setMode('idle')}>Cancel</Button>
                   <Button
                      type="primary"
                      form="editForm"

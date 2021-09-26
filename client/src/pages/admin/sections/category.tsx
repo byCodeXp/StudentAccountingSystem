@@ -1,28 +1,17 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { EditOutlined } from '@ant-design/icons';
-import {
-   Button,
-   Collapse,
-   Form,
-   Input,
-   Modal,
-   Row,
-   Table,
-   Typography,
-   Tag
-} from 'antd';
+import { Button, Collapse, Form, Input, Modal, Row, Table, Typography, Tag } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { createCategoryAsync, deleteCategoryAsync, selectCategories, updateCategoryAsync } from '../../../features/categorySlice';
 import { HeadRow } from '../components/headRow';
 import { CompactPicker } from 'react-color';
+import { selectCategories, loadCategoriesAsync, createCategoryAsync, updateCategoryAsync, deleteCategoryAsync } from '../../../features/adminSlice';
 
 export const CategorySection = () => {
    const dispatch = useAppDispatch();
 
    const categories = useAppSelector(selectCategories);
-
+   
    const [current, setCurrent] = useState('');
-
    const [mode, setMode] = useState<'idle' | 'edit' | 'add'>('idle');
 
    const [form] = Form.useForm();
@@ -41,12 +30,7 @@ export const CategorySection = () => {
       }
    };
 
-   const handleOnCancel = () => {
-      setMode('idle');
-   }
-
    const handleOnFinish = (values: ICategory) => {
-      console.info(values);
       if (mode === 'add') {
          dispatch(createCategoryAsync(values));
       }
@@ -66,6 +50,10 @@ export const CategorySection = () => {
    const handleOnColorChange = (color: any) => {
       form.setFieldsValue({ ...form.getFieldsValue(), color: color.hex })
    }
+
+   useEffect(() => {
+      dispatch(loadCategoriesAsync());
+   }, [dispatch])
 
    return (
       <>
@@ -102,12 +90,12 @@ export const CategorySection = () => {
             ]}
          />
          <Modal
-            onCancel={handleOnCancel}
+            onCancel={() => setMode('idle')}
             title={`${mode === 'add' ? 'Add' : 'Edit'} category`}
             visible={mode !== 'idle'}
             footer={[
                <Form.Item>
-                  <Button onClick={handleOnCancel}>Cancel</Button>
+                  <Button onClick={() => setMode('idle')}>Cancel</Button>
                   <Button type="primary" form="editForm" htmlType="submit">
                      OK
                   </Button>

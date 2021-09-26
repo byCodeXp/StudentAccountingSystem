@@ -48,6 +48,7 @@ interface ICourse {
    description: string;
    preview: string;
    categories: ICategory[];
+   subscribed: boolean;
 }
 
 interface ICourseState {

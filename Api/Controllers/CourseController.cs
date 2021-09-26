@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
@@ -28,7 +29,8 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(Guid id)
         {
-            return Ok(courseService.GetOneCourse(id));
+            Request.Headers.TryGetValue("Authorization", out var token);
+            return Ok(courseService.GetOneCourse(id, token));
         }
 
         [HttpGet("user/{id}/courses")]

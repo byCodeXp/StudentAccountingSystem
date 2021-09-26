@@ -11,7 +11,6 @@ import { CategorySection } from './sections/category';
 import { UserSection } from './sections/user';
 
 const items = [
-   { title: 'Dashboard', icon: <AppstoreOutlined />, content: null },
    { title: 'Users', icon: <UserOutlined />, content: <UserSection /> },
    { title: 'Courses', icon: <HddOutlined />, content: <CourseTab /> },
    {

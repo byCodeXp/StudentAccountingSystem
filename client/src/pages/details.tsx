@@ -1,50 +1,44 @@
 import { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { PageHeader, Row, Col, Tag, Button, DatePicker } from 'antd';
-import { getOneCourseAsync, selectCurrentCourse, } from '../../features/courseSlice';
 import { useParams } from 'react-router-dom';
 import { BellOutlined } from '@ant-design/icons';
-import { subscribeOnCourseAsync, unsubscribeCourseAsync } from '../../features/identitySlice';
-import { getUserCoursesAsync, selectUserCourses } from '../../features/identitySlice';
 import moment, { now } from 'moment';
+import courseApi from '../api/courseApi';
+import userApi from '../api/userApi';
 
 export const DetailsPage = () => {
-   const dispatch = useAppDispatch();
-
-   const course = useAppSelector(selectCurrentCourse);
-
    const { id } = useParams();
 
-   const myCourses = useAppSelector(selectUserCourses);
-
-   useEffect(() => {
-      dispatch(getUserCoursesAsync());
-      dispatch(getOneCourseAsync(id));
-   }, []);
+   const [course, setCourse] = useState<ICourse | undefined>();
 
    const [date, setDate] = useState('');
-
-   const handleOnSubscribe = () => {
-      if (course) {
-         dispatch(subscribeOnCourseAsync({ course: course, date: date }));
-      }
-   };
-
-   const handleOnUnsubscribe = () => {
-      if (course) {
-         dispatch(unsubscribeCourseAsync(course));
-      }
-   }
 
    const handleOnDate = (date: any, dateString: any) => {
       setDate(dateString);
    };
 
-   const handleSubscribeAction = () => {
-      subStatus() ? handleOnUnsubscribe() : handleOnSubscribe();
+   const handleOnSubscribe = () => {
+      if (course?.subscribed) {
+         userApi.fetchUnsubscribe(id).then(() => {
+            courseApi.fetchOne(id).then(response => {
+               setCourse(response);
+            });
+         });
+      }
+      else {
+         userApi.fetchSubscribe({ courseId: id, date: date }).then(() => {
+            courseApi.fetchOne(id).then(response => {
+               setCourse(response);
+            });
+         });
+      }
    }
 
-   const subStatus = (): boolean => myCourses.some(m => m.id === id);
+   useEffect(() => {
+      courseApi.fetchOne(id).then(response => {
+         setCourse(response);
+      })
+   }, [id]);
 
    return (
       <Row>
@@ -59,9 +53,9 @@ export const DetailsPage = () => {
                   </Tag>
                ))}
                extra={[
-                  !subStatus() && <DatePicker key="1" onChange={handleOnDate} disabledDate={(currentDate: moment.Moment) => currentDate < moment(now())}/>,
-                  <Button onClick={handleSubscribeAction} key="2">
-                     <BellOutlined /> {subStatus() ? 'Unsubscribe' : 'Subscribe'}
+                  !course?.subscribed && <DatePicker key="1" onChange={handleOnDate} disabledDate={(currentDate: moment.Moment) => currentDate < moment(now())}/>,
+                  <Button key="2" onClick={handleOnSubscribe}>
+                     <BellOutlined /> {course?.subscribed ? 'Unsubscribe' : 'Subscribe'}
                   </Button>
                ]}
             >

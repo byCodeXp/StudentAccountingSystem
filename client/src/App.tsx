@@ -4,16 +4,11 @@ import { Route, Routes } from 'react-router-dom';
 import { Header } from './components/header';
 import { PrivateRoute } from './components/privateRoute';
 import { Layout } from 'antd';
-import {
-   loadUser,
-   logout,
-   selectStatus,
-   selectUser,
-} from './features/identitySlice';
+import { loadUser, logout, selectUser } from './features/identitySlice';
 import { LoginPage } from './pages/identity/login';
 import { RegisterPage } from './pages/identity/register';
-import { CatalogPage } from './pages/course/catalog';
-import { DetailsPage } from './pages/course/details';
+import { CatalogPage } from './pages/catalog/index';
+import { DetailsPage } from './pages/details';
 import { NotFoundPage } from './pages/404';
 import { AdminPage } from './pages/admin/index';
 import { ProfilePage } from './pages/profile';
@@ -25,7 +20,6 @@ const { Content } = Layout;
 const App = () => {
    const dispatch = useAppDispatch();
 
-   const status = useAppSelector(selectStatus);
    const user = useAppSelector(selectUser);
 
    useEffect(() => {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using AutoMapper;
 using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
@@ -27,6 +26,7 @@ namespace Business_Logic.Services
         private readonly ILogger<IdentityService> logger;
         private readonly EmailService emailService;
         private readonly RazorTemplateHelper razorTemplateHelper;
+        private readonly SubscribeQuery subscribeQuery;
 
         public IdentityService(
             UserManager<User> userManager,
@@ -39,6 +39,7 @@ namespace Business_Logic.Services
             this.logger = logger;
             this.razorTemplateHelper = razorTemplateHelper;
             this.jwtHelper = jwtHelper;
+            subscribeQuery = new (context);
             courseQuery = new (context);
         }
 
@@ -96,7 +97,7 @@ namespace Business_Logic.Services
             var userDto = mapper.Map<UserDTO>(user);
             userDto.Role = string.Join(", ", await userManager.GetRolesAsync(user));
 
-            var courses = courseQuery.GetCoursesByUserId(user.Id);
+            var courses = subscribeQuery.GetUserCourses(user);
 
             logger.LogInformation($"Was login user with id {user.Id}");
             

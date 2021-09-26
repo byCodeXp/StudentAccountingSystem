@@ -6,7 +6,7 @@ const BASE_ADDRESS = 'https://localhost:5001/api';
 export const createClient = (route: string) => {
    return axios.create({
       baseURL: `${BASE_ADDRESS}/${route}`,
-      timeout: 1500,
+      timeout: 2000,
       headers: {
          Authorization: storageUtil.bearer(),
       },
