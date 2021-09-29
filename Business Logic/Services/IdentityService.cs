@@ -12,6 +12,7 @@ using Data_Access_Layer;
 using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 
@@ -108,6 +109,11 @@ namespace Business_Logic.Services
             };
         }
 
+        // public async Task<UserResponse> ExternalLogin(string token)
+        // {
+            // return ;
+        // }
+        
         public async Task ConfirmEmail(string email, string emailToken)
         {
             var user = await userManager.FindByEmailAsync(email);

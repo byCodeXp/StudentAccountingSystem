@@ -22,6 +22,7 @@ using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Api
 {
@@ -53,9 +54,10 @@ namespace Api
 
             services.AddAuthentication(options =>
                 {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    // options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    // options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(options => 
                 {
@@ -70,9 +72,16 @@ namespace Api
                         RequireExpirationTime = false,
                         ValidateLifetime = true
                     };
+                })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/api/identity/facebook-login";
+                })
+                .AddFacebook(options =>
+                {
+                    options.AppId = "1303024773483854";
+                    options.AppSecret = "d7b8fbf163ae25574c255df705512021";
                 });
-
-            // TODO: Add facebook authentication
             
             // Services
 
@@ -102,7 +111,7 @@ namespace Api
                 })
             );
 
-            services.AddHangfireServer();
+            // services.AddHangfireServer();
 
             services.AddFluentValidation(options =>
             {
@@ -155,7 +164,8 @@ namespace Api
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.UseHangfireDashboard();
+            
+            // app.UseHangfireDashboard();
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,7 +1,13 @@
-﻿using Business_Logic.Services;
+﻿using System.Linq;
+using System.Text.Json;
+using Business_Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Data_Transfer_Objects.Requests;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
@@ -29,8 +35,36 @@ namespace Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            logger.LogInformation("Login");
             return Ok(await identityService.LoginAsync(request));
+        }
+
+        [HttpGet("facebook-login")]
+        public IActionResult FacebookLogin()
+        {
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = Url.Action("FacebookResponse")
+            };
+        
+            return Challenge(properties, FacebookDefaults.AuthenticationScheme);
+        }
+        
+        [HttpGet("facebook-response")]
+        public async Task<IActionResult> FacebookResponse()
+        {
+            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        
+            var claims = result.Principal?.Identities
+                .FirstOrDefault()
+                ?.Claims.Select(claim => new
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value
+                });
+        
+            return Ok(claims);
         }
 
         [HttpGet("confirm")]

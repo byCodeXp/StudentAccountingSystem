@@ -3,7 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { Button, Row, Checkbox, Form, Input, message } from 'antd';
 import { KeyOutlined, MailOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { loginAsync, selectError, selectStatus, resetStatus } from '../../features/identitySlice';
+import { loginAsync, selectError, selectStatus, resetStatus, } from '../../features/identitySlice';
 
 export const LoginPage = () => {
    const dispatch = useAppDispatch();
@@ -15,6 +15,10 @@ export const LoginPage = () => {
       dispatch(loginAsync(values));
    };
 
+   const handleOnFacebook = async () => {
+
+   };
+
    useEffect(() => {
       if (status === 'failed') {
          message.error(errorMessage);
@@ -23,7 +27,7 @@ export const LoginPage = () => {
    }, [dispatch, status, errorMessage]);
 
    if (status === 'signed') {
-      return <Navigate to="/catalog/1" />
+      return <Navigate to="/catalog/1" />;
    }
 
    return (
@@ -70,11 +74,9 @@ export const LoginPage = () => {
             </Row>
          </Form>
          <div style={{ textAlign: 'center', marginBottom: '12px' }}>or</div>
-         <Link to="">
-            <Button type="primary" style={{ width: '100%' }}>
-               Continue with facebook
-            </Button>
-         </Link>
+         <Button onClick={handleOnFacebook} type="primary" style={{ width: '100%' }}>
+            Continue with facebook
+         </Button>
       </div>
    );
 };
