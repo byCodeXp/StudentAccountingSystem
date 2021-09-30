@@ -2,7 +2,7 @@ import { createClient, responseData, responseError } from './apiService';
 
 const client = createClient('category');
 
-const fetchAll = async () => await client.get('/').then(responseData).catch(responseError);
+const fetchAll = async (request: { search: string }) => await client.get('/', { params: request }).then(responseData).catch(responseError);
 
 const fetchCreate = async (category: ICategory) => await client.post('/create', category).then(responseData).catch(responseError);
 

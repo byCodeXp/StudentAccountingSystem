@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Data_Access_Layer.Models;
 
 namespace Data_Access_Layer.Commands
@@ -11,9 +13,17 @@ namespace Data_Access_Layer.Commands
             this.context = context;
         }
 
-        public void UnsubscribeCourse(User user, Course course)
+        public void SubscribeCourse(User user, Course course, List<string> jobs)
         {
-            user.SubscribedCourses.Remove(course);
+            context.UsersCourses.Add(new UserCourse { User = user, Course = course, Jobs = jobs });
+        }
+
+        public List<string> UnsubscribeCourse(User user, Course course)
+        {
+            var userCourse = context.UsersCourses.First(m => m.User == user && m.Course == course);
+            var jobs = userCourse.Jobs;
+            context.UsersCourses.Remove(userCourse);
+            return jobs;
         }
     }
 }

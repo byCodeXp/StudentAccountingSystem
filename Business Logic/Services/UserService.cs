@@ -25,8 +25,7 @@ namespace Business_Logic.Services
         private readonly UserManager<User> userManager;
         private readonly CourseQuery courseQuery;
         private readonly UserQuery userQuery;
-        private readonly SubscribeCommand subscribeCommand;
-        private readonly SubscribeQuery subscribeQuery;
+        private readonly UserCommand userCommand;
         private readonly IMapper mapper;
         private readonly DataContext context;
         private readonly EmailService emailService;
@@ -48,10 +47,9 @@ namespace Business_Logic.Services
             this.jobService = jobService;
             this.logger = logger;
             this.jwtHelper = jwtHelper;
-            subscribeCommand = new(context);
-            subscribeQuery = new(context);
             courseQuery = new(context);
             userQuery = new(context);
+            userCommand = new(context);
         }
 
         private int Offset (int page, int perPage) => page <= 1 ? 0 : page * perPage - perPage;
@@ -59,17 +57,12 @@ namespace Business_Logic.Services
         public UserVM GetUsers(UsersRequest request)
         {
             var users = userQuery.GetAll();
-
+            
             // Search
             
-            if (string.IsNullOrEmpty(request.SearchByFirstName))
+            if (!string.IsNullOrEmpty(request.Search))
             {
-                users = users.Where(m => m.FirstName.Contains(request.SearchByFirstName));
-            }
-            
-            if (string.IsNullOrEmpty(request.SearchByLastName))
-            {
-                users = users.Where(m => m.LastName.Contains(request.SearchByLastName));
+                users = users.Where(m => m.FirstName.Contains(request.Search) || m.LastName.Contains(request.Search));
             }
             
             // Sort
@@ -127,7 +120,7 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"User was not found");
             }
 
-            var courses = subscribeQuery.GetUserCourses(user);
+            var courses = userQuery.UserCourses(user);
 
             return mapper.Map<List<CourseDTO>>(courses);
         }
@@ -152,14 +145,15 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"User was not found");
             }
 
-            if (userQuery.GetCoursesByUser(user).Any(m => m.Id == course.Id))
+            if (userQuery.UserExistsCourse(user, course))
             {
                 throw new BadRequestRestException($"Course with id: {request.CourseId}, cannot be subscribed on user with id: {user.Id}");
             }
 
             var jobs = jobService.ScheduleCourseReminder(mapper.Map<UserDTO>(user), mapper.Map<CourseDTO>(course), request.Date);
 
-            subscribeCommand.Subscribe(user, course, jobs.ToList());
+            userCommand.SubscribeCourse(user, course, jobs.ToList());
+            
             await context.SaveChangesAsync();
             
             var template = await razorTemplateHelper.GetTemplateHtmlAsStringAsync("Subscribed", new SubscribedEmailModel()
@@ -193,14 +187,14 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"User was not found");
             }
 
-            var subscribe = subscribeCommand.Unsubscribe(user, course);
+            var jobs = userCommand.UnsubscribeCourse(user, course);
             
-            if (subscribe == null)
+            if (jobs == null)
             {
                 throw new BadRequestRestException($"Course with id: {courseId}, cannot be unsubscribed on user with id: {user.Id}");
             }
 
-            foreach (var job in subscribe.Jobs)
+            foreach (var job in jobs)
             {
                 BackgroundJob.Delete(job);
             }

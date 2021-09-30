@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using Data_Access_Layer.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +15,7 @@ namespace Data_Access_Layer.Queries
 
         public IQueryable<User> GetAll()
         {
-            return context.Users.Include(m => m.SubscribedCourses);
+            return context.Users.Include(m => m.Courses);
         }
 
         public User GetById(string id)
@@ -25,15 +23,14 @@ namespace Data_Access_Layer.Queries
             return context.Users.Find(id);
         }
 
-        public int GetCount()
+        public bool UserExistsCourse(User user, Course course)
         {
-            return context.Users.Count();
+            return context.UsersCourses.Any(m => m.User == user && m.Course == course);
         }
 
-        public IEnumerable<Course> GetCoursesByUser (User user)
+        public IQueryable<Course> UserCourses(User user)
         {
-            return context.Users.Include(m => m.SubscribedCourses).FirstOrDefault(c => c.Id == user.Id)?.SubscribedCourses;
+            return context.UsersCourses.Where(m => m.User.Id == user.Id).Select(m => m.Course);
         }
-        
     }
 }

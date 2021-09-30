@@ -27,14 +27,14 @@ namespace Data_Access_Layer.Queries
 
         public IEnumerable<Course> GetCoursesByUserId(string id)
         {
-            var user = context.Users.Include(m => m.SubscribedCourses).FirstOrDefault(m => m.Id == id);
-
+            var user = context.Users.Find(id);
+            
             if (user == null)
             {
                 return null;
             }
-            
-            return user.SubscribedCourses;
+
+            return context.UsersCourses.Where(m => m.User == user).Select(m => m.Course);
         }
     }
 }

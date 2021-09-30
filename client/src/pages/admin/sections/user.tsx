@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { HeadRow } from '../components/headRow';
@@ -7,15 +7,21 @@ import { loadUsersAsync, selectUsers } from '../../../features/adminSlice';
 export const UserSection = () => {
    const dispatch = useAppDispatch();
 
+   const [search, setSearch] = useState('');
+
    const users = useAppSelector(selectUsers);
 
+   const handleOnSearch = (value: string) => {
+      setSearch(value);
+   }
+
    useEffect(() => {
-      dispatch(loadUsersAsync({ page: 1, perPage: 4 }));
-   }, [dispatch]);
+      dispatch(loadUsersAsync({ search, page: 1, perPage: 4 }));
+   }, [dispatch, search]);
 
    return (
       <>
-         <HeadRow title="Users" />
+         <HeadRow title="" onSearch={handleOnSearch} />
          <Table
             pagination={{
                total: 100,

@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Col, Menu, Row } from 'antd';
-import {
-   AppstoreOutlined,
-   HddOutlined,
-   UserOutlined,
-   NumberOutlined,
-} from '@ant-design/icons';
+import { HddOutlined, UserOutlined, NumberOutlined, } from '@ant-design/icons';
 import { CourseTab } from './sections/course';
 import { CategorySection } from './sections/category';
 import { UserSection } from './sections/user';

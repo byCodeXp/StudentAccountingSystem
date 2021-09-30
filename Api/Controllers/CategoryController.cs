@@ -2,6 +2,7 @@ using System;
 using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
+using Data_Transfer_Objects.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +20,9 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] CategoriesRequest request)
         {
-            return Ok(categoryService.GetCategories());
+            return Ok(categoryService.GetCategories(request));
         }
 
         [HttpPost("create")]

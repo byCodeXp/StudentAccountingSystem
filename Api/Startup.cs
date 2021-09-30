@@ -22,7 +22,6 @@ using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Api
 {
@@ -54,10 +53,10 @@ namespace Api
 
             services.AddAuthentication(options =>
                 {
-                    // options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    // options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    // options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    // options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(options => 
                 {

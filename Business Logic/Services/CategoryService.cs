@@ -8,6 +8,7 @@ using Data_Access_Layer.Commands;
 using Data_Access_Layer.Models;
 using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
+using Data_Transfer_Objects.Requests;
 using Microsoft.Extensions.Logging;
 
 namespace Business_Logic.Services
@@ -29,9 +30,14 @@ namespace Business_Logic.Services
             categoryQuery = new(context);
         }
 
-        public IEnumerable<CategoryDTO> GetCategories()
+        public IEnumerable<CategoryDTO> GetCategories(CategoriesRequest request)
         {
-            var categories = categoryQuery.GetAll().OrderBy(m => m.Name);
+            var categories = categoryQuery.GetAll();
+
+            if (!string.IsNullOrEmpty(request.Search))
+            {
+                categories = categories.OrderBy(m => m.Name).Where(m => m.Name.Contains(request.Search));
+            }
 
             logger.LogInformation($"Returned {categories.Count()} categories");
 

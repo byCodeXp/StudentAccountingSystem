@@ -37,8 +37,8 @@ export const fetchCourses = createAsyncThunk('CATALOG/FETCH_COURSES', async (req
    return await courseApi.fetchAll(request);
 });
 
-export const fetchCategories = createAsyncThunk('CATALOG/FETCH_CATEGORIES', async () => {
-   return await categoryApi.fetchAll();
+export const fetchCategories = createAsyncThunk('CATALOG/FETCH_CATEGORIES', async (request: { search: string }) => {
+   return await categoryApi.fetchAll(request);
 });
 
 const catalogSlice = createSlice({

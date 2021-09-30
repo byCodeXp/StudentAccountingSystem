@@ -13,8 +13,9 @@ namespace Api
             CreateMap<Course, CourseDTO>().ReverseMap();
             CreateMap<User, UserDTO>()
                 .ForMember(d => d.RegisterAt, s => s.MapFrom(v => v.CreatedTimeStamp))
-                .ForMember(d => d.Courses, s => s.MapFrom(v => v.SubscribedCourses))
-                .ReverseMap();
+                .ForMember(d => d.Courses, s => s.MapFrom(m => m.Courses));
+
+            CreateMap<UserDTO, User>();
             
             CreateMap<RegisterRequest, User>();
         }

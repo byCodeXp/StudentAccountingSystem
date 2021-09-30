@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Data_Access_Layer.Models
 {
@@ -13,7 +14,7 @@ namespace Data_Access_Layer.Models
         public int Age { get; set; }
         public DateTime CreatedTimeStamp { get; set; }
         public DateTime UpdatedTimeStamp { get; set; }
-        public List<Course> SubscribedCourses { get; set; } = new();
+        public List<Course> Courses { get; set; }
     }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>
@@ -26,6 +27,23 @@ namespace Data_Access_Layer.Models
             builder.Property(m => m.LastName).HasMaxLength(128);
             builder.Property(m => m.CreatedTimeStamp).IsRequired();
             builder.Property(m => m.UpdatedTimeStamp).IsRequired();
+
+            builder
+                .HasMany(c => c.Courses)
+                .WithMany(c => c.Users)
+                .UsingEntity<UserCourse>(
+                    r => r.HasOne(m => m.Course).WithMany().HasForeignKey(m => m.CourseId),
+                    r => r.HasOne(m => m.User).WithMany().HasForeignKey(m => m.UserId),
+                    r =>
+                    {
+                        r.HasKey(m => new { m.UserId, m.CourseId });
+                        r.Property(m => m.Jobs)
+                            .HasConversion(
+                                v => string.Join(',', v),
+                                v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList()
+                            );
+                    }
+                );
         }
     }
 }

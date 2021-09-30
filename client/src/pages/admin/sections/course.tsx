@@ -18,6 +18,8 @@ export const CourseTab = () => {
    const [mode, setMode] = useState<'idle' | 'edit' | 'add'>('idle');
    const [currentEditableCourse, setCurrentEditableCourse] = useState<string | undefined>(undefined);
 
+   const [search, setSearch] = useState('');
+
    const handlePagination = (pagination: TablePaginationConfig) => {
       setOptions({
          page: pagination.current ?? 1,
@@ -71,21 +73,26 @@ export const CourseTab = () => {
       }
    };
 
+   const handleOnSearch = (value: string) => {
+      setSearch(value);
+   }
+
    useEffect(() => {
-      dispatch(adminSlice.loadCategoriesAsync());
+      dispatch(adminSlice.loadCategoriesAsync({ search: '' }));
       dispatch(
          adminSlice.loadCoursesAsync({
+            search,
             page: options.page ?? 1,
             perPage: options.perPage ?? 1,
-            sortBy: 'Relevance',
+            sortBy: 'Alphabetically',
             categories: [],
          })
       );
-   }, [dispatch, options]);
+   }, [dispatch, options, search]);
 
    return (
       <>
-         <HeadRow title="Courses" onClick={handleOnAdd} />
+         <HeadRow title="Courses" onClick={handleOnAdd} onSearch={handleOnSearch} />
          <Table
             pagination={{
                total: totalCount,

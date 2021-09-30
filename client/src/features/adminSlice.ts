@@ -25,8 +25,8 @@ const initialState: AdminState = {
 };
 
 // Categories actions
-export const loadCategoriesAsync = createAsyncThunk('ADMIN/LOAD_CATEGORIES', async () => {
-   return await categoryApi.fetchAll();
+export const loadCategoriesAsync = createAsyncThunk('ADMIN/LOAD_CATEGORIES', async (request: { search: string }) => {
+   return await categoryApi.fetchAll(request);
 });
 
 export const createCategoryAsync = createAsyncThunk('ADMIN/CREATE_CATEGORY', async (category: ICategory) => {
@@ -61,7 +61,7 @@ export const deleteCourseAsync = createAsyncThunk('ADMIN/DELETE_COURSE', async (
 });
 
 // User actions
-export const loadUsersAsync = createAsyncThunk('ADMIN/LOAD_USERS', async (request: { page: number, perPage: number }) => {
+export const loadUsersAsync = createAsyncThunk('ADMIN/LOAD_USERS', async (request: { search: string, page: number, perPage: number }) => {
    return await userApi.fetchAll(request);
 });
 

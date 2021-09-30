@@ -26,7 +26,7 @@ export const Tags = () => {
    }
 
    useEffect(() => {
-      dispatch(fetchCategories());
+      dispatch(fetchCategories({ search: '' }));
    }, [dispatch]);
 
    return (

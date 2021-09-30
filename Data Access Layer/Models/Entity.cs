@@ -19,7 +19,7 @@ namespace Data_Access_Layer.Models
         {
             builder.HasKey(m => m.Id);
             builder.Property(m => m.CreatedTimeStamp).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnAdd();
-            builder.Property(m => m.UpdatedTimeStamp).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnUpdate();
+            builder.Property(m => m.UpdatedTimeStamp).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnAddOrUpdate();
         }
     }
 }

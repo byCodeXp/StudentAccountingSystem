@@ -20,7 +20,6 @@ namespace Business_Logic.Services
         private readonly CourseQuery courseQuery;
         private readonly CourseCommand courseCommand;
         private readonly CategoryQuery categoryQuery;
-        private readonly SubscribeQuery subscribeQuery;
         private readonly UserQuery userQuery;
         private readonly DataContext context;
         private readonly IMapper mapper;
@@ -33,7 +32,6 @@ namespace Business_Logic.Services
             courseQuery = new(context);
             courseCommand = new(context);
             userQuery = new(context);
-            subscribeQuery = new(context);
             this.context = context;
             this.mapper = mapper;
             this.logger = logger;
@@ -126,7 +124,7 @@ namespace Business_Logic.Services
                 var normalizeToken = token.Split(" ").Last();
                 var userId = jwtHelper.DecodeToken(normalizeToken).Issuer;
                 var user = userQuery.GetById(userId);
-                courseDto.Subscribed = subscribeQuery.IsUserSubscribeOnCourse(user, course);
+                courseDto.Subscribed = userQuery.UserExistsCourse(user, course);
             }
             else
             {

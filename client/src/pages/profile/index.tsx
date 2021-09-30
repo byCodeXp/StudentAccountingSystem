@@ -1,11 +1,9 @@
 import React from 'react';
 import { UserOutlined, SettingOutlined } from '@ant-design/icons';
-import { Row, Col, Space, Avatar, Typography, Button, Divider, Tabs } from 'antd';
+import { Row, Col, Space, Avatar, Typography, Button, Divider } from 'antd';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../app/hooks';
 import { selectUser } from '../../features/identitySlice';
-
-const { TabPane } = Tabs;
 
 export const ProfilePage = () => {
    const user = useAppSelector(selectUser);

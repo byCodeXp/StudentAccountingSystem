@@ -13,6 +13,7 @@ export const CategorySection = () => {
    
    const [current, setCurrent] = useState('');
    const [mode, setMode] = useState<'idle' | 'edit' | 'add'>('idle');
+   const [search, setSearch] = useState('');
 
    const [form] = Form.useForm();
 
@@ -51,13 +52,17 @@ export const CategorySection = () => {
       form.setFieldsValue({ ...form.getFieldsValue(), color: color.hex })
    }
 
+   const handleOnSearch = (value: string) => {
+      setSearch(value);
+   }
+
    useEffect(() => {
-      dispatch(loadCategoriesAsync());
-   }, [dispatch])
+      dispatch(loadCategoriesAsync({ search }));
+   }, [dispatch, search])
 
    return (
       <>
-         <HeadRow title="Categories" onClick={handleOnAdd} />
+         <HeadRow title="Categories" onClick={handleOnAdd} onSearch={handleOnSearch} />
          <Table
             pagination={{
                total: categories.length,
