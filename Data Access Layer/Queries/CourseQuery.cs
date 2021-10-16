@@ -25,6 +25,11 @@ namespace Data_Access_Layer.Queries
             return context.Courses.Include(m => m.Categories).FirstOrDefault(m => m.Id == id);
         }
 
+        public IQueryable<Course> Search(string query)
+        {
+            return context.Courses.Where(m => m.Name.Contains(query));
+        }
+
         public IEnumerable<Course> GetCoursesByUserId(string id)
         {
             var user = context.Users.Find(id);

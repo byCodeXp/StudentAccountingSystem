@@ -20,12 +20,17 @@ namespace Data_Access_Layer.Queries
 
         public User GetById(string id)
         {
-            return context.Users.Find(id);
+            return context.Users.Include(m => m.Courses).FirstOrDefault(m => m.Id == id);
+        }
+
+        public IQueryable<User> SearchByName(string query)
+        {
+            return context.Users.Where(m => m.FirstName.Contains(query) || m.LastName.Contains(query));
         }
 
         public bool UserExistsCourse(User user, Course course)
         {
-            return context.UsersCourses.Any(m => m.User == user && m.Course == course);
+            return user.Courses.Any(m => m.Id == course.Id);
         }
 
         public IQueryable<Course> UserCourses(User user)

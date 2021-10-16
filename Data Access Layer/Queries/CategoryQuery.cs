@@ -23,9 +23,9 @@ namespace Data_Access_Layer.Queries
             return context.Categories.Find(id);
         }
 
-        public Category GetByName(string name)
+        public IQueryable<Category> Search(string query)
         {
-            return context.Categories.FirstOrDefault(m => m.Name == name);
+            return context.Categories.OrderBy(m => m.Name).Where(m => m.Name.Contains(query));
         }
 
         public bool ExistsWithName(string name, params Category[] ignore)

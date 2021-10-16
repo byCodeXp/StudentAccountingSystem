@@ -1,17 +1,18 @@
 using System;
-using System.Globalization;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace Business_Logic.Exceptions
 {
     public class NotFoundRestException : Exception
     {
-        public NotFoundRestException() :base() {}
+        public string Message { get; }
+        public IEnumerable<IdentityError> Errors { get; }
         
-        public NotFoundRestException(string message) : base(message) { }
-        
-        public NotFoundRestException(string message, params object[] args)
-            : base(string.Format(CultureInfo.CurrentCulture, message, args))
+        public NotFoundRestException(string message, IEnumerable<IdentityError> errors = null)
         {
+            Message = message;
+            Errors = errors;
         }
     }
 }

@@ -45,8 +45,11 @@ const catalogSlice = createSlice({
    name: 'CATALOG',
    initialState,
    reducers: {
-      changeSort: (state, action) => {
-         state.request.sortBy = action.payload;
+      changeSort: (state, { payload }) => {
+         state.request.sortBy = payload;
+      },
+      setSearch: (state, { payload }) => {
+         state.request.search = payload;
       },
       setTags: (state, { payload }) => {
          state.request.tags = payload;
@@ -86,10 +89,12 @@ const catalogSlice = createSlice({
 });
 
 export default catalogSlice.reducer;
-export const { changeSort, setTags, setPage } = catalogSlice.actions;
+export const { changeSort, setTags, setPage, setSearch } = catalogSlice.actions;
 export const selectCourses = (state: RootState) => state.catalog.courses;
 export const selectSort = (state: RootState) => state.catalog.request.sortBy;
 export const selectCategories = (state: RootState) => state.catalog.categories;
 export const selectTags = (state: RootState) => state.catalog.request.tags;
 export const selectPage = (state: RootState) => state.catalog.request.page;
 export const selectTotalCount = (state: RootState) => state.catalog.totalCount;
+export const selectSearch = (state: RootState) => state.catalog.request.search;
+export const selectStatus = (state: RootState) => state.catalog.status;

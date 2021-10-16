@@ -1,29 +1,22 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { AppstoreOutlined } from '@ant-design/icons';
-import { Checkbox, Collapse, List, Space, Typography } from 'antd';
-import { fetchCategories, selectCategories, selectTags, setTags } from '../../../features/catalogSlice';
+import { Checkbox, Collapse, Form, List, Space, Typography } from 'antd';
+import { fetchCategories, selectCategories, setTags } from '../../../features/catalogSlice';
+import { useForm } from 'antd/lib/form/Form';
 
 export const Tags = () => {
-   
    const dispatch = useAppDispatch();
 
    const categories = useAppSelector(selectCategories);
-   const tags = useAppSelector(selectTags);
 
-   const handleOnCheck = (category: string, check: boolean) => {
-      const index = tags.findIndex((m) => m === category);
+   const handleFinish = () => {
+      const tags = form.getFieldsValue();
+      const array = Object.keys(tags).filter((item) => tags[item] === true);
+      dispatch(setTags(array));
+   };
 
-      if (index !== -1) {
-         if (check === false) {
-            dispatch(setTags([...tags.slice(0, index), ...tags.slice(index + 1)]))
-         }
-      } else {
-         if (check === true) {
-            dispatch(setTags([...tags, category]));
-         }
-      }
-   }
+   const [form] = useForm();
 
    useEffect(() => {
       dispatch(fetchCategories({ search: '' }));
@@ -41,17 +34,15 @@ export const Tags = () => {
             key="1"
          >
             <List>
-               {categories.map((category, index) => (
-                  <List.Item key={index}>
-                     <Checkbox
-                        onChange={(e) =>
-                           handleOnCheck(category.name, e.target.checked)
-                        }
-                     >
-                        {category.name}
-                     </Checkbox>
-                  </List.Item>
-               ))}
+               <Form form={form} onChange={handleFinish}>
+                  {categories.map((category, index) => (
+                     <List.Item>
+                        <Form.Item noStyle name={category.name} valuePropName="checked">
+                           <Checkbox>{category.name}</Checkbox>
+                        </Form.Item>
+                     </List.Item>
+                  ))}
+               </Form>
             </List>
          </Collapse.Panel>
       </Collapse>

@@ -46,7 +46,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("CreatedTimeStamp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 30, 8, 33, 50, 554, DateTimeKind.Utc).AddTicks(5158));
+                        .HasDefaultValue(new DateTime(2021, 10, 10, 10, 13, 4, 779, DateTimeKind.Utc).AddTicks(2155));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -55,7 +55,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 30, 8, 33, 50, 562, DateTimeKind.Utc).AddTicks(6289));
+                        .HasDefaultValue(new DateTime(2021, 10, 10, 10, 13, 4, 783, DateTimeKind.Utc).AddTicks(8693));
 
                     b.HasKey("Id");
 
@@ -74,7 +74,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("CreatedTimeStamp")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 30, 8, 33, 50, 583, DateTimeKind.Utc).AddTicks(355));
+                        .HasDefaultValue(new DateTime(2021, 10, 10, 10, 13, 4, 794, DateTimeKind.Utc).AddTicks(6739));
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -91,7 +91,7 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("UpdatedTimeStamp")
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2021, 9, 30, 8, 33, 50, 583, DateTimeKind.Utc).AddTicks(1261));
+                        .HasDefaultValue(new DateTime(2021, 10, 10, 10, 13, 4, 794, DateTimeKind.Utc).AddTicks(7436));
 
                     b.Property<int>("Views")
                         .HasColumnType("int");
@@ -109,15 +109,17 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("BirthDay")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedTimeStamp")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 10, 10, 10, 13, 4, 816, DateTimeKind.Utc).AddTicks(1650));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -165,7 +167,9 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("UpdatedTimeStamp")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2021, 10, 10, 10, 13, 4, 816, DateTimeKind.Utc).AddTicks(2119));
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)

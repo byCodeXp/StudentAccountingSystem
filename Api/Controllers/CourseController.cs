@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Security.Claims;
+using Business_Logic.Extensions;
 using Business_Logic.Services;
 using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
@@ -26,11 +26,11 @@ namespace Api.Controllers
             return Ok(courseService.GetCourses(request));
         }
 
-        [HttpGet("{id}")]
-        public IActionResult Get(Guid id)
+        [HttpGet("{courseId}")]
+        public IActionResult Get(Guid courseId)
         {
-            Request.Headers.TryGetValue("Authorization", out var token);
-            return Ok(courseService.GetOneCourse(id, token));
+            var userId = HttpContext.GetUserId();
+            return Ok(courseService.GetCourseAndIncrementViewCount(courseId, userId));
         }
 
         [HttpGet("user/{id}/courses")]

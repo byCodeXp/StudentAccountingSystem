@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 
 namespace Data_Transfer_Objects.Requests
 {
@@ -8,7 +9,7 @@ namespace Data_Transfer_Objects.Requests
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public int Age { get; set; }
+        public DateTime BirthDay { get; set; }
     }
 
     public class RegisterRequestValidation : AbstractValidator<RegisterRequest>
@@ -17,7 +18,7 @@ namespace Data_Transfer_Objects.Requests
         {
             RuleFor(m => m.Email).NotEmpty().EmailAddress();
             RuleFor(m => m.Password).NotEmpty().MinimumLength(8);
-            RuleFor(m => m.Age).GreaterThan(0);
+            RuleFor(m => m.BirthDay).NotEmpty().LessThan(DateTime.Today);
         }
     }
 }

@@ -1,8 +1,10 @@
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Api.Errors;
 using Business_Logic.Exceptions;
+using Business_Logic.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -31,18 +33,20 @@ namespace Api.Middlewares
                 response.ContentType = "application/json";
 
                 string message = null;
-                
+
                 switch (exception)
                 {
                     case NotFoundRestException ex:
                         response.StatusCode = (int) HttpStatusCode.NotFound;
                         message = ex.Message;
-                        logger.LogError(exception, message);
+                        logger.LogError(string.Join("\n      ", ex.Errors.Select(e => e.StringifyError())));
+                        logger.LogError(ex, message);
                         break;
                     case BadRequestRestException ex:
                         response.StatusCode = (int) HttpStatusCode.BadRequest;
                         message = ex.Message;
-                        logger.LogError(exception, message);
+                        logger.LogError(string.Join("\n      ", ex.Errors.Select(e => e.StringifyError())));
+                        logger.LogError(ex, message);
                         break;
                     default:
                         response.StatusCode = (int) HttpStatusCode.InternalServerError;

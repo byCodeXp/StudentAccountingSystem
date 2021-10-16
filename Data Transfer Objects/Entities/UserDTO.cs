@@ -10,7 +10,7 @@ namespace Data_Transfer_Objects.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public int Age { get; set; }
+        public DateTime BirthDay { get; set; }
         public DateTime RegisterAt { get; set; }
         public string Role { get; set;}
         public List<CourseDTO> Courses { get; set; } = new();
@@ -22,7 +22,7 @@ namespace Data_Transfer_Objects.Entities
         public UserDTOValidation()
         {
             RuleFor(m => m.Email).NotEmpty().EmailAddress();
-            RuleFor(m => m.Age).GreaterThan(0);
+            RuleFor(m => m.BirthDay).LessThan(DateTime.Today);
         }
     }
 }

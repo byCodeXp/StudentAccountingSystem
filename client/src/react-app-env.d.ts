@@ -3,7 +3,7 @@
 interface IRegisterRequest {
    firstName: string;
    lastName: string;
-   age: number;
+   birthDay: Date;
    email: string;
    password: string;   
 }
@@ -14,11 +14,22 @@ interface ILoginRequest {
    remember: boolean;
 }
 
+interface IChangeProfileRequest {
+   firstName: string;
+   lastName: string;
+   birthDay: Date;
+}
+
+interface IChangePassowrdRequest {
+   oldPassword: string;
+   newPassword: string;
+}
+
 interface IUser {
    id: string;
    firstName: string;
    lastName: string;
-   age: number;
+   birthDay: Date;
    email: string;
    role: string;
    registerAt: string;

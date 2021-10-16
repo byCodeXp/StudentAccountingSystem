@@ -113,7 +113,7 @@ const adminSlice = createSlice({
             state.status = 'loading';
          })
          .addCase(updateCategoryAsync.fulfilled, (state, { payload }) => {
-            const index = state.courses.findIndex(m => m.id === payload.id);
+            const index = state.categories.findIndex(m => m.id === payload.id);
             if (index !== -1) {
                state.categories = [...state.categories.slice(0, index), payload, ...state.categories.slice(index + 1)];
             }
@@ -202,3 +202,4 @@ export const selectCourses = (state: RootState) => state.admin.courses;
 export const selectCoursesCount = (state: RootState) => state.admin.totalCourses;
 export const selectCategories = (state: RootState) => state.admin.categories;
 export const selectUsers = (state: RootState) => state.admin.users;
+export const selectUsersCount = (state: RootState) => state.admin.totalUsers;

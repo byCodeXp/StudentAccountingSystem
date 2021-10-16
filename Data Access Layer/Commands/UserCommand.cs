@@ -13,6 +13,11 @@ namespace Data_Access_Layer.Commands
             this.context = context;
         }
 
+        public void UpdateUser(User user)
+        {
+            context.Users.Update(user);
+        }
+
         public void SubscribeCourse(User user, Course course, List<string> jobs)
         {
             context.UsersCourses.Add(new UserCourse { User = user, Course = course, Jobs = jobs });

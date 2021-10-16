@@ -4,6 +4,7 @@ using Data_Transfer_Objects;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Business_Logic.Extensions;
 using Data_Transfer_Objects.Requests;
 
 namespace Api.Controllers
@@ -37,16 +38,16 @@ namespace Api.Controllers
         [Authorize(Roles = AppEnv.Roles.Customer + ", " + AppEnv.Roles.Admin)]
         public async Task<IActionResult> GetUserCourses()
         {
-            Request.Headers.TryGetValue("Authorization", out var token);
-            return Ok(await userService.GetUserCourses(token));
+            var userId = HttpContext.GetUserId();
+            return Ok(await userService.GetUserCourses(userId));
         }
         
         [HttpPost("subscribe")] 
         [Authorize(Roles = AppEnv.Roles.Customer + ", " + AppEnv.Roles.Admin)]
         public async Task<IActionResult> SubscribeCourse([FromBody] SubscribeRequest request)
         {
-            Request.Headers.TryGetValue("Authorization", out var token);
-            await userService.SubscribeCourseAsync(request, token);
+            var userId = HttpContext.GetUserId();
+            await userService.SubscribeCourseAsync(request, userId);
             return Ok();
         }
 
@@ -54,8 +55,8 @@ namespace Api.Controllers
         [Authorize(Roles = AppEnv.Roles.Customer + ", " + AppEnv.Roles.Admin)]
         public async Task<IActionResult> UnsubscribeCourse(Guid courseId)
         {
-            Request.Headers.TryGetValue("Authorization", out var token);
-            await userService.UnsubscribeFromCourse(courseId, token);
+            var userId = HttpContext.GetUserId();
+            await userService.UnsubscribeFromCourse(courseId, userId);
             return Ok();
         }
     }

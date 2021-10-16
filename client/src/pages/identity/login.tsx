@@ -3,11 +3,12 @@ import { Link, Navigate } from 'react-router-dom';
 import { Button, Row, Checkbox, Form, Input, message } from 'antd';
 import { KeyOutlined, MailOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { loginAsync, selectError, selectStatus, resetStatus, } from '../../features/identitySlice';
+import { loginAsync, selectError, selectStatus, resetStatus, selectUser, facebookLoginAsync, } from '../../features/identitySlice';
 
 export const LoginPage = () => {
    const dispatch = useAppDispatch();
 
+   const user = useAppSelector(selectUser);
    const status = useAppSelector(selectStatus);
    const errorMessage = useAppSelector(selectError);
 
@@ -16,7 +17,12 @@ export const LoginPage = () => {
    };
 
    const handleOnFacebook = async () => {
-
+      // @ts-ignore
+      window.FB.login(response => {
+         const { userID, accessToken } = response.authResponse;
+         console.log(accessToken);
+         dispatch(facebookLoginAsync({ userId: userID, token: accessToken }));
+      });
    };
 
    useEffect(() => {
@@ -26,7 +32,7 @@ export const LoginPage = () => {
       }
    }, [dispatch, status, errorMessage]);
 
-   if (status === 'signed') {
+   if (user) {
       return <Navigate to="/catalog/1" />;
    }
 

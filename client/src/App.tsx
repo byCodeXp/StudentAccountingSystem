@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './app/hooks';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { Header } from './components/header';
-import { PrivateRoute } from './components/privateRoute';
 import { Layout } from 'antd';
 import { loadUser, logout, selectUser } from './features/identitySlice';
 import { LoginPage } from './pages/identity/login';
@@ -12,6 +11,7 @@ import { DetailsPage } from './pages/details';
 import { NotFoundPage } from './pages/404';
 import { AdminPage } from './pages/admin/index';
 import { ProfilePage } from './pages/profile';
+import { ProfileSettingsPage } from './pages/profile/settings';
 import 'antd/dist/antd.min.css';
 import './App.css';
 
@@ -22,12 +22,15 @@ const App = () => {
 
    const user = useAppSelector(selectUser);
 
+   const navigate = useNavigate();
+
    useEffect(() => {
       dispatch(loadUser());
    }, [dispatch]);
 
    const handleLogout = () => {
       dispatch(logout());
+      navigate('/login');
    }
 
    return (
@@ -35,10 +38,15 @@ const App = () => {
          <Header user={user} onLogout={handleLogout} />
          <Content style={{ padding: '32px 64px' }}>
             <Routes>
-               <PrivateRoute path="login" element={<LoginPage />} condition={user === undefined} redirect="/" />
-               <PrivateRoute path="register" element={<RegisterPage />} condition={user === undefined} redirect="/" />
-               <PrivateRoute path="/admin" element={<AdminPage />} condition={user !== undefined && user?.role === 'Admin'} redirect="/login" />
-               <PrivateRoute path="/profile" element={<ProfilePage />} condition={user !== undefined} redirect="/login" />
+               <Route path="login" element={<LoginPage />} />
+               <Route path="register" element={<RegisterPage />} />
+               <Route path="admin" element={<AdminPage />} />
+               <Route path="profile" element={<ProfilePage />} />
+               <Route path="profile/settings" element={<ProfileSettingsPage />} />
+
+               <Route path="">
+                  <Navigate to="/catalog/1" />
+               </Route>
 
                <Route path="catalog/:page" element={<CatalogPage />} />
                <Route path="details/:id" element={<DetailsPage />} />

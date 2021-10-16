@@ -36,7 +36,7 @@ namespace Business_Logic.Services
 
             if (!string.IsNullOrEmpty(request.Search))
             {
-                categories = categories.OrderBy(m => m.Name).Where(m => m.Name.Contains(request.Search));
+                categories = categoryQuery.Search(request.Search);
             }
 
             logger.LogInformation($"Returned {categories.Count()} categories");
@@ -57,7 +57,7 @@ namespace Business_Logic.Services
             logger.LogInformation($"Created category with name \"{category.Name}\"");
         }
 
-        public void UpdateCategory(CategoryDTO categoryDto)
+        public CategoryDTO UpdateCategory(CategoryDTO categoryDto)
         {
             var category = categoryQuery.GetById(categoryDto.Id);
 
@@ -78,6 +78,8 @@ namespace Business_Logic.Services
             context.SaveChanges();
             
             logger.LogInformation($"Updated category with name \"{category.Name}\"");
+
+            return categoryDto;
         }
 
         public void RemoveCategory(Guid id)

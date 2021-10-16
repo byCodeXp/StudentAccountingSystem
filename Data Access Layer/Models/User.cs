@@ -11,7 +11,7 @@ namespace Data_Access_Layer.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int Age { get; set; }
+        public DateTime BirthDay { get; set; }
         public DateTime CreatedTimeStamp { get; set; }
         public DateTime UpdatedTimeStamp { get; set; }
         public List<Course> Courses { get; set; }
@@ -25,8 +25,8 @@ namespace Data_Access_Layer.Models
             builder.HasIndex(m => m.Email).IsUnique();
             builder.Property(m => m.FirstName).HasMaxLength(128);
             builder.Property(m => m.LastName).HasMaxLength(128);
-            builder.Property(m => m.CreatedTimeStamp).IsRequired();
-            builder.Property(m => m.UpdatedTimeStamp).IsRequired();
+            builder.Property(m => m.CreatedTimeStamp).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnAdd();
+            builder.Property(m => m.UpdatedTimeStamp).HasDefaultValue(DateTime.UtcNow).ValueGeneratedOnAddOrUpdate();
 
             builder
                 .HasMany(c => c.Courses)

@@ -1,6 +1,8 @@
 ﻿using Data_Access_Layer.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data_Access_Layer.Commands
 {
@@ -55,7 +57,7 @@ namespace Data_Access_Layer.Commands
 
         public bool Update(Course newCourse)
         {
-            var course = context.Courses.Find(newCourse.Id);
+            var course = context.Courses.Include(m => m.Categories).FirstOrDefault(m => m.Id == newCourse.Id);
 
             if (course == null)
             {
@@ -65,10 +67,10 @@ namespace Data_Access_Layer.Commands
             course.Name = newCourse.Name;
             course.Description = newCourse.Description;
             course.Preview = newCourse.Preview;
-            course.Categories = newCourse.Categories;
+            course.Categories = new List<Category>(context.Categories.Where(m => newCourse.Categories.Contains(m)));
 
             context.Courses.Update(course);
-
+            
             return true;
         }
     }

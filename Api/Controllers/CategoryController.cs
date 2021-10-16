@@ -37,8 +37,7 @@ namespace Api.Controllers
         [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Update(CategoryDTO category)
         {
-            categoryService.UpdateCategory(category);
-            return Ok();
+            return Ok(categoryService.UpdateCategory(category));
         }
         
         [HttpDelete("delete/{id}")]

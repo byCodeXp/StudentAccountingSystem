@@ -47,6 +47,8 @@ namespace Api
             .AddDefaultTokenProviders()
             .AddSignInManager<SignInManager<User>>();
 
+            services.AddHttpClient();
+
             services.AddAutoMapper(typeof(MapperProfile));
 
             services.AddCors();
@@ -56,7 +58,6 @@ namespace Api
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    // options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 })
                 .AddJwtBearer(options => 
                 {
@@ -72,14 +73,10 @@ namespace Api
                         ValidateLifetime = true
                     };
                 })
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/api/identity/facebook-login";
-                })
                 .AddFacebook(options =>
                 {
-                    options.AppId = "1303024773483854";
-                    options.AppSecret = "d7b8fbf163ae25574c255df705512021";
+                    options.AppId = Configuration["Facebook:AppId"];
+                    options.AppSecret = Configuration["Facebook:AppSecret"];
                 });
             
             // Services
@@ -94,6 +91,7 @@ namespace Api
             
             // Helpers
             services.AddScoped<IJwtHelper, JwtHelper>();
+            services.AddScoped<FacebookHelper>();
             services.AddScoped<RazorTemplateHelper>();
             
             services.AddHangfire(configuration => configuration
@@ -125,6 +123,17 @@ namespace Api
             services.AddTransient<IValidator<CoursesRequest>, GetPageRequestValid>();
             services.AddTransient<IValidator<LoginRequest>, LoginRequestValidation>();
             services.AddTransient<IValidator<RegisterRequest>, RegisterRequestValidation>();
+            services.AddTransient<IValidator<ChangePasswordRequest>, ChangePasswordRequestValidator>();
+
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin();
+                    policy.AllowAnyMethod();
+                    policy.AllowAnyHeader();
+                });
+            });
             
             services.AddControllersWithViews();
             services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" }));
@@ -147,12 +156,7 @@ namespace Api
             app.UseHttpsRedirection();
             app.UseRouting();
 
-            app.UseCors(options => options
-               .WithOrigins(new[] { "http://localhost:3000", "https://localhost:3000" })
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials()
-            );
+            app.UseCors();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

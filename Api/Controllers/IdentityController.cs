@@ -1,14 +1,10 @@
-﻿using System.Linq;
-using System.Text.Json;
-using Business_Logic.Services;
+﻿using Business_Logic.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Business_Logic.Extensions;
+using Data_Transfer_Objects;
 using Data_Transfer_Objects.Requests;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
@@ -17,12 +13,10 @@ namespace Api.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IdentityService identityService;
-        private readonly ILogger<IdentityController> logger;
 
-        public IdentityController(IdentityService identityService, ILogger<IdentityController> logger)
+        public IdentityController(IdentityService identityService)
         {
             this.identityService = identityService;
-            this.logger = logger;
         }
 
         [HttpPost("register")]
@@ -38,39 +32,40 @@ namespace Api.Controllers
             return Ok(await identityService.LoginAsync(request));
         }
 
-        [HttpGet("facebook-login")]
-        public IActionResult FacebookLogin()
+        [HttpPost("facebook-login")]
+        public async Task<IActionResult> FacebookLogin(FacebookLoginRequest request)
         {
-            var properties = new AuthenticationProperties
-            {
-                RedirectUri = Url.Action("FacebookResponse")
-            };
-        
-            return Challenge(properties, FacebookDefaults.AuthenticationScheme);
+            return Ok(await identityService.FacebookLogin(request));
         }
-        
-        [HttpGet("facebook-response")]
-        public async Task<IActionResult> FacebookResponse()
+
+        [HttpGet("user")]
+        public IActionResult User()
         {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        
-            var claims = result.Principal?.Identities
-                .FirstOrDefault()
-                ?.Claims.Select(claim => new
-                {
-                    claim.Issuer,
-                    claim.OriginalIssuer,
-                    claim.Type,
-                    claim.Value
-                });
-        
-            return Ok(claims);
+            var userId = HttpContext.GetUserId();
+            return Ok(identityService.GetUser(userId));
         }
 
         [HttpGet("confirm")]
         public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
             await identityService.ConfirmEmail(email, token);
+            return Ok();
+        }
+
+        [HttpPut("update-personal-data")]
+        [Authorize(Roles = AppEnv.Roles.Customer + ", " + AppEnv.Roles.Admin)]
+        public IActionResult UpdatePersonalData([FromBody] ChangeProfileRequest request)
+        {
+            var userId = HttpContext.GetUserId();
+            return Ok(identityService.ChangePersonalData(userId, request));
+        }
+
+        [HttpPut("change-password")]
+        [Authorize(Roles = AppEnv.Roles.Customer + ", " + AppEnv.Roles.Admin)]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            var userId = HttpContext.GetUserId();
+            await identityService.ChangePasswordAsync(userId, request);
             return Ok();
         }
     }

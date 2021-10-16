@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -11,18 +12,18 @@ namespace Business_Logic.Helpers
 {
     public class JwtModel
     {
-        public string Issuer { get; set; }
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-        public int Age { get; set; }
+        public DateTime BirthDay { get; set; }
         public string Role { get; set; }
         public DateTime Expires { get; set; }
     }
     
     public interface IJwtHelper
     {
-        public string GenerateToken(UserDTO user);
+        public string GenerateToken(UserDTO user, TimeSpan duration);
         public JwtModel DecodeToken(string token);
         public JwtSecurityToken Verify(string token);
     }
@@ -37,7 +38,7 @@ namespace Business_Logic.Helpers
             symmetricSecurityKey = new SymmetricSecurityKey(secret);
         }
 
-        public string GenerateToken(UserDTO user)
+        public string GenerateToken(UserDTO user, TimeSpan duration)
         {
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -47,10 +48,10 @@ namespace Business_Logic.Helpers
                     new Claim("firstName", user.FirstName),
                     new Claim("lastName", user.LastName),
                     new Claim("email", user.Email),
-                    new Claim("age", user.Age.ToString()),
+                    new Claim("birthDay", user.BirthDay.ToString(CultureInfo.InvariantCulture)),
                     new Claim("role", user.Role)
                 }),
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.Add(duration),
                 SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -79,11 +80,11 @@ namespace Business_Logic.Helpers
 
             return new JwtModel
             {
-                Issuer = GetClaim("id", jwtSecurityToken).Value,
+                Id = GetClaim("id", jwtSecurityToken).Value,
                 FirstName = GetClaim("firstName", jwtSecurityToken).Value,
                 LastName = GetClaim("lastName", jwtSecurityToken).Value,
                 Email = GetClaim("email", jwtSecurityToken).Value,
-                Age = int.Parse(GetClaim("age", jwtSecurityToken).Value),
+                BirthDay = DateTime.Parse(GetClaim("birthDay", jwtSecurityToken).Value),
                 Role = GetClaim("role", jwtSecurityToken).Value,
                 Expires = jwtSecurityToken.ValidTo
             };

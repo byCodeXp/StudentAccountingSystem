@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Data_Access_Layer.Models;
 using Data_Transfer_Objects;
 using Business_Logic.Exceptions;
@@ -8,6 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Business_Logic.Helpers;
 using Data_Access_Layer;
+using Data_Access_Layer.Commands;
+using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using Microsoft.Extensions.Logging;
@@ -17,24 +20,37 @@ namespace Business_Logic.Services
 {
     public class IdentityService
     {
-        private readonly IJwtHelper jwtHelper;
-        private readonly UserManager<User> userManager;
-        private readonly IMapper mapper;
-        private readonly ILogger<IdentityService> logger;
-        private readonly EmailService emailService;
         private readonly RazorTemplateHelper razorTemplateHelper;
+        private readonly ILogger<IdentityService> logger;
+        private readonly UserManager<User> userManager;
+        private readonly FacebookHelper facebookHelper;
+        private readonly EmailService emailService;
+        private readonly UserCommand userCommand;
+        private readonly IJwtHelper jwtHelper;
+        private readonly DataContext context;
+        private readonly UserQuery userQuery;
+        private readonly IMapper mapper;
 
         public IdentityService(
+            RazorTemplateHelper razorTemplateHelper,
+            ILogger<IdentityService> logger,
+            FacebookHelper facebookHelper,
             UserManager<User> userManager,
-            EmailService emailService, IMapper mapper,
-            DataContext context, ILogger<IdentityService> logger, RazorTemplateHelper razorTemplateHelper, IJwtHelper jwtHelper)
+            EmailService emailService,
+            IJwtHelper jwtHelper,
+            DataContext context,
+            IMapper mapper)
         {
-            this.userManager = userManager;
-            this.emailService = emailService;
-            this.mapper = mapper;
-            this.logger = logger;
             this.razorTemplateHelper = razorTemplateHelper;
+            this.facebookHelper = facebookHelper;
+            this.emailService = emailService;
+            this.userManager = userManager;
+            userCommand = new (context);
             this.jwtHelper = jwtHelper;
+            userQuery = new (context);
+            this.context = context;
+            this.logger = logger;
+            this.mapper = mapper;
         }
 
         public async Task RegisterAsync(RegisterRequest request)
@@ -63,7 +79,7 @@ namespace Business_Logic.Services
             logger.LogInformation($"Registered user with id {user.Id}");
         }
 
-        public async Task<UserResponse> LoginAsync(LoginRequest request)
+        public async Task<string> LoginAsync(LoginRequest request)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
 
@@ -86,23 +102,25 @@ namespace Business_Logic.Services
                 throw new BadRequestRestException("Not confirmed email");
             }
             
-            // TODO: Add refresh token
-
             var userDto = mapper.Map<UserDTO>(user);
-            userDto.Role = string.Join(", ", await userManager.GetRolesAsync(user));
+            userDto.Role = string.Join(", ", await userManager.GetRolesAsync(user)); 
 
             logger.LogInformation($"Was login user with id {user.Id}");
-            
-            return new UserResponse
+
+            TimeSpan duration = AppEnv.AuthExpirationTime.OneDay;
+
+            if (request.Remember)
             {
-                Token = jwtHelper.GenerateToken(userDto)
-            };
+                duration = AppEnv.AuthExpirationTime.SevenDays;
+            }
+
+            return jwtHelper.GenerateToken(userDto, duration);
         }
 
-        // public async Task<UserResponse> ExternalLogin(string token)
-        // {
-            // return ;
-        // }
+        public UserDTO GetUser(string userId)
+        {
+            return mapper.Map<UserDTO>(userQuery.GetById(userId));
+        }
         
         public async Task ConfirmEmail(string email, string emailToken)
         {
@@ -124,6 +142,88 @@ namespace Business_Logic.Services
             }
             
             logger.LogInformation($"User with id {user.Id} confirm email");
+        }
+
+        public UserDTO ChangePersonalData(string userId, ChangeProfileRequest request)
+        {
+            var user = userQuery.GetById(userId);
+
+            if (user == null)
+            {
+                throw new NotFoundRestException($"User with id: {userId} not found");
+            }
+
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.BirthDay = request.BirthDay;
+            
+            userCommand.UpdateUser(user);
+
+            context.SaveChanges();
+
+            return mapper.Map<UserDTO>(user);
+        }
+
+        public async Task ChangePasswordAsync(string userId, ChangePasswordRequest request)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            var result = await userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new BadRequestRestException("Password cannot be changed", result.Errors);
+            }
+        }
+
+        public async Task<string> FacebookLogin(FacebookLoginRequest request)
+        {
+            if (!await facebookHelper.VerifyToken(request.Token))
+            {
+                throw new BadRequestRestException("Wrong access token");
+            }
+
+            var account = await facebookHelper.ReadFacebookAccountAsync(request.UserId, request.Token);
+
+            if (string.IsNullOrEmpty(account.Email))
+            {
+                throw new BadRequestRestException("Facebook account, not contains email address");
+            }
+            
+            var user = await userManager.FindByEmailAsync(account.Email);
+
+            if (user == null)
+            {
+                var newUser = new User
+                {
+                    Email = account.Email,
+                    UserName = account.Email,
+                    BirthDay = account.BirthDay,
+                    FirstName = account.FirstName,
+                    LastName = account.LastName,
+                };
+
+                var result = await userManager.CreateAsync(newUser);
+
+                if (!result.Succeeded)
+                {
+                    throw new BadRequestRestException("User was not created", result.Errors);
+                }
+
+                await userManager.AddToRoleAsync(newUser, AppEnv.Roles.Customer);
+
+                var userDto = mapper.Map<UserDTO>(newUser);
+                userDto.Role = string.Join(", ", await userManager.GetRolesAsync(newUser));
+
+                return jwtHelper.GenerateToken(userDto, AppEnv.AuthExpirationTime.SevenDays);
+            }
+            else
+            {
+                var userDto = mapper.Map<UserDTO>(user);
+                userDto.Role = string.Join(", ", await userManager.GetRolesAsync(user));
+                
+                return jwtHelper.GenerateToken(userDto, AppEnv.AuthExpirationTime.SevenDays);
+            }
         }
     }
 }

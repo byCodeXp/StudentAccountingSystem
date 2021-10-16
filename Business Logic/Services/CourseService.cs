@@ -7,7 +7,7 @@ using Data_Access_Layer.Queries;
 using Business_Logic.Exceptions;
 using System.Linq;
 using AutoMapper;
-using Business_Logic.Helpers;
+using Data_Transfer_Objects;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
 using Data_Transfer_Objects.ViewModels;
@@ -17,25 +17,23 @@ namespace Business_Logic.Services
 {
     public class CourseService
     {
-        private readonly CourseQuery courseQuery;
-        private readonly CourseCommand courseCommand;
+        private readonly ILogger<CourseService> logger;
         private readonly CategoryQuery categoryQuery;
+        private readonly CourseCommand courseCommand;
+        private readonly CourseQuery courseQuery;
         private readonly UserQuery userQuery;
         private readonly DataContext context;
         private readonly IMapper mapper;
-        private readonly IJwtHelper jwtHelper;
-        private readonly ILogger<CourseService> logger;
 
-        public CourseService(DataContext context, IMapper mapper, ILogger<CourseService> logger, IJwtHelper jwtHelper)
+        public CourseService(DataContext context, IMapper mapper, ILogger<CourseService> logger)
         {
+            courseCommand = new(context);
             categoryQuery = new(context);
             courseQuery = new(context);
-            courseCommand = new(context);
             userQuery = new(context);
             this.context = context;
             this.mapper = mapper;
             this.logger = logger;
-            this.jwtHelper = jwtHelper;
         }
 
         private int Offset (int page, int perPage) => page <= 1 ? 0 : page * perPage - perPage;
@@ -47,16 +45,17 @@ namespace Business_Logic.Services
             if (!string.IsNullOrEmpty(request.Search))
             {
                 // Search
-                
-                courses = courses.Where(m => m.Name.Contains(request.Search));
+
+                courses = courseQuery.Search(request.Search);
             }
             else
             {
                 // Filter
 
-                if (request?.Categories.Count > 0)
+                if (request.Categories.Any())
                 {
-                    courses = categoryQuery.GetAll()
+                    courses = categoryQuery
+                        .GetAll()
                         .Where(m => request.Categories.Contains(m.Name))
                         .SelectMany(s => s.Courses)
                         .Distinct();
@@ -67,16 +66,16 @@ namespace Business_Logic.Services
             
             switch (request.SortBy)
             {
-                case "New":
+                case SortBy.New:
                     courses = courses.OrderByDescending(m => m.CreatedTimeStamp);
                     break;
-                case "Popular":
+                case SortBy.Popular:
                     courses = courses.OrderByDescending(m => m.Views);
                     break;
-                case "Relevance":
+                case SortBy.Relevance:
                     courses = courses.OrderByDescending(m => m.Views).ThenByDescending(m => m.CreatedTimeStamp);
                     break;
-                case "Alphabetically":
+                case SortBy.Alphabetically:
                     courses = courses.OrderBy(m => m.Name);
                     break;
             }
@@ -104,25 +103,19 @@ namespace Business_Logic.Services
             return mapper.Map<List<CourseDTO>>(courses);
         }
 
-        public CourseDTO GetOneCourse(Guid id, string token)
+        public CourseDTO GetCourseAndIncrementViewCount(Guid courseId, string userId)
         {
-            Course course = courseQuery.GetOne(id);
+            Course course = courseQuery.GetOne(courseId);
 
             if (course == null)
             {
-                throw new NotFoundRestException($"Course with id: {id}, was not found");
+                throw new NotFoundRestException($"Course with id: {courseId}, was not found");
             }
-
-            course.Views++;
-
-            courseCommand.Update(course);
 
             var courseDto = mapper.Map<CourseDTO>(course);
 
-            if (!string.IsNullOrEmpty(token))
+            if (!string.IsNullOrEmpty(userId))
             {
-                var normalizeToken = token.Split(" ").Last();
-                var userId = jwtHelper.DecodeToken(normalizeToken).Issuer;
                 var user = userQuery.GetById(userId);
                 courseDto.Subscribed = userQuery.UserExistsCourse(user, course);
             }
@@ -131,6 +124,12 @@ namespace Business_Logic.Services
                 courseDto.Subscribed = false;
             }
             
+            course.Views++;
+
+            courseCommand.Update(course);
+
+            context.SaveChanges();
+            
             return courseDto;
         }
 
@@ -138,7 +137,7 @@ namespace Business_Logic.Services
         {
             var course = mapper.Map<Course>(courseDto);
 
-            course.Categories = new List<Category>(categoryQuery.GetAll().Where(m => course.Categories.Contains(m))); // Create as Query
+            course.Categories = new List<Category>(categoryQuery.GetAll().Where(m => course.Categories.Contains(m))); // TODO: MAKE as Query
             
             var result = courseCommand.Create(course);
 

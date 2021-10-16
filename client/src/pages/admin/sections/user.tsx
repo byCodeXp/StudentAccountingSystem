@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { HeadRow } from '../components/headRow';
-import { loadUsersAsync, selectUsers } from '../../../features/adminSlice';
+import { loadUsersAsync, selectUsers, selectUsersCount } from '../../../features/adminSlice';
 
 export const UserSection = () => {
    const dispatch = useAppDispatch();
@@ -10,6 +10,7 @@ export const UserSection = () => {
    const [search, setSearch] = useState('');
 
    const users = useAppSelector(selectUsers);
+   const totalCount = useAppSelector(selectUsersCount);
 
    const handleOnSearch = (value: string) => {
       setSearch(value);
@@ -24,13 +25,14 @@ export const UserSection = () => {
          <HeadRow title="" onSearch={handleOnSearch} />
          <Table
             pagination={{
-               total: 100,
+               total: totalCount,
                showSizeChanger: true,
                pageSizeOptions: ['4', '8', '16', '32'],
                defaultPageSize: 4,
             }}
             dataSource={users}
             expandable={{
+               rowExpandable: (user) => user.courses.length > 0,
                expandedRowRender: (record) => (
                   <Table
                      dataSource={record.courses}
@@ -63,9 +65,13 @@ export const UserSection = () => {
                   key: 'lastName',
                },
                {
-                  title: 'Age',
-                  dataIndex: 'age',
-                  key: 'age',
+                  title: 'Birth day',
+                  dataIndex: 'birthDay',
+                  key: 'birthDay',
+                  render: (item) => {
+                     const date = new Date(item);
+                     return date.toDateString();
+                  }
                },
                {
                   title: 'Registered date',

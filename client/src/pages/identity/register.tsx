@@ -1,14 +1,9 @@
-import React, { useEffect } from 'react';
-import { Button, Form, Input, Divider, message } from 'antd';
-import { UserOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
+import { useEffect } from 'react';
 import { Link, Navigate } from 'react-router-dom';
+import { Button, Form, Input, Divider, message, DatePicker } from 'antd';
+import { UserOutlined, MailOutlined, KeyOutlined } from '@ant-design/icons';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
-import {
-   selectStatus,
-   selectError,
-   registerAsync,
-   resetStatus,
-} from '../../features/identitySlice';
+import { selectStatus, selectError, registerAsync, resetStatus, } from '../../features/identitySlice';
 
 export const RegisterPage = () => {
    const dispatch = useAppDispatch();
@@ -17,6 +12,7 @@ export const RegisterPage = () => {
    const errorMessage = useAppSelector(selectError);
 
    const onFinish = (values: IRegisterRequest) => {
+      console.log(values);
       dispatch(registerAsync(values));
    };
 
@@ -58,19 +54,15 @@ export const RegisterPage = () => {
                <Input placeholder="Last name" prefix={<UserOutlined />} />
             </Form.Item>
             <Form.Item
-               name="age"
+               name="birthDay"
                rules={[
                   {
                      required: true,
-                     message: 'Please input your age!',
+                     message: 'Please input your birth day!',
                   },
                ]}
             >
-               <Input
-                  type="number"
-                  placeholder="Age"
-                  prefix={<UserOutlined />}
-               />
+               <DatePicker suffixIcon={<UserOutlined />} placeholder="Birth day" style={{ width: '100%' }} />
             </Form.Item>
             <Divider orientation="left" plain>
                Privacy information

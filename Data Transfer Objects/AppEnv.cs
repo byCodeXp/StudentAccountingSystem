@@ -17,5 +17,11 @@ namespace Data_Transfer_Objects
             public static TimeSpan In7Days = TimeSpan.FromDays(30);
             public static TimeSpan In1Day = TimeSpan.FromDays(1);
         }
+
+        public class AuthExpirationTime
+        {
+            public static TimeSpan OneDay = TimeSpan.FromDays(1);
+            public static TimeSpan SevenDays = TimeSpan.FromDays(7); 
+        }
     }
 }

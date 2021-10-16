@@ -31,13 +31,12 @@ namespace Business_Logic.Services
         private readonly EmailService emailService;
         private readonly RazorTemplateHelper razorTemplateHelper;
         private readonly JobService jobService;
-        private readonly IJwtHelper jwtHelper;
         private readonly ILogger<UserService> logger;
 
         public UserService(
             UserManager<User> userManager,
             IMapper mapper,
-            DataContext context, EmailService emailService, RazorTemplateHelper razorTemplateHelper, JobService jobService, ILogger<UserService> logger, IJwtHelper jwtHelper)
+            DataContext context, EmailService emailService, RazorTemplateHelper razorTemplateHelper, JobService jobService, ILogger<UserService> logger)
         {
             this.userManager = userManager;
             this.mapper = mapper;
@@ -46,7 +45,6 @@ namespace Business_Logic.Services
             this.razorTemplateHelper = razorTemplateHelper;
             this.jobService = jobService;
             this.logger = logger;
-            this.jwtHelper = jwtHelper;
             courseQuery = new(context);
             userQuery = new(context);
             userCommand = new(context);
@@ -62,7 +60,7 @@ namespace Business_Logic.Services
             
             if (!string.IsNullOrEmpty(request.Search))
             {
-                users = users.Where(m => m.FirstName.Contains(request.Search) || m.LastName.Contains(request.Search));
+                users = userQuery.SearchByName(request.Search);
             }
             
             // Sort
@@ -75,8 +73,8 @@ namespace Business_Logic.Services
                 case "LastName":
                     users = request.Ascending ? users.OrderBy(m => m.LastName) : users.OrderByDescending(m => m.LastName);
                     break;
-                case "Age":
-                    users = request.Ascending ? users.OrderBy(m => m.Age) : users.OrderByDescending(m => m.Age);
+                case "BirthDay":
+                    users = request.Ascending ? users.OrderBy(m => m.BirthDay) : users.OrderByDescending(m => m.BirthDay);
                     break;
             }
 
@@ -107,12 +105,8 @@ namespace Business_Logic.Services
             return mapper.Map<UserDTO>(user);
         }
 
-        public async Task<List<CourseDTO>> GetUserCourses(string bearerToken)
+        public async Task<List<CourseDTO>> GetUserCourses(string userId)
         {
-            var token = bearerToken.Split(" ").Last();
-            
-            var userId = jwtHelper.DecodeToken(token).Issuer;
-
             var user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
@@ -125,10 +119,8 @@ namespace Business_Logic.Services
             return mapper.Map<List<CourseDTO>>(courses);
         }
 
-        public async Task SubscribeCourseAsync(SubscribeRequest request, string bearerToken)
+        public async Task SubscribeCourseAsync(SubscribeRequest request, string userId)
         {
-            var token = bearerToken.Split(" ").Last();
-            
             var course = courseQuery.GetOne(request.CourseId);
 
             if (course == null)
@@ -136,9 +128,7 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"Course with id: {request.CourseId}, was not found");
             }
 
-            var userId = jwtHelper.DecodeToken(token).Issuer;
-
-            var user = await userManager.FindByIdAsync(userId);
+            var user = userQuery.GetById(userId);
             
             if (user == null)
             {
@@ -150,7 +140,7 @@ namespace Business_Logic.Services
                 throw new BadRequestRestException($"Course with id: {request.CourseId}, cannot be subscribed on user with id: {user.Id}");
             }
 
-            var jobs = jobService.ScheduleCourseReminder(mapper.Map<UserDTO>(user), mapper.Map<CourseDTO>(course), request.Date);
+            var jobs = await jobService.ScheduleCourseReminder(mapper.Map<UserDTO>(user), mapper.Map<CourseDTO>(course), request.Date);
 
             userCommand.SubscribeCourse(user, course, jobs.ToList());
             
@@ -164,10 +154,9 @@ namespace Business_Logic.Services
             });
             
             await emailService.SendMailAsync("Course subscribe success", new EmailAddress(user.Email), template);
-            
         }
 
-        public async Task UnsubscribeFromCourse(Guid courseId, string token)
+        public async Task UnsubscribeFromCourse(Guid courseId, string userId)
         {
             var course = courseQuery.GetOne(courseId);
 
@@ -176,10 +165,6 @@ namespace Business_Logic.Services
                 throw new NotFoundRestException($"Course with id: {courseId}, was not found");
             }
             
-            var editedToken = token.Replace("Bearer ", "");
-            
-            var userId = jwtHelper.DecodeToken(editedToken).Issuer;
-
             var user = await userManager.FindByIdAsync(userId);
             
             if (user == null)

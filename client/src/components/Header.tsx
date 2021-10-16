@@ -26,7 +26,7 @@ export const Header = (props: {
             <Link to="/profile">Profile</Link>
          </Menu.Item>
          <Menu.Item key="3">
-            <Link to="/settings">Settings</Link>
+            <Link to="/profile/settings">Settings</Link>
          </Menu.Item>
          {props.user?.role === 'Admin' && (
             <Menu.Item key="4">
@@ -45,7 +45,7 @@ export const Header = (props: {
          <Row justify="space-between" align="middle" style={{ height: 64 }}>
             <Button
                type="link"
-               style={{ fontSize: 18, display: 'flex', alignItems: 'center' }}
+               style={{ color: '#fff', display: 'flex', alignItems: 'center' }}
             >
                StudentProgress
             </Button>
@@ -57,13 +57,8 @@ export const Header = (props: {
                   color: '#ffffff',
                }}
             >
-               <Link to="/" style={{ color: '#ffffff' }}>
-                  Home
-               </Link>
+               <Link to="/">Home</Link>
                <Link to="/catalog/1">Catalog</Link>
-               <Link to="/about" style={{ color: '#ffffff' }}>
-                  About
-               </Link>
             </div>
             {props.user ? (
                <Space align="center">

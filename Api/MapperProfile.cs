@@ -16,7 +16,6 @@ namespace Api
                 .ForMember(d => d.Courses, s => s.MapFrom(m => m.Courses));
 
             CreateMap<UserDTO, User>();
-            
             CreateMap<RegisterRequest, User>();
         }
     }
