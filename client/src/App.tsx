@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { Header } from './components/header';
 import { Layout } from 'antd';
-import { loadUser, logout, selectUser } from './features/identitySlice';
+import { loadUserAsync, logout, selectUser } from './features/identitySlice';
 import { LoginPage } from './pages/identity/login';
 import { RegisterPage } from './pages/identity/register';
 import { CatalogPage } from './pages/catalog/index';
@@ -25,7 +25,7 @@ const App = () => {
    const navigate = useNavigate();
 
    useEffect(() => {
-      dispatch(loadUser());
+      dispatch(loadUserAsync());
    }, [dispatch]);
 
    const handleLogout = () => {

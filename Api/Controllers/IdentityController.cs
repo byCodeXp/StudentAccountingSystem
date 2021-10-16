@@ -39,6 +39,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("user")]
+        [Authorize(Roles = AppEnv.Roles.Customer + ", " + AppEnv.Roles.Admin)]
         public IActionResult User()
         {
             var userId = HttpContext.GetUserId();

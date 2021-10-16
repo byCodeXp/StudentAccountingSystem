@@ -38,24 +38,4 @@ const bearer = () => {
    return undefined;
 }
 
-const user = (): IUser | undefined => {
-   const token = getToken();
-   if (token) {
-      const user = jwt.decode(token);
-      if (user) {
-         return {
-            id: user.id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            birthDay: user.birthDay,
-            email: user.email,
-            role: user.role,
-            registerAt: '',
-            courses: [],
-         }
-      }
-   }
-   return undefined;
-}
-
-export const tokenUtil = { getToken, setToken, clear, expired, bearer, user };
+export const tokenUtil = { getToken, setToken, clear, expired, bearer };

@@ -3,6 +3,7 @@ import identityApi from '../api/identityApi';
 import userApi from '../api/userApi';
 import { RootState } from '../app/store';
 import { tokenUtil } from '../utils/tokenUtil';
+import { loadUsersAsync } from './adminSlice';
 
 const initialState: IdentityState = { 
    user: undefined,
@@ -15,8 +16,8 @@ export const loginAsync = createAsyncThunk(
    'identity/fetchLogin',
    async (request: ILoginRequest) => {
       const response = await identityApi.fetchLogin(request);
-      tokenUtil.setToken(response);
-      return tokenUtil.user();
+      tokenUtil.setToken(response.token);
+      return response.user;
    }
 );
 
@@ -48,28 +49,18 @@ export const updateUserProfile = createAsyncThunk('IDENTITY/FETCH_UPDATE_PROFILE
 export const facebookLoginAsync = createAsyncThunk('IDENTITY/FETCH_FACEBOOK_LOGIN', async (request: { userId: string; token: string }) => {
    const response = await identityApi.fetchFacebookLogin(request);
    tokenUtil.setToken(response);
-   return tokenUtil.user();
-})
+   // return tokenUtil.user();
+   return {};
+});
+
+export const loadUserAsync = createAsyncThunk('IDENTIY/FETCH_USER', async () => {
+   return await identityApi.fetchUser();
+});
 
 const identitySlice = createSlice({
    name: 'identity',
    initialState,
    reducers: {
-      loadUser: (state) => {
-         const token = tokenUtil.getToken();
-         if (token) {
-            if (tokenUtil.expired(token) === false) {
-               const user = tokenUtil.user();
-               if (user) {
-                  state.user = user;
-                  state.status = 'signed';
-               }
-            }
-            else {
-               tokenUtil.clear();
-            }
-         }
-      },
       logout: (state) => {
          state.status = 'idle';
          state.user = undefined;
@@ -105,6 +96,18 @@ const identitySlice = createSlice({
          .addCase(registerAsync.rejected, (state, { error }) => {
             state.status = 'failed';
             state.errorMessage = error.message ?? 'Something went wrong, try again please !';
+         })
+         // Load user
+         .addCase(loadUserAsync.pending, (state) => {
+            state.status = 'loading';
+         })
+         .addCase(loadUserAsync.fulfilled, (state, { payload }) => {
+            state.user = payload;
+            state.status = 'signed';
+         })
+         .addCase(loadUserAsync.rejected, (state, { error }) => {
+            state.errorMessage = error.message ?? 'Something went wrong, try again please !';
+            state.status = 'failed';
          })
          // Load courses
          .addCase(getUserCoursesAsync.pending, (state) => {
@@ -157,24 +160,24 @@ const identitySlice = createSlice({
             state.status = 'failed';
          })
          // Facebook login
-         .addCase(facebookLoginAsync.pending, (state) => {
-            state.status = 'loading';
-         })
-         .addCase(facebookLoginAsync.fulfilled, (state, action) => {
-            state.user = action.payload;
-            state.status = 'signed';
-         })
-         .addCase(facebookLoginAsync.rejected, (state, action) => {
-            if (state.status === 'loading') {
-               state.status = 'failed';
-               state.errorMessage = action.error.message ?? 'Something went wrong, try again please !';
-            }
-         })
+         // .addCase(facebookLoginAsync.pending, (state) => {
+         //    state.status = 'loading';
+         // })
+         // .addCase(facebookLoginAsync.fulfilled, (state, action) => {
+         //    state.user = action.payload;
+         //    state.status = 'signed';
+         // })
+         // .addCase(facebookLoginAsync.rejected, (state, action) => {
+         //    if (state.status === 'loading') {
+         //       state.status = 'failed';
+         //       state.errorMessage = action.error.message ?? 'Something went wrong, try again please !';
+         //    }
+         // })
   },
 });
 
 export default identitySlice.reducer;
-export const { loadUser, logout, resetStatus } = identitySlice.actions;
+export const { logout, resetStatus } = identitySlice.actions;
 export const selectUser = (state: RootState) => state.identity.user;
 export const selectStatus = (state: RootState) => state.identity.status;
 export const selectError = (state: RootState) => state.identity.errorMessage;

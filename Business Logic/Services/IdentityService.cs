@@ -13,6 +13,7 @@ using Data_Access_Layer.Commands;
 using Data_Access_Layer.Queries;
 using Data_Transfer_Objects.Entities;
 using Data_Transfer_Objects.Requests;
+using Data_Transfer_Objects.Responses;
 using Microsoft.Extensions.Logging;
 using SendGrid.Helpers.Mail;
 
@@ -79,7 +80,7 @@ namespace Business_Logic.Services
             logger.LogInformation($"Registered user with id {user.Id}");
         }
 
-        public async Task<string> LoginAsync(LoginRequest request)
+        public async Task<LoginResponse> LoginAsync(LoginRequest request)
         {
             var user = await userManager.FindByEmailAsync(request.Email);
 
@@ -114,7 +115,13 @@ namespace Business_Logic.Services
                 duration = AppEnv.AuthExpirationTime.SevenDays;
             }
 
-            return jwtHelper.GenerateToken(userDto, duration);
+            string token = jwtHelper.GenerateToken(userDto, duration);
+
+            return new LoginResponse
+            {
+                Token = token,
+                User = userDto
+            };
         }
 
         public UserDTO GetUser(string userId)

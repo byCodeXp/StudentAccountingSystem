@@ -19,6 +19,10 @@ const fetchChangePassword = async (request: IChangePassowrdRequest) =>
 const fetchFacebookLogin = async (request: { userId: string; token: string }) =>
    await makeClient().post(`/facebook-login`, request).then(responseData).catch(responseError);
 
-const identityApi = { fetchLogin, fetchRegister, fetchUpdateProfile, fetchChangePassword, fetchFacebookLogin }
+const fetchUser = async () =>
+   await makeClient().get(`/user`).then(responseData).catch(responseError);
+
+
+const identityApi = { fetchLogin, fetchRegister, fetchUpdateProfile, fetchChangePassword, fetchFacebookLogin, fetchUser };
 
 export default identityApi;
