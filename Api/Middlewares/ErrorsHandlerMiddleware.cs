@@ -39,13 +39,19 @@ namespace Api.Middlewares
                     case NotFoundRestException ex:
                         response.StatusCode = (int) HttpStatusCode.NotFound;
                         message = ex.Message;
-                        logger.LogError(string.Join("\n      ", ex.Errors.Select(e => e.StringifyError())));
+                        if (ex.Errors != null)
+                        {
+                            logger.LogError(string.Join("\n      ", ex.Errors.Select(e => e.StringifyError())));
+                        } 
                         logger.LogError(ex, message);
                         break;
                     case BadRequestRestException ex:
                         response.StatusCode = (int) HttpStatusCode.BadRequest;
                         message = ex.Message;
-                        logger.LogError(string.Join("\n      ", ex.Errors.Select(e => e.StringifyError())));
+                        if (ex.Errors != null)
+                        {
+                            logger.LogError(string.Join("\n      ", ex.Errors.Select(e => e.StringifyError())));
+                        } 
                         logger.LogError(ex, message);
                         break;
                     default:

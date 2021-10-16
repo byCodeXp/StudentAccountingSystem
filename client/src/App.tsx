@@ -14,6 +14,7 @@ import { ProfilePage } from './pages/profile';
 import { ProfileSettingsPage } from './pages/profile/settings';
 import 'antd/dist/antd.min.css';
 import './App.css';
+import { tokenUtil } from './utils/tokenUtil';
 
 const { Content } = Layout;
 
@@ -25,7 +26,9 @@ const App = () => {
    const navigate = useNavigate();
 
    useEffect(() => {
-      dispatch(loadUserAsync());
+      if (tokenUtil.getToken()) {
+         dispatch(loadUserAsync());
+      }
    }, [dispatch]);
 
    const handleLogout = () => {

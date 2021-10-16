@@ -44,17 +44,21 @@ namespace Business_Logic.Services
             return mapper.Map<List<CategoryDTO>>(categories);
         }
 
-        public void CreateCategory(CategoryDTO category)
+        public CategoryDTO CreateCategory(CategoryDTO categoryDto)
         {
+            var category = mapper.Map<Category>(categoryDto);
+            
             if (categoryQuery.ExistsWithName(category.Name))
             {
                 throw new BadRequestRestException($"Category with name: {category.Name} already exists");
             }
             
-            categoryCommand.Add(mapper.Map<Category>(category));
+            categoryCommand.Add(category);
             context.SaveChanges();
             
             logger.LogInformation($"Created category with name \"{category.Name}\"");
+            
+            return mapper.Map<CategoryDTO>(category);
         }
 
         public CategoryDTO UpdateCategory(CategoryDTO categoryDto)

@@ -29,8 +29,7 @@ namespace Api.Controllers
         [Authorize(Roles = AppEnv.Roles.Admin)]
         public IActionResult Create(CategoryDTO category)
         {
-            categoryService.CreateCategory(category);
-            return Ok();
+            return Ok(categoryService.CreateCategory(category));
         }
         
         [HttpPut("update")]
