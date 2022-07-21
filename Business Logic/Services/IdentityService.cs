@@ -183,7 +183,7 @@ namespace Business_Logic.Services
             }
         }
 
-        public async Task<string> FacebookLogin(FacebookLoginRequest request)
+        public async Task<LoginResponse> FacebookLogin(FacebookLoginRequest request)
         {
             if (!await facebookHelper.VerifyToken(request.Token))
             {
@@ -222,14 +222,22 @@ namespace Business_Logic.Services
                 var userDto = mapper.Map<UserDTO>(newUser);
                 userDto.Role = string.Join(", ", await userManager.GetRolesAsync(newUser));
 
-                return jwtHelper.GenerateToken(userDto, AppEnv.AuthExpirationTime.SevenDays);
+                return new LoginResponse
+                {
+                    Token = jwtHelper.GenerateToken(userDto, AppEnv.AuthExpirationTime.SevenDays),
+                    User = userDto
+                };
             }
             else
             {
                 var userDto = mapper.Map<UserDTO>(user);
                 userDto.Role = string.Join(", ", await userManager.GetRolesAsync(user));
                 
-                return jwtHelper.GenerateToken(userDto, AppEnv.AuthExpirationTime.SevenDays);
+                return new LoginResponse
+                {
+                    Token = jwtHelper.GenerateToken(userDto, AppEnv.AuthExpirationTime.SevenDays),
+                    User = userDto
+                };
             }
         }
     }

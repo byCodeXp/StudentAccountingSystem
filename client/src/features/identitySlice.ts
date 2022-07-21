@@ -3,7 +3,6 @@ import identityApi from '../api/identityApi';
 import userApi from '../api/userApi';
 import { RootState } from '../app/store';
 import { tokenUtil } from '../utils/tokenUtil';
-import { loadUsersAsync } from './adminSlice';
 
 const initialState: IdentityState = { 
    user: undefined,
@@ -48,9 +47,8 @@ export const updateUserProfile = createAsyncThunk('IDENTITY/FETCH_UPDATE_PROFILE
 
 export const facebookLoginAsync = createAsyncThunk('IDENTITY/FETCH_FACEBOOK_LOGIN', async (request: { userId: string; token: string }) => {
    const response = await identityApi.fetchFacebookLogin(request);
-   tokenUtil.setToken(response);
-   // return tokenUtil.user();
-   return {};
+   tokenUtil.setToken(response.token);
+   return response.user;
 });
 
 export const loadUserAsync = createAsyncThunk('IDENTIY/FETCH_USER', async () => {
@@ -160,19 +158,19 @@ const identitySlice = createSlice({
             state.status = 'failed';
          })
          // Facebook login
-         // .addCase(facebookLoginAsync.pending, (state) => {
-         //    state.status = 'loading';
-         // })
-         // .addCase(facebookLoginAsync.fulfilled, (state, action) => {
-         //    state.user = action.payload;
-         //    state.status = 'signed';
-         // })
-         // .addCase(facebookLoginAsync.rejected, (state, action) => {
-         //    if (state.status === 'loading') {
-         //       state.status = 'failed';
-         //       state.errorMessage = action.error.message ?? 'Something went wrong, try again please !';
-         //    }
-         // })
+         .addCase(facebookLoginAsync.pending, (state) => {
+            state.status = 'loading';
+         })
+         .addCase(facebookLoginAsync.fulfilled, (state, action) => {
+            state.user = action.payload;
+            state.status = 'signed';
+         })
+         .addCase(facebookLoginAsync.rejected, (state, action) => {
+            if (state.status === 'loading') {
+               state.status = 'failed';
+               state.errorMessage = action.error.message ?? 'Something went wrong, try again please !';
+            }
+         })
   },
 });
 

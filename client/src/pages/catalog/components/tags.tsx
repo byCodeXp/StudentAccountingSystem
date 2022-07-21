@@ -36,7 +36,7 @@ export const Tags = () => {
             <List>
                <Form form={form} onChange={handleFinish}>
                   {categories.map((category, index) => (
-                     <List.Item>
+                     <List.Item key={index}>
                         <Form.Item noStyle name={category.name} valuePropName="checked">
                            <Checkbox>{category.name}</Checkbox>
                         </Form.Item>

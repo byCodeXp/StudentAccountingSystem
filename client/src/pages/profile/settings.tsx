@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { Container } from '../../components/container';
@@ -6,6 +6,7 @@ import { selectStatus, selectUser, updateUserProfile } from '../../features/iden
 import { Input, Form, Typography, Card, Button, PageHeader, Row, Spin, DatePicker } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import identityApi from '../../api/identityApi';
+import { useForm } from 'antd/lib/form/Form';
 import moment from 'moment';
 
 export const ProfileSettingsPage = () => {
@@ -15,6 +16,8 @@ export const ProfileSettingsPage = () => {
    const status = useAppSelector(selectStatus);
 
    const navigate = useNavigate();
+
+   const [form] = useForm();
 
    const [isEnabled, setEnabled] = useState(false);
    const [loading, setLoading] = useState(false);
@@ -48,7 +51,7 @@ export const ProfileSettingsPage = () => {
 
       return (
          <Row justify="space-between" align="middle">
-            <Typography>Settings</Typography>
+            <Typography>Personal information</Typography>
             {isEnabled === true ? (
                <div>
                   <Button type="link" onClick={() => setEnabled(false)}>
@@ -67,10 +70,14 @@ export const ProfileSettingsPage = () => {
       );
    };
 
+   useEffect(() => {
+      form.setFieldsValue({ firstName: user?.firstName, lastName: user?.lastName, birthDay: moment(user?.birthDay) });
+   }, [form, user]);
+
    return (
       <Container>
          <PageHeader title="Settings" onBack={() => navigate('/profile')}>
-            <Form initialValues={{ firstName: user?.firstName, lastName: user?.lastName, birthDay: moment(user?.birthDay) }} onFinish={handleOnFinish}>
+            <Form form={form} onFinish={handleOnFinish}>
                <Card title={<Title />}>
                   <Typography>First Name</Typography>
                   <Form.Item name="firstName">
@@ -89,7 +96,7 @@ export const ProfileSettingsPage = () => {
                      message: 'Please input your birth day!',
                   },
                ]}>
-                     <DatePicker disabled={!isEnabled} />
+                     <DatePicker style={{ width: '100%' }} disabled={!isEnabled} />
                   </Form.Item>
                </Card>
             </Form>
@@ -109,7 +116,7 @@ export const ProfileSettingsPage = () => {
                      style={{ float: 'right' }}
                      htmlType="submit"
                   >
-                     Confirm
+                     Update
                   </Button>
                </Form>
             </Card>

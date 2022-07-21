@@ -13,7 +13,7 @@ namespace Api
             try
             {
                 logger.Debug("Init main");
-                CreateHostBuilder(args).Build().Seed().Run();
+                CreateHostBuilder(args).Build().Run();
             }
             catch (Exception exception)
             {

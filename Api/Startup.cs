@@ -108,7 +108,7 @@ namespace Api
                 })
             );
 
-            // services.AddHangfireServer();
+            services.AddHangfireServer();
 
             services.AddFluentValidation(options =>
             {
